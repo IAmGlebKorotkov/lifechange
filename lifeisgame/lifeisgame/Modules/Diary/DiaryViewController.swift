@@ -1,0 +1,112 @@
+//
+//  DiaryViewController.swift
+//  lifeisgame
+//
+//  Created by Gleb Korotkov on 22.03.2026.
+//
+
+import UIKit
+
+final class DiaryViewController: UIViewController {
+
+
+    private enum DiaryType: CaseIterable {
+        case emotions, sleep
+        var iconName: String { self == .emotions ? "Lol"            : "Time_sleep" }
+        var title: String    { self == .emotions ? "Дневник эмоций" : "Дневник сна" }
+    }
+
+
+    private var selectedDiary: DiaryType = .emotions
+
+
+    private let titleLabel: UILabel = {
+        let l = UILabel()
+        l.text = "Дневник эмоций и сна"
+        l.font = .systemFont(ofSize: 20, weight: .bold)
+        l.textAlignment = .center
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
+    private let diaryPickerView = DiaryPickerView(sectionTitle: "Дневник")
+    private let emotionDiaryView = EmotionDiaryView()
+    private let sleepDiaryView   = SleepDiaryView()
+
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor.background
+        setupUI()
+        refreshDiaryPicker()
+    }
+
+
+    private func setupUI() {
+        sleepDiaryView.isHidden = true
+        sleepDiaryView.alpha    = 0
+
+        view.addSubview(titleLabel)
+        view.addSubview(diaryPickerView)
+        view.addSubview(emotionDiaryView)
+        view.addSubview(sleepDiaryView)
+
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            diaryPickerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            diaryPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            diaryPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            diaryPickerView.heightAnchor.constraint(equalToConstant: 63),
+
+            emotionDiaryView.topAnchor.constraint(equalTo: diaryPickerView.bottomAnchor, constant: 12),
+            emotionDiaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emotionDiaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emotionDiaryView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            sleepDiaryView.topAnchor.constraint(equalTo: diaryPickerView.bottomAnchor, constant: 12),
+            sleepDiaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sleepDiaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sleepDiaryView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+
+
+    private func refreshDiaryPicker() {
+        let diary = selectedDiary
+        let icon  = UIImage(named: diary.iconName)?.withRenderingMode(.alwaysOriginal)
+        diaryPickerView.update(icon: icon, selectionText: diary.title, menu: makeDiaryMenu())
+    }
+
+    private func makeDiaryMenu() -> UIMenu {
+        let actions = DiaryType.allCases.map { type in
+            UIAction(
+                title: type.title,
+                image: UIImage(named: type.iconName)?.withRenderingMode(.alwaysOriginal),
+                state: type == selectedDiary ? .on : .off
+            ) { [weak self] _ in
+                guard let self, type != self.selectedDiary else { return }
+                self.selectedDiary = type
+                self.refreshDiaryPicker()
+                self.switchContent(to: type)
+            }
+        }
+        return UIMenu(title: "", children: actions)
+    }
+
+
+    private func switchContent(to type: DiaryType) {
+        let showEmotions = type == .emotions
+        let appearing  = showEmotions ? emotionDiaryView : sleepDiaryView
+        let disappearing = showEmotions ? sleepDiaryView : emotionDiaryView
+
+        appearing.isHidden = false
+        UIView.animate(withDuration: 0.2) {
+            appearing.alpha    = 1
+            disappearing.alpha = 0
+        } completion: { _ in
+            disappearing.isHidden = true
+        }
+    }
+}
