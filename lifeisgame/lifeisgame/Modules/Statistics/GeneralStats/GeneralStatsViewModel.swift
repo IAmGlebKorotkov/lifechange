@@ -7,4 +7,5 @@
 
 final class GeneralStatsViewModel {
     var onAchievementsTapped: (() -> Void)?
+    var onFocusTapped: (() -> Void)?
 }

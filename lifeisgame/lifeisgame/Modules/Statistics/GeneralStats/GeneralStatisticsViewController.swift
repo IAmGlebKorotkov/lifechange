@@ -47,6 +47,23 @@ final class GeneralStatisticsViewController: UIViewController {
 
     private let actionButton = CustomButton(title: "Подсказки дня", type: .main)
 
+    private let focusButton: UIButton = {
+        let b = UIButton(type: .custom)
+        let cfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+        b.setImage(UIImage(systemName: "play.fill", withConfiguration: cfg), for: .normal)
+        b.setTitle("Старт", for: .normal)
+        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        b.tintColor = .white
+        b.setTitleColor(.white, for: .normal)
+        b.backgroundColor = UIColor.main.withAlphaComponent(0.82)
+        b.layer.cornerRadius = 28
+        b.semanticContentAttribute = .forceLeftToRight
+        b.imageEdgeInsets = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 4)
+        b.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
+        b.translatesAutoresizingMaskIntoConstraints = false
+        return b
+    }()
+
     private let trophyButton: UIButton = {
         let b = UIButton(type: .custom)
         let cfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .medium)
@@ -95,10 +112,13 @@ final class GeneralStatisticsViewController: UIViewController {
 
         view.addSubview(scrollView)
         view.addSubview(trophyButton)
+        view.addSubview(focusButton)
         scrollView.addSubview(contentStack)
 
         trophyButton.addTarget(self, action: #selector(openAchievements), for: .touchUpInside)
         trophyButton.enablePressScale(to: 0.90)
+        focusButton.addTarget(self, action: #selector(openFocus), for: .touchUpInside)
+        focusButton.enablePressScale()
 
         tipsCardView.isHidden = true
         tipsCardView.alpha = 0
@@ -136,6 +156,11 @@ final class GeneralStatisticsViewController: UIViewController {
             trophyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             trophyButton.widthAnchor.constraint(equalToConstant: 44),
             trophyButton.heightAnchor.constraint(equalToConstant: 44),
+
+            focusButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            focusButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -96),
+            focusButton.widthAnchor.constraint(equalToConstant: 116),
+            focusButton.heightAnchor.constraint(equalToConstant: 56),
         ])
     }
 
@@ -220,6 +245,10 @@ final class GeneralStatisticsViewController: UIViewController {
 
     @objc private func openAchievements() {
         viewModel.onAchievementsTapped?()
+    }
+
+    @objc private func openFocus() {
+        viewModel.onFocusTapped?()
     }
 
     @objc private func toggleTips() {

@@ -51,7 +51,7 @@ final class TabBarCoordinator: Coordinator {
     }
 
     private func makeGeneralStatsTab() -> UIViewController {
-        let coordinator = GeneralStatsCoordinator()
+        let coordinator = GeneralStatsCoordinator(container: container)
         addChild(coordinator)
         return coordinator.rootViewController
     }

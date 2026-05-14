@@ -37,6 +37,7 @@ final class TaskDayView: UIControl {
 
     private(set) var isTaskCompleted: Bool = false
     var onCompletionChanged: ((Bool) -> Void)?
+    private var showsCompletionButton = true
 
 
     private let subtaskLabel: UILabel = {
@@ -162,8 +163,10 @@ final class TaskDayView: UIControl {
          time: String,
          timeSpent: String,
          priority: Priority,
-         isCompleted: Bool = false) {
+         isCompleted: Bool = false,
+         showsCompletionButton: Bool = true) {
         super.init(frame: .zero)
+        self.showsCompletionButton = showsCompletionButton
         applyContent(type: .light,
                      subtaskName: subtaskName,
                      taskTitle: taskTitle,
@@ -181,8 +184,10 @@ final class TaskDayView: UIControl {
          time: String,
          timeSpent: String,
          priority: Priority,
-         isCompleted: Bool = false) {
+         isCompleted: Bool = false,
+         showsCompletionButton: Bool = true) {
         super.init(frame: .zero)
+        self.showsCompletionButton = showsCompletionButton
         applyContent(type: .hard(mainTaskName: mainTaskName),
                      subtaskName: subtaskName,
                      taskTitle: taskTitle,
@@ -264,6 +269,7 @@ final class TaskDayView: UIControl {
 
         completeButton.addTarget(self, action: #selector(completeTapped), for: .touchUpInside)
         completeButton.enablePressScale()
+        completeButton.isHidden = !showsCompletionButton
     }
 
 
