@@ -13,6 +13,7 @@ final class StatisticsViewController: UIViewController {
     private let carouselHeight: CGFloat = 300
 
     private let categoryNames = ["Эмоции", "Сон", "Задачи"]
+    private let repository: DiaryRepositoryProtocol
 
 
     private let titleLabel: UILabel = {
@@ -50,18 +51,38 @@ final class StatisticsViewController: UIViewController {
     }()
 
     private let emotionStatsView = EmotionStatsView()
+    private let sleepStatsView   = SleepStatsView()
     private let taskStatsView    = TaskStatsView()
+
+
+    init(repository: DiaryRepositoryProtocol) {
+        self.repository = repository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupLayout()
+        observeDiaryChanges()
         carouselView.onSelectionChanged = { [weak self] index in
             self?.showStats(for: index)
         }
         taskStatsView.presentingViewController = self
+        loadDiaryStats()
         showStats(for: 0)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadDiaryStats()
     }
 
 
@@ -74,6 +95,7 @@ final class StatisticsViewController: UIViewController {
         view.addSubview(statsContainer)
 
         statsContainer.addSubview(emotionStatsView)
+        statsContainer.addSubview(sleepStatsView)
         statsContainer.addSubview(taskStatsView)
 
         NSLayoutConstraint.activate([
@@ -98,6 +120,11 @@ final class StatisticsViewController: UIViewController {
             emotionStatsView.trailingAnchor.constraint(equalTo: statsContainer.trailingAnchor),
             emotionStatsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
+            sleepStatsView.topAnchor.constraint(equalTo: emotionStatsView.topAnchor),
+            sleepStatsView.leadingAnchor.constraint(equalTo: statsContainer.leadingAnchor),
+            sleepStatsView.trailingAnchor.constraint(equalTo: statsContainer.trailingAnchor),
+            sleepStatsView.bottomAnchor.constraint(equalTo: emotionStatsView.bottomAnchor),
+
             taskStatsView.topAnchor.constraint(equalTo: emotionStatsView.topAnchor),
             taskStatsView.leadingAnchor.constraint(equalTo: statsContainer.leadingAnchor),
             taskStatsView.trailingAnchor.constraint(equalTo: statsContainer.trailingAnchor),
@@ -108,6 +135,7 @@ final class StatisticsViewController: UIViewController {
 
     private func showStats(for index: Int) {
         let showEmotion = (index == 0)
+        let showSleep   = (index == 1)
         let showTask    = (index == 2)
 
         UIView.transition(with: subtitleLabel, duration: 0.25, options: .transitionCrossDissolve) {
@@ -116,10 +144,41 @@ final class StatisticsViewController: UIViewController {
 
         UIView.animate(withDuration: 0.25) {
             self.emotionStatsView.alpha = showEmotion ? 1 : 0
+            self.sleepStatsView.alpha   = showSleep   ? 1 : 0
             self.taskStatsView.alpha    = showTask    ? 1 : 0
         } completion: { _ in
             self.emotionStatsView.isHidden = !showEmotion
+            self.sleepStatsView.isHidden   = !showSleep
             self.taskStatsView.isHidden    = !showTask
+        }
+    }
+
+    private func observeDiaryChanges() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(diaryDidChange),
+            name: .diaryStoreDidChange,
+            object: nil
+        )
+    }
+
+    @objc private func diaryDidChange() {
+        loadDiaryStats()
+    }
+
+    private func loadDiaryStats() {
+        guard let userID = SessionManager.shared.currentUserID else {
+            emotionStatsView.configure(entries: [])
+            sleepStatsView.configure(entries: [])
+            return
+        }
+
+        do {
+            emotionStatsView.configure(entries: try repository.fetchEmotionEntries(forUserID: userID))
+            sleepStatsView.configure(entries: try repository.fetchSleepEntries(forUserID: userID))
+        } catch {
+            emotionStatsView.configure(entries: [])
+            sleepStatsView.configure(entries: [])
         }
     }
 }

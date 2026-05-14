@@ -11,13 +11,16 @@ final class DIContainer {
 
     private let userRepository: UserRepositoryProtocol
     private let taskRepository: TaskRepositoryProtocol
+    private let diaryRepository: DiaryRepositoryProtocol
     private let calendarService: CalendarServiceProtocol
 
     init(userRepository: UserRepositoryProtocol = UserRepository(),
          taskRepository: TaskRepositoryProtocol = TaskRepository(),
+         diaryRepository: DiaryRepositoryProtocol = DiaryRepository(),
          calendarService: CalendarServiceProtocol = CalendarEventService()) {
         self.userRepository = userRepository
         self.taskRepository = taskRepository
+        self.diaryRepository = diaryRepository
         self.calendarService = calendarService
     }
 
@@ -29,15 +32,23 @@ final class DIContainer {
         RegisterUseCase(repository: userRepository)
     }
 
+    func makeUserRepository() -> UserRepositoryProtocol {
+        userRepository
+    }
+
     func makeFetchTasksUseCase() -> FetchTasksUseCase {
         FetchTasksUseCase(repository: taskRepository, calendarService: calendarService)
     }
 
     func makeCreateTaskUseCase() -> CreateTaskUseCase {
-        CreateTaskUseCase(repository: taskRepository)
+        CreateTaskUseCase(repository: taskRepository, calendarService: calendarService)
     }
 
     func makeToggleTaskCompletionUseCase() -> ToggleTaskCompletionUseCase {
         ToggleTaskCompletionUseCase(repository: taskRepository)
+    }
+
+    func makeDiaryRepository() -> DiaryRepositoryProtocol {
+        diaryRepository
     }
 }

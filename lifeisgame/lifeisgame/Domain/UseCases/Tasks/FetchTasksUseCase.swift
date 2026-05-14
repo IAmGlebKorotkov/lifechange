@@ -21,10 +21,17 @@ final class FetchTasksUseCase {
         let appTasks = (try? repository.fetchTasks(forUserID: userID, on: date)) ?? []
 
         calendarService.fetchEvents(for: date, userID: userID) { calendarTasks in
-            let merged = appTasks + calendarTasks
+            let merged = (appTasks + calendarTasks).sorted { Self.sortDate(for: $0) < Self.sortDate(for: $1) }
             DispatchQueue.main.async {
                 completion(merged)
             }
         }
+    }
+
+    private static func sortDate(for task: TaskItem) -> Date {
+        if task.isHardTask, let firstSubtaskDate = task.subtasks.map(\.startDate).min() {
+            return firstSubtaskDate
+        }
+        return task.startDate
     }
 }

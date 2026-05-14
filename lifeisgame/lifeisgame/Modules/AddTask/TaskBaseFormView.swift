@@ -10,6 +10,11 @@ import UIKit
 class TaskBaseFormView: UIStackView {
 
 
+    private let showsTimeSection: Bool
+    private let startDateTitle: String
+    private let deadlineDateTitle: String
+    private let datePickerMode: UIDatePicker.Mode
+
     let nameTextField = CustomTextField(fieldType: .standard, placeholder: "Введите название")
 
     let descTextView: UITextView = {
@@ -63,6 +68,7 @@ class TaskBaseFormView: UIStackView {
     let timePicker: UIDatePicker = {
         let dp = UIDatePicker()
         dp.datePickerMode = .countDownTimer
+        dp.countDownDuration = 3600
         dp.locale = Locale(identifier: "ru_RU")
         dp.translatesAutoresizingMaskIntoConstraints = false
         return dp
@@ -98,9 +104,9 @@ class TaskBaseFormView: UIStackView {
 
     private let timeValueLabel: UILabel = {
         let l = UILabel()
-        l.text = "Выберите время"
+        l.text = "1 часов 0 минут"
         l.font = .systemFont(ofSize: 14)
-        l.textColor = .secondaryLabel
+        l.textColor = .label
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
@@ -114,18 +120,43 @@ class TaskBaseFormView: UIStackView {
     var onValidationChanged: (() -> Void)?
 
 
-    override init(frame: CGRect) {
+    override init(frame: CGRect = .zero) {
+        self.showsTimeSection = true
+        self.startDateTitle = "Начало"
+        self.deadlineDateTitle = "Дедлайн"
+        self.datePickerMode = .date
         super.init(frame: frame)
+        setupView()
+    }
+
+    init(
+        frame: CGRect = .zero,
+        showsTimeSection: Bool,
+        startDateTitle: String = "Начало",
+        deadlineDateTitle: String = "Дедлайн",
+        datePickerMode: UIDatePicker.Mode = .date
+    ) {
+        self.showsTimeSection = showsTimeSection
+        self.startDateTitle = startDateTitle
+        self.deadlineDateTitle = deadlineDateTitle
+        self.datePickerMode = datePickerMode
+        super.init(frame: frame)
+        setupView()
+    }
+
+    required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    private func setupView() {
         axis = .vertical
         spacing = 20
         translatesAutoresizingMaskIntoConstraints = false
+        startDatePicker.datePickerMode = datePickerMode
+        deadlineDatePicker.datePickerMode = datePickerMode
         buildForm()
         setupSliderActions()
         setupValidationObservers()
         descTextView.delegate = self
     }
-
-    required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
 
     private func buildForm() {
@@ -134,7 +165,9 @@ class TaskBaseFormView: UIStackView {
         addDatesSection()
         addSubtasksSection()
         addSlidersSection()
-        addTimeSection()
+        if showsTimeSection {
+            addTimeSection()
+        }
     }
 
     func addSubtasksSection() {}
@@ -173,8 +206,8 @@ class TaskBaseFormView: UIStackView {
     }
 
     private func addDatesSection() {
-        addArrangedSubview(makeDateCard(icon: "Calendar", title: "Начало", picker: startDatePicker))
-        addArrangedSubview(makeDateCard(icon: "Calendar", title: "Дедлайн", picker: deadlineDatePicker))
+        addArrangedSubview(makeDateCard(icon: "Calendar", title: startDateTitle, picker: startDatePicker))
+        addArrangedSubview(makeDateCard(icon: "Calendar", title: deadlineDateTitle, picker: deadlineDatePicker))
     }
 
     private func addSlidersSection() {

@@ -122,9 +122,9 @@ final class CalendarTaskListView: UIView {
                     mainTaskName: task.name,
                     subtaskName: "Подзадача",
                     taskTitle: subtask.name,
-                    time: timeString(subtask.startDate),
-                    timeSpent: durationString(subtask.startDate, subtask.deadlineDate),
-                    priority: .medium,
+                    time: scheduleString(subtask.startDate, subtask.deadlineDate),
+                    timeSpent: "",
+                    priority: priority(for: subtask.importance),
                     isCompleted: subtask.isCompleted
                 )
                 let id = subtask.id
@@ -140,9 +140,9 @@ final class CalendarTaskListView: UIView {
             let view = TaskDayView(
                 subtaskName: subtaskLabel,
                 taskTitle: task.name,
-                time: timeString(task.startDate),
-                timeSpent: durationString(task.startDate, task.deadlineDate),
-                priority: .medium,
+                time: scheduleString(task.startDate, task.deadlineDate),
+                timeSpent: "",
+                priority: priority(for: task.importance),
                 isCompleted: task.isCompleted
             )
             if task.source == .app {
@@ -157,10 +157,14 @@ final class CalendarTaskListView: UIView {
         }
     }
 
+    private func scheduleString(_ start: Date, _ end: Date) -> String {
+        "\(timeString(start)) - \(timeString(end)) (\(durationString(start, end)))"
+    }
+
     private func timeString(_ date: Date) -> String {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm"
-        return f.string(from: date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
     }
 
     private func durationString(_ start: Date, _ end: Date) -> String {
@@ -168,6 +172,14 @@ final class CalendarTaskListView: UIView {
         if mins < 60 { return "\(mins) мин" }
         let h = mins / 60; let m = mins % 60
         return m == 0 ? "\(h) ч" : "\(h) ч \(m) мин"
+    }
+
+    private func priority(for importance: Int) -> TaskDayView.Priority {
+        switch importance {
+        case 1...3: return .low
+        case 8...10: return .high
+        default: return .medium
+        }
     }
 
 

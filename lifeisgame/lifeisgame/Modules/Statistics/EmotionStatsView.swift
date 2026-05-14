@@ -10,21 +10,13 @@ import UIKit
 final class EmotionStatsView: UIView {
 
 
-    private struct EmotionEntry {
-        let date: String
-        let emotionName: String
-        let sfSymbol: String
-        let intensity: Int
-    }
-
-    private let entries: [EmotionEntry] = [
-        EmotionEntry(date: "30 марта",   emotionName: "Радость",    sfSymbol: "face.smiling",           intensity: 8),
-        EmotionEntry(date: "29 марта",   emotionName: "Спокойствие",sfSymbol: "leaf",                   intensity: 5),
-        EmotionEntry(date: "28 марта",   emotionName: "Тревога",    sfSymbol: "exclamationmark.circle",  intensity: 7),
-        EmotionEntry(date: "27 марта",   emotionName: "Грусть",     sfSymbol: "cloud.rain",              intensity: 6),
-        EmotionEntry(date: "26 марта",   emotionName: "Злость",     sfSymbol: "flame",                   intensity: 9),
-        EmotionEntry(date: "25 марта",   emotionName: "Радость",    sfSymbol: "face.smiling",           intensity: 7),
-    ]
+    private var entries: [EmotionDiaryEntry] = []
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "d MMMM"
+        return formatter
+    }()
 
 
     private let scrollView: UIScrollView = {
@@ -72,12 +64,27 @@ final class EmotionStatsView: UIView {
     }
 
     private func buildRows() {
+        stack.arrangedSubviews.forEach { view in
+            stack.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+
+        guard !entries.isEmpty else {
+            stack.addArrangedSubview(makeEmptyState(text: "Эмоции пока не добавлены"))
+            return
+        }
+
         for entry in entries {
             stack.addArrangedSubview(makeRow(entry))
         }
     }
 
-    private func makeRow(_ entry: EmotionEntry) -> UIView {
+    func configure(entries: [EmotionDiaryEntry]) {
+        self.entries = entries
+        buildRows()
+    }
+
+    private func makeRow(_ entry: EmotionDiaryEntry) -> UIView {
         let card = UIView()
         card.backgroundColor = .white
         card.layer.cornerRadius = 14
@@ -100,12 +107,19 @@ final class EmotionStatsView: UIView {
         nameLabel.font = .systemFont(ofSize: 15, weight: .semibold)
         nameLabel.textColor = .label
 
-        let dateLabel = UILabel()
-        dateLabel.text = entry.date
-        dateLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        dateLabel.textColor = .secondaryLabel
+        let reasonLabel = UILabel()
+        let reason = entry.reason?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        reasonLabel.text = reason.isEmpty ? "Причина не указана" : reason
+        reasonLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        reasonLabel.textColor = .secondaryLabel
+        reasonLabel.numberOfLines = 2
 
-        let textStack = UIStackView(arrangedSubviews: [nameLabel, dateLabel])
+        let dateLabel = UILabel()
+        dateLabel.text = dateFormatter.string(from: entry.dayDate)
+        dateLabel.font = .systemFont(ofSize: 11, weight: .regular)
+        dateLabel.textColor = .tertiaryLabel
+
+        let textStack = UIStackView(arrangedSubviews: [nameLabel, reasonLabel, dateLabel])
         textStack.axis = .vertical
         textStack.spacing = 3
         textStack.translatesAutoresizingMaskIntoConstraints = false
@@ -132,14 +146,31 @@ final class EmotionStatsView: UIView {
             iconView.heightAnchor.constraint(equalToConstant: 22),
 
             textStack.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 12),
+            textStack.topAnchor.constraint(greaterThanOrEqualTo: card.topAnchor, constant: 12),
             textStack.centerYAnchor.constraint(equalTo: card.centerYAnchor),
+            textStack.trailingAnchor.constraint(lessThanOrEqualTo: intensityLabel.leadingAnchor, constant: -12),
+            textStack.bottomAnchor.constraint(lessThanOrEqualTo: card.bottomAnchor, constant: -12),
 
             intensityLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
             intensityLabel.centerYAnchor.constraint(equalTo: card.centerYAnchor),
 
-            card.heightAnchor.constraint(equalToConstant: 68)
+            card.heightAnchor.constraint(greaterThanOrEqualToConstant: 78)
         ])
 
         return card
+    }
+
+    private func makeEmptyState(text: String) -> UIView {
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 14
+        label.layer.masksToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(equalToConstant: 64).isActive = true
+        return label
     }
 }

@@ -10,6 +10,9 @@ import UIKit
 final class SleepDiaryView: UIView {
 
 
+    var onSaveRequested: ((Date, Date) -> Void)?
+
+
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.showsVerticalScrollIndicator = false
@@ -107,6 +110,7 @@ final class SleepDiaryView: UIView {
         wireSync()
         healthButton.enablePressScale()
         saveButton.enablePressScale()
+        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -206,5 +210,16 @@ final class SleepDiaryView: UIView {
 
     @objc private func wakePickerChanged() {
         clockView.wakeDate = wakePicker.date
+    }
+
+    @objc private func saveTapped() {
+        onSaveRequested?(bedtimePicker.date, wakePicker.date)
+    }
+
+    func showSavedState() {
+        saveButton.setTitle("Сохранено", for: .normal)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.saveButton.setTitle("Сохранить", for: .normal)
+        }
     }
 }

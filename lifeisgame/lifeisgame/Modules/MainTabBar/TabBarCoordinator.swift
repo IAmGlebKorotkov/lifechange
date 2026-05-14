@@ -45,7 +45,7 @@ final class TabBarCoordinator: Coordinator {
     }
 
     private func makeDiaryTab() -> UIViewController {
-        let coordinator = DiaryCoordinator()
+        let coordinator = DiaryCoordinator(container: container)
         addChild(coordinator)
         return coordinator.rootViewController
     }
@@ -57,13 +57,13 @@ final class TabBarCoordinator: Coordinator {
     }
 
     private func makeStatisticsTab() -> UIViewController {
-        let coordinator = StatisticsCoordinator()
+        let coordinator = StatisticsCoordinator(container: container)
         addChild(coordinator)
         return coordinator.rootViewController
     }
 
     private func makeProfileTab() -> UIViewController {
-        let coordinator = ProfileCoordinator()
+        let coordinator = ProfileCoordinator(container: container)
         coordinator.onLogout = { [weak self] in self?.onLogout?() }
         addChild(coordinator)
         return coordinator.rootViewController

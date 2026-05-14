@@ -245,8 +245,13 @@ final class CustomTabBar: UIView {
 
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+
         let converted = centerButton.convert(point, from: self)
-        if !centerButton.isHidden, centerButton.bounds.contains(converted) {
+        if centerButton.isUserInteractionEnabled,
+           !centerButton.isHidden,
+           centerButton.alpha > 0.01,
+           centerButton.bounds.contains(converted) {
             return centerButton
         }
         return super.hitTest(point, with: event)

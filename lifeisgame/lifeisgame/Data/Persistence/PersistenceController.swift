@@ -15,6 +15,10 @@ final class PersistenceController {
 
     private init() {
         container = NSPersistentContainer(name: "lifeisgame")
+        if let description = container.persistentStoreDescriptions.first {
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+        }
         container.loadPersistentStores { _, error in
             if let error {
                 fatalError("CoreData failed to load: \(error)")

@@ -14,11 +14,18 @@ protocol TaskRepositoryProtocol {
         startDate: Date,
         deadlineDate: Date,
         isHardTask: Bool,
+        planningStartDate: Date?,
+        planningDeadlineDate: Date?,
+        importance: Int,
+        difficulty: Int,
+        estimatedDuration: TimeInterval,
         ownerId: UUID,
         parentTaskId: UUID?
     ) throws -> TaskItem
 
     func fetchTasks(forUserID id: UUID, on date: Date) throws -> [TaskItem]
+    func fetchTasks(forUserID id: UUID, from startDate: Date, to endDate: Date) throws -> [TaskItem]
+    func updateTaskSchedule(taskID: UUID, startDate: Date, deadlineDate: Date, estimatedDuration: TimeInterval) throws -> TaskItem
     func toggleCompletion(taskID: UUID) throws
     func deleteTask(id: UUID) throws
 }

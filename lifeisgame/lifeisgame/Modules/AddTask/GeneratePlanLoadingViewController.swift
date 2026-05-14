@@ -9,209 +9,217 @@ import UIKit
 
 final class GeneratePlanLoadingViewController: UIViewController {
 
+    var onCompleted: (() -> Void)?
 
-    private let outerRingView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.main.withAlphaComponent(0.08)
-        v.layer.cornerRadius = 80
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-    private let middleRingView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.main.withAlphaComponent(0.14)
-        v.layer.cornerRadius = 60
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-    private let innerCircle: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.main
-        v.layer.cornerRadius = 40
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-    private let iconView: UIImageView = {
-        let cfg = UIImage.SymbolConfiguration(pointSize: 28, weight: .medium)
-        let iv = UIImageView(image: UIImage(systemName: "sparkles", withConfiguration: cfg))
-        iv.tintColor = .white
-        iv.contentMode = .scaleAspectFit
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
-
-    private let arcLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = UIColor.clear.cgColor
-        layer.lineWidth = 3
-        layer.lineCap = .round
-        return layer
-    }()
+    private let tasks: [TaskItem]
+    private let isEvent: Bool
 
     private let titleLabel: UILabel = {
         let l = UILabel()
-        l.text = "Генерируем план"
-        l.font = .systemFont(ofSize: 26, weight: .bold)
+        l.font = .systemFont(ofSize: 28, weight: .bold)
         l.textColor = .label
         l.textAlignment = .center
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
-    private let stepLabel: UILabel = {
+    private let startTitleLabel: UILabel = {
         let l = UILabel()
-        l.text = "Анализируем задачи..."
-        l.font = .systemFont(ofSize: 15, weight: .regular)
+        l.font = .systemFont(ofSize: 15, weight: .medium)
         l.textColor = .secondaryLabel
         l.textAlignment = .center
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
+    private let startDateLabel: UILabel = {
+        let l = UILabel()
+        l.font = .systemFont(ofSize: 22, weight: .semibold)
+        l.textColor = UIColor.main
+        l.textAlignment = .center
+        l.numberOfLines = 2
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
 
-    private let steps = [
-        "Анализируем задачи...",
-        "Строим структуру...",
-        "Формируем шаги...",
-        "Почти готово..."
-    ]
-    private var stepIndex = 0
-    private var stepTimer: Timer?
+    private let tableView: UITableView = {
+        let table = UITableView(frame: .zero, style: .plain)
+        table.backgroundColor = .clear
+        table.separatorStyle = .none
+        table.showsVerticalScrollIndicator = false
+        table.rowHeight = UITableView.automaticDimension
+        table.estimatedRowHeight = 118
+        table.translatesAutoresizingMaskIntoConstraints = false
+        return table
+    }()
 
+    private let doneButton = CustomButton(title: "Перейти в календарь", type: .main)
+
+    init(tasks: [TaskItem], isEvent: Bool = false) {
+        self.tasks = tasks.sorted { $0.startDate < $1.startDate }
+        self.isEvent = isEvent
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    convenience init(task: TaskItem) {
+        self.init(tasks: [task])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
+        configureHeader()
+        setupTable()
         setupLayout()
+        doneButton.addTarget(self, action: #selector(doneTapped), for: .touchUpInside)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupArcLayer()
-        startAnimations()
-        scheduleTransition()
+    private func configureHeader() {
+        let firstDate = tasks.first?.startDate ?? Date()
+        titleLabel.text = isEvent ? "Событие создано" : "План готов"
+        startTitleLabel.text = isEvent
+            ? "Время события"
+            : (tasks.count > 1 ? "Задача разделена на части" : "Начать выполнение")
+        startDateLabel.text = tasks.count > 1 ? "Первая часть: \(fullDateString(firstDate))" : fullDateString(firstDate)
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        stepTimer?.invalidate()
+    private func setupTable() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(GeneratedTaskCell.self, forCellReuseIdentifier: GeneratedTaskCell.reuseIdentifier)
     }
-
 
     private func setupLayout() {
-        view.addSubview(outerRingView)
-        view.addSubview(middleRingView)
-        view.addSubview(innerCircle)
-        innerCircle.addSubview(iconView)
         view.addSubview(titleLabel)
-        view.addSubview(stepLabel)
+        view.addSubview(startTitleLabel)
+        view.addSubview(startDateLabel)
+        view.addSubview(tableView)
+        view.addSubview(doneButton)
 
         NSLayoutConstraint.activate([
-            outerRingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            outerRingView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60),
-            outerRingView.widthAnchor.constraint(equalToConstant: 160),
-            outerRingView.heightAnchor.constraint(equalToConstant: 160),
-
-            middleRingView.centerXAnchor.constraint(equalTo: outerRingView.centerXAnchor),
-            middleRingView.centerYAnchor.constraint(equalTo: outerRingView.centerYAnchor),
-            middleRingView.widthAnchor.constraint(equalToConstant: 120),
-            middleRingView.heightAnchor.constraint(equalToConstant: 120),
-
-            innerCircle.centerXAnchor.constraint(equalTo: outerRingView.centerXAnchor),
-            innerCircle.centerYAnchor.constraint(equalTo: outerRingView.centerYAnchor),
-            innerCircle.widthAnchor.constraint(equalToConstant: 80),
-            innerCircle.heightAnchor.constraint(equalToConstant: 80),
-
-            iconView.centerXAnchor.constraint(equalTo: innerCircle.centerXAnchor),
-            iconView.centerYAnchor.constraint(equalTo: innerCircle.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 32),
-            iconView.heightAnchor.constraint(equalToConstant: 32),
-
-            titleLabel.topAnchor.constraint(equalTo: outerRingView.bottomAnchor, constant: 32),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
 
-            stepLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            stepLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            stepLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+            startTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
+            startTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            startTitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+
+            startDateLabel.topAnchor.constraint(equalTo: startTitleLabel.bottomAnchor, constant: 8),
+            startDateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            startDateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+
+            tableView.topAnchor.constraint(equalTo: startDateLabel.bottomAnchor, constant: 24),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -20),
+
+            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
         ])
     }
 
+    @objc private func doneTapped() {
+        onCompleted?()
+    }
 
-    private func setupArcLayer() {
-        let center = CGPoint(x: outerRingView.bounds.midX, y: outerRingView.bounds.midY)
-        let path = UIBezierPath(
-            arcCenter: center,
-            radius: 76,
-            startAngle: -.pi / 2,
-            endAngle: -.pi / 2 + 2 * .pi,
-            clockwise: true
+    private func fullDateString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "d MMMM, HH:mm"
+        return formatter.string(from: date)
+    }
+}
+
+extension GeneratePlanLoadingViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        tasks.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: GeneratedTaskCell.reuseIdentifier,
+            for: indexPath
+        ) as? GeneratedTaskCell else {
+            return UITableViewCell()
+        }
+        cell.configure(with: tasks[indexPath.row], kindTitle: isEvent ? "Событие" : nil)
+        return cell
+    }
+}
+
+private final class GeneratedTaskCell: UITableViewCell {
+
+    static let reuseIdentifier = "GeneratedTaskCell"
+
+    private var hostedTaskView: TaskDayView?
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
+        selectionStyle = .none
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        hostedTaskView?.removeFromSuperview()
+        hostedTaskView = nil
+    }
+
+    func configure(with task: TaskItem, kindTitle: String? = nil) {
+        hostedTaskView?.removeFromSuperview()
+        let taskView = TaskDayView(
+            subtaskName: kindTitle ?? (task.isHardTask ? "Сложная задача" : "Задача"),
+            taskTitle: task.name,
+            time: scheduleString(task.startDate, task.deadlineDate),
+            timeSpent: "",
+            priority: priority(for: task.importance),
+            isCompleted: task.isCompleted
         )
-        arcLayer.path = path.cgPath
-        arcLayer.strokeColor = UIColor.main.cgColor
-        arcLayer.strokeEnd = 0
-        outerRingView.layer.addSublayer(arcLayer)
+        hostedTaskView = taskView
+        contentView.addSubview(taskView)
 
-        let trackLayer = CAShapeLayer()
-        trackLayer.path = path.cgPath
-        trackLayer.strokeColor = UIColor.main.withAlphaComponent(0.12).cgColor
-        trackLayer.fillColor = UIColor.clear.cgColor
-        trackLayer.lineWidth = 3
-        trackLayer.lineCap = .round
-        outerRingView.layer.insertSublayer(trackLayer, below: arcLayer)
+        NSLayoutConstraint.activate([
+            taskView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            taskView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            taskView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
+            taskView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
     }
 
-
-    private func startAnimations() {
-        let fillArc = CABasicAnimation(keyPath: "strokeEnd")
-        fillArc.fromValue = 0
-        fillArc.toValue = 1
-        fillArc.duration = 3.5
-        fillArc.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        fillArc.fillMode = .forwards
-        fillArc.isRemovedOnCompletion = false
-        arcLayer.add(fillArc, forKey: "arcFill")
-
-        UIView.animate(
-            withDuration: 1.2,
-            delay: 0,
-            options: [.repeat, .autoreverse, .curveEaseInOut]
-        ) {
-            self.outerRingView.transform = CGAffineTransform(scaleX: 1.06, y: 1.06)
-        }
-
-        UIView.animate(
-            withDuration: 0.9,
-            delay: 0.15,
-            options: [.repeat, .autoreverse, .curveEaseInOut]
-        ) {
-            self.innerCircle.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
-        }
-
-        view.alpha = 0
-        UIView.animate(withDuration: 0.4) { self.view.alpha = 1 }
-
-        stepTimer = Timer.scheduledTimer(withTimeInterval: 0.9, repeats: true) { [weak self] _ in
-            self?.advanceStep()
-        }
+    private func scheduleString(_ start: Date, _ end: Date) -> String {
+        "\(timeString(start)) - \(timeString(end)) (\(durationString(start, end)))"
     }
 
-    private func advanceStep() {
-        stepIndex = (stepIndex + 1) % steps.count
-        UIView.transition(with: stepLabel, duration: 0.3, options: .transitionCrossDissolve) {
-            self.stepLabel.text = self.steps[self.stepIndex]
-        }
+    private func timeString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
     }
 
+    private func durationString(_ start: Date, _ end: Date) -> String {
+        let minutes = max(0, Int(end.timeIntervalSince(start) / 60))
+        if minutes < 60 { return "\(minutes) мин" }
+        let hours = minutes / 60
+        let rest = minutes % 60
+        return rest == 0 ? "\(hours) ч" : "\(hours) ч \(rest) мин"
+    }
 
-    var onCompleted: (() -> Void)?
-
-    private func scheduleTransition() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in
-            self?.onCompleted?()
+    private func priority(for importance: Int) -> TaskDayView.Priority {
+        switch importance {
+        case 1...3: return .low
+        case 8...10: return .high
+        default: return .medium
         }
     }
 }

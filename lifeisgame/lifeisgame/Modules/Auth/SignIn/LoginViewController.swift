@@ -51,6 +51,11 @@ final class LoginViewController: UIViewController {
         return b
     }()
 
+    private let faceIDButton: CustomButton = {
+        let button = CustomButton(title: "Войти через Face ID", type: .secondary)
+        button.isHidden = true
+        return button
+    }()
     private let telegramButton = CustomButton(title: "Войти с помощью Телеграм", type: .secondary)
 
     private lazy var registerButton: UIButton = {
@@ -95,6 +100,12 @@ final class LoginViewController: UIViewController {
         emailTextField.addTarget(self, action: #selector(fieldsChanged), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(fieldsChanged), for: .editingChanged)
         validateAndUpdate()
+        viewModel.updateFaceIDAvailability()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.updateFaceIDAvailability()
     }
 
 
@@ -125,6 +136,7 @@ final class LoginViewController: UIViewController {
             forgotPasswordButton,
             hintView,
             loginButton,
+            faceIDButton,
             separator,
             telegramButton
         ])
@@ -156,10 +168,14 @@ final class LoginViewController: UIViewController {
         ])
 
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+        faceIDButton.addTarget(self, action: #selector(faceIDLoginTapped), for: .touchUpInside)
         telegramButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
 
         viewModel.onError = { [weak self] message in
             self?.hintView.update(with: [message])
+        }
+        viewModel.onFaceIDAvailabilityChanged = { [weak self] isAvailable in
+            self?.faceIDButton.isHidden = !isAvailable
         }
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -255,6 +271,9 @@ final class LoginViewController: UIViewController {
             email: emailTextField.text ?? "",
             password: passwordTextField.text ?? ""
         )
+    }
+    @objc private func faceIDLoginTapped() {
+        viewModel.faceIDLoginTapped()
     }
     @objc private func dismissKeyboard() { view.endEditing(true) }
 }

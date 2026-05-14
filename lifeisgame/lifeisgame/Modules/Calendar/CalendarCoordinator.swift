@@ -24,25 +24,26 @@ final class CalendarCoordinator: Coordinator {
             toggleUseCase: container.makeToggleTaskCompletionUseCase()
         )
         let vc = CalendarViewController(viewModel: viewModel)
-        viewModel.onAddTaskTapped = { [weak self] in
-            self?.showAddTask()
+        viewModel.onAddTaskTapped = { [weak self] selectedDate in
+            self?.showAddTask(selectedDate: selectedDate)
         }
         navigationController.setViewControllers([vc], animated: false)
     }
 
-    private func showAddTask() {
+    private func showAddTask(selectedDate: Date) {
         let mainTab = navigationController.parent as? MainTabBarController
         mainTab?.setTabBarHidden(true, animated: true)
         navigationController.setNavigationBarHidden(false, animated: true)
 
         let coordinator = AddTaskCoordinator(
             navigationController: navigationController,
-            createTaskUseCase: container.makeCreateTaskUseCase()
+            createTaskUseCase: container.makeCreateTaskUseCase(),
+            initialDate: selectedDate
         )
-        coordinator.onCompleted = { [weak self, weak coordinator] in
+        coordinator.onCompleted = { [weak self, weak coordinator, weak mainTab] in
             guard let self, let coordinator else { return }
             self.removeChild(coordinator)
-            let mainTab = self.navigationController.parent as? MainTabBarController
+            mainTab?.selectTab(index: 0)
             mainTab?.setTabBarHidden(false, animated: true)
             self.navigationController.setNavigationBarHidden(true, animated: true)
             self.navigationController.popToRootViewController(animated: true)

@@ -20,6 +20,8 @@ extension UserEntity {
     @NSManaged public var birthDate: Date?
     @NSManaged public var createdAt: Date?
     @NSManaged public var tasks: NSSet?
+    @NSManaged public var emotionEntries: NSSet?
+    @NSManaged public var sleepEntries: NSSet?
 
     var tasksArray: [TaskEntity] {
         (tasks as? Set<TaskEntity>)?.sorted { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) } ?? []
@@ -27,6 +29,14 @@ extension UserEntity {
 
     var rootTasks: [TaskEntity] {
         tasksArray.filter { $0.parentTask == nil }
+    }
+
+    var emotionEntriesArray: [EmotionEntryEntity] {
+        (emotionEntries as? Set<EmotionEntryEntity>)?.sorted { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) } ?? []
+    }
+
+    var sleepEntriesArray: [SleepEntryEntity] {
+        (sleepEntries as? Set<SleepEntryEntity>)?.sorted { ($0.dayDate ?? .distantPast) < ($1.dayDate ?? .distantPast) } ?? []
     }
 }
 
@@ -43,4 +53,34 @@ extension UserEntity {
 
     @objc(removeTasks:)
     @NSManaged public func removeFromTasks(_ values: NSSet)
+}
+
+extension UserEntity {
+
+    @objc(addEmotionEntriesObject:)
+    @NSManaged public func addToEmotionEntries(_ value: EmotionEntryEntity)
+
+    @objc(removeEmotionEntriesObject:)
+    @NSManaged public func removeFromEmotionEntries(_ value: EmotionEntryEntity)
+
+    @objc(addEmotionEntries:)
+    @NSManaged public func addToEmotionEntries(_ values: NSSet)
+
+    @objc(removeEmotionEntries:)
+    @NSManaged public func removeFromEmotionEntries(_ values: NSSet)
+}
+
+extension UserEntity {
+
+    @objc(addSleepEntriesObject:)
+    @NSManaged public func addToSleepEntries(_ value: SleepEntryEntity)
+
+    @objc(removeSleepEntriesObject:)
+    @NSManaged public func removeFromSleepEntries(_ value: SleepEntryEntity)
+
+    @objc(addSleepEntries:)
+    @NSManaged public func addToSleepEntries(_ values: NSSet)
+
+    @objc(removeSleepEntries:)
+    @NSManaged public func removeFromSleepEntries(_ values: NSSet)
 }

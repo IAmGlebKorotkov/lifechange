@@ -56,11 +56,15 @@ final class CalendarViewController: UIViewController {
         setupUI()
 
         taskListView.onAddTapped = { [weak self] in
-            self?.viewModel.onAddTaskTapped?()
+            self?.viewModel.addTaskTapped()
         }
 
         taskListView.onTaskToggled = { [weak self] id in
             self?.viewModel.toggleTask(id: id)
+        }
+
+        filterView.onFilterChanged = { [weak self] filter in
+            self?.viewModel.filterSelected(filter)
         }
 
         viewModel.onTasksUpdated = { [weak self] tasks in
@@ -77,6 +81,7 @@ final class CalendarViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: animated)
         let mainTab = navigationController?.parent as? MainTabBarController
         mainTab?.setTabBarHidden(false, animated: animated)
+        viewModel.refresh()
     }
 
     override func viewDidLayoutSubviews() {

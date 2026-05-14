@@ -18,6 +18,7 @@ final class DiaryViewController: UIViewController {
 
 
     private var selectedDiary: DiaryType = .emotions
+    private let repository: DiaryRepositoryProtocol
 
 
     private let titleLabel: UILabel = {
@@ -34,10 +35,19 @@ final class DiaryViewController: UIViewController {
     private let sleepDiaryView   = SleepDiaryView()
 
 
+    init(repository: DiaryRepositoryProtocol) {
+        self.repository = repository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupUI()
+        bindActions()
         refreshDiaryPicker()
     }
 
@@ -108,5 +118,51 @@ final class DiaryViewController: UIViewController {
         } completion: { _ in
             disappearing.isHidden = true
         }
+    }
+
+
+    private func bindActions() {
+        emotionDiaryView.onSaveRequested = { [weak self] entries in
+            self?.saveEmotionEntries(entries)
+        }
+        sleepDiaryView.onSaveRequested = { [weak self] bedtime, wakeTime in
+            self?.saveSleepEntry(bedtime: bedtime, wakeTime: wakeTime)
+        }
+    }
+
+    private func saveEmotionEntries(_ entries: [EmotionDiaryInput]) {
+        guard let userID = SessionManager.shared.currentUserID else {
+            showAlert(title: "Не удалось сохранить", message: "Пользователь не найден.")
+            return
+        }
+
+        do {
+            try repository.saveEmotionEntries(entries, forUserID: userID, on: Date())
+            LocalNotificationService.shared.cancelEmotionDiaryReminders(on: Date())
+            emotionDiaryView.resetAfterSave()
+        } catch {
+            showAlert(title: "Не удалось сохранить", message: error.localizedDescription)
+        }
+    }
+
+    private func saveSleepEntry(bedtime: Date, wakeTime: Date) {
+        guard let userID = SessionManager.shared.currentUserID else {
+            showAlert(title: "Не удалось сохранить", message: "Пользователь не найден.")
+            return
+        }
+
+        do {
+            try repository.saveSleepEntry(bedtime: bedtime, wakeTime: wakeTime, forUserID: userID, on: Date())
+            LocalNotificationService.shared.cancelSleepDiaryReminders(on: Date())
+            sleepDiaryView.showSavedState()
+        } catch {
+            showAlert(title: "Не удалось сохранить", message: error.localizedDescription)
+        }
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .default))
+        present(alert, animated: true)
     }
 }

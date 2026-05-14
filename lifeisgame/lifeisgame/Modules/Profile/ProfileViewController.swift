@@ -91,19 +91,53 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupUI()
+        bindViewModel()
         logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
         logoutButton.enablePressScale()
         changePasswordButton.enablePressScale()
 
-        faceIDRow.isOn = UserDefaults.standard.bool(forKey: "faceIDEnabled")
-        notificationsRow.isOn = UserDefaults.standard.bool(forKey: "notificationsEnabled")
+        notificationsRow.isOn = LocalNotificationService.shared.isEnabled
 
-        faceIDRow.onValueChanged = { isOn in
-            UserDefaults.standard.set(isOn, forKey: "faceIDEnabled")
+        viewModel.loadProfile()
+
+        faceIDRow.onValueChanged = { [weak self] isOn in
+            self?.viewModel.setFaceIDEnabled(isOn)
         }
-        notificationsRow.onValueChanged = { isOn in
-            UserDefaults.standard.set(isOn, forKey: "notificationsEnabled")
+        notificationsRow.onValueChanged = { [weak self] isOn in
+            self?.viewModel.setNotificationsEnabled(isOn)
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadProfile()
+    }
+
+    private func bindViewModel() {
+        viewModel.onProfileUpdated = { [weak self] profile in
+            self?.nameLabel.text = profile.name
+            self?.loginField.value = profile.email
+            self?.passwordField.value = profile.passwordMask
+            self?.faceIDRow.isOn = profile.isFaceIDEnabled
+        }
+
+        viewModel.onFaceIDStateChanged = { [weak self] isEnabled in
+            self?.faceIDRow.isOn = isEnabled
+        }
+
+        viewModel.onNotificationsStateChanged = { [weak self] isEnabled in
+            self?.notificationsRow.isOn = isEnabled
+        }
+
+        viewModel.onError = { [weak self] message in
+            self?.showError(message)
+        }
+    }
+
+    private func showError(_ message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ОК", style: .default))
+        present(alert, animated: true)
     }
 
 

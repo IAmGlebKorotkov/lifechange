@@ -30,9 +30,16 @@ final class ProfileTextField: UIView {
         let l = UILabel()
         l.font = .systemFont(ofSize: 15, weight: .regular)
         l.textColor = .label
+        l.adjustsFontSizeToFitWidth = true
+        l.minimumScaleFactor = 0.8
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
+
+    var value: String {
+        get { valueLabel.text ?? "" }
+        set { valueLabel.text = newValue }
+    }
 
 
     init(title: String, value: String) {

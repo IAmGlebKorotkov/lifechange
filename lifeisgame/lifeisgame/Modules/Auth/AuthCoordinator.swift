@@ -26,7 +26,10 @@ final class AuthCoordinator: Coordinator {
     }
 
     func showLogin() {
-        let viewModel = LoginViewModel(loginUseCase: container.makeLoginUseCase())
+        let viewModel = LoginViewModel(
+            loginUseCase: container.makeLoginUseCase(),
+            userRepository: container.makeUserRepository()
+        )
         let viewController = LoginViewController(viewModel: viewModel)
         viewModel.onRegisterTapped = { [weak self] in
             self?.showRegistration()

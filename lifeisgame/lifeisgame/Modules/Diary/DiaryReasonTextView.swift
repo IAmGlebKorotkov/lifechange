@@ -9,6 +9,10 @@ import UIKit
 
 final class DiaryReasonTextView: UIView {
 
+    var text: String {
+        textView.text
+    }
+
 
     private let headerLabel: UILabel = {
         let l = UILabel()
@@ -83,6 +87,11 @@ final class DiaryReasonTextView: UIView {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func reset() {
+        textView.text = ""
+        placeholderLabel.isHidden = false
+    }
 }
 
 

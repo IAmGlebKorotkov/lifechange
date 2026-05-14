@@ -10,12 +10,15 @@ import UIKit
 final class HardTaskFormView: TaskBaseFormView {
 
 
-    private var subtasks: [String] = [] {
+    private var subtasks: [CreateTaskUseCase.SubtaskInput] = [] {
         didSet { onValidationChanged?() }
     }
 
     var subtasksCount: Int { subtasks.count }
-    var subtaskNames: [String] { subtasks }
+    var subtaskInputs: [CreateTaskUseCase.SubtaskInput] { subtasks }
+    var totalSubtasksDuration: TimeInterval {
+        subtasks.reduce(0) { $0 + max(15 * 60, $1.estimatedDuration) }
+    }
 
 
     private let subtasksCard = UIView()
@@ -60,7 +63,13 @@ final class HardTaskFormView: TaskBaseFormView {
 
     var onAddSubtaskTapped: (() -> Void)?
 
-    var onEditSubtask: ((Int, String, @escaping (String) -> Void) -> Void)?
+    var onEditSubtask: ((Int, CreateTaskUseCase.SubtaskInput, @escaping (CreateTaskUseCase.SubtaskInput) -> Void) -> Void)?
+
+    override init(frame: CGRect = .zero) {
+        super.init(frame: frame, showsTimeSection: false)
+    }
+
+    required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
 
     override func addSubtasksSection() {
@@ -100,13 +109,13 @@ final class HardTaskFormView: TaskBaseFormView {
         onAddSubtaskTapped?()
     }
 
-    func appendSubtask(_ text: String) {
-        subtasks.append(text)
-        addSubtaskRow(text)
+    func appendSubtask(_ subtask: CreateTaskUseCase.SubtaskInput) {
+        subtasks.append(subtask)
+        addSubtaskRow(subtask)
         updateSubtasksMenu()
     }
 
-    private func addSubtaskRow(_ text: String) {
+    private func addSubtaskRow(_ subtask: CreateTaskUseCase.SubtaskInput) {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = 8
@@ -120,7 +129,7 @@ final class HardTaskFormView: TaskBaseFormView {
         bullet.heightAnchor.constraint(equalToConstant: 8).isActive = true
 
         let label = UILabel()
-        label.text = text
+        label.text = subtask.name
         label.font = .systemFont(ofSize: 14)
         label.textColor = .label
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -171,7 +180,7 @@ final class HardTaskFormView: TaskBaseFormView {
         let trashIcon = UIImage(systemName: "trash.circle.fill")
 
         let menuItems: [UIMenuElement] = subtasks.enumerated().map { (index, subtask) in
-            UIMenu(title: subtask, image: UIImage(systemName: "circle.fill"), options: [], children: [
+            UIMenu(title: subtask.name, image: UIImage(systemName: "circle.fill"), options: [], children: [
                 UIAction(title: "Изменить", image: editIcon) { [weak self] _ in
                     self?.editSubtask(at: index)
                 },
@@ -186,14 +195,14 @@ final class HardTaskFormView: TaskBaseFormView {
 
     private func editSubtask(at index: Int) {
         guard index < subtasks.count else { return }
-        let currentName = subtasks[index]
-        onEditSubtask?(index, currentName) { [weak self] newName in
+        let currentSubtask = subtasks[index]
+        onEditSubtask?(index, currentSubtask) { [weak self] updatedSubtask in
             guard let self else { return }
-            self.subtasks[index] = newName
+            self.subtasks[index] = updatedSubtask
             if index < self.subtasksStack.arrangedSubviews.count,
                let row = self.subtasksStack.arrangedSubviews[index] as? UIStackView,
                let label = row.arrangedSubviews[safe: 1] as? UILabel {
-                label.text = newName
+                label.text = updatedSubtask.name
             }
             self.updateSubtasksMenu()
         }

@@ -6,15 +6,41 @@
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="emotionEntries" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EmotionEntryEntity" inverseName="owner" inverseEntity="EmotionEntryEntity"/>
+        <relationship name="sleepEntries" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SleepEntryEntity" inverseName="owner" inverseEntity="SleepEntryEntity"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TaskEntity" inverseName="owner" inverseEntity="TaskEntity"/>
+    </entity>
+    <entity name="EmotionEntryEntity" representedClassName="EmotionEntryEntity" syncable="YES" codeGenerationType="none">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dayDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="emotionName" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="intensity" optional="YES" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
+        <attribute name="reason" optional="YES" attributeType="String"/>
+        <attribute name="sfSymbol" optional="YES" attributeType="String"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="emotionEntries" inverseEntity="UserEntity"/>
+    </entity>
+    <entity name="SleepEntryEntity" representedClassName="SleepEntryEntity" syncable="YES" codeGenerationType="none">
+        <attribute name="bedtime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dayDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="durationMinutes" optional="YES" attributeType="Integer 32" defaultValueString="480" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="wakeTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="sleepEntries" inverseEntity="UserEntity"/>
     </entity>
     <entity name="TaskEntity" representedClassName="TaskEntity" syncable="YES" codeGenerationType="none">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deadlineDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="difficulty" optional="YES" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
+        <attribute name="estimatedDuration" optional="YES" attributeType="Double" defaultValueString="3600" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="importance" optional="YES" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
         <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isHardTask" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="planningDeadlineDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="planningStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="taskDescription" optional="YES" attributeType="String"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="tasks" inverseEntity="UserEntity"/>

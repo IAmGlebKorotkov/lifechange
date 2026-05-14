@@ -98,6 +98,11 @@ final class DiaryIntensityView: UIView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    func reset() {
+        slider.setValue(5, animated: false)
+        valueLabel.text = "5"
+    }
+
 
     @objc private func sliderChanged() {
         valueLabel.text = "\(Int(slider.value.rounded()))"

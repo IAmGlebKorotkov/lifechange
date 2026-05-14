@@ -13,6 +13,7 @@ struct TaskValidationInput {
     let startDate: Date
     let deadlineDate: Date
     let isHardTask: Bool
+    let isEvent: Bool
     let subtasksCount: Int
 }
 
@@ -25,7 +26,7 @@ enum TaskValidationError: Equatable {
     var message: String {
         switch self {
         case .emptyName:          return "Введите название задачи"
-        case .deadlineBeforeStart: return "Дедлайн должен быть позже даты начала"
+        case .deadlineBeforeStart: return "Конец должен быть позже начала"
         case .noSubtasks:         return "Добавьте хотя бы одну подзадачу"
         }
     }
@@ -47,12 +48,14 @@ struct TaskValidationUseCase {
             errors.append(.emptyName)
         }
 
-        if Calendar.current.startOfDay(for: input.deadlineDate)
+        if input.isEvent && input.deadlineDate <= input.startDate {
+            errors.append(.deadlineBeforeStart)
+        } else if !input.isEvent && Calendar.current.startOfDay(for: input.deadlineDate)
             < Calendar.current.startOfDay(for: input.startDate) {
             errors.append(.deadlineBeforeStart)
         }
 
-        if input.isHardTask && input.subtasksCount == 0 {
+        if input.isHardTask && !input.isEvent && input.subtasksCount == 0 {
             errors.append(.noSubtasks)
         }
 

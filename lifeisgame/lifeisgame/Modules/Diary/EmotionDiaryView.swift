@@ -10,6 +10,9 @@ import UIKit
 final class EmotionDiaryView: UIView {
 
 
+    var onSaveRequested: (([EmotionDiaryInput]) -> Void)?
+
+
     private struct Emotion {
         let name: String
         let sfSymbol: String
@@ -77,6 +80,7 @@ final class EmotionDiaryView: UIView {
         setupLayout()
         refreshEmotionPicker()
         saveButton.enablePressScale()
+        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -133,5 +137,37 @@ final class EmotionDiaryView: UIView {
             }
         }
         return UIMenu(title: "", children: actions)
+    }
+
+    @objc private func saveTapped() {
+        onSaveRequested?([currentInput()])
+    }
+
+    func resetAfterSave() {
+        resetCurrentInput()
+        endEditing(true)
+        showSavedFeedback()
+    }
+
+    private func currentInput() -> EmotionDiaryInput {
+        let emotion = emotions[selectedEmotionIndex]
+        return EmotionDiaryInput(
+            emotionName: emotion.name,
+            sfSymbol: emotion.sfSymbol,
+            reason: reasonTextView.text,
+            intensity: intensityView.value
+        )
+    }
+
+    private func resetCurrentInput() {
+        reasonTextView.reset()
+        intensityView.reset()
+    }
+
+    private func showSavedFeedback() {
+        saveButton.setTitle("Сохранено", for: .normal)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.saveButton.setTitle("Сохранить", for: .normal)
+        }
     }
 }

@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let win = UIWindow(windowScene: windowScene)
+        win.overrideUserInterfaceStyle = .light
         window = win
         win.makeKeyAndVisible()
 
@@ -27,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        appCoordinator?.refreshNotificationsIfNeeded()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -40,4 +42,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-

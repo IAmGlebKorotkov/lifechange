@@ -21,6 +21,11 @@ extension TaskEntity {
     @NSManaged public var deadlineDate: Date?
     @NSManaged public var isCompleted: Bool
     @NSManaged public var isHardTask: Bool
+    @NSManaged public var planningStartDate: Date?
+    @NSManaged public var planningDeadlineDate: Date?
+    @NSManaged public var importance: Int16
+    @NSManaged public var difficulty: Int16
+    @NSManaged public var estimatedDuration: Double
     @NSManaged public var createdAt: Date?
 
     @NSManaged public var owner: UserEntity?

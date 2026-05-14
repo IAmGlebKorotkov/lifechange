@@ -51,14 +51,26 @@ final class MainTabBarController: UIViewController {
 
 
     func setTabBarHidden(_ hidden: Bool, animated: Bool) {
+        if !hidden {
+            tabBar.isHidden = false
+        }
+
+        tabBar.isUserInteractionEnabled = !hidden
+
         UIView.animate(withDuration: animated ? 0.3 : 0) {
             self.tabBar.alpha = hidden ? 0 : 1
+        } completion: { _ in
+            self.tabBar.isHidden = hidden
         }
-        tabBar.isUserInteractionEnabled = !hidden
+    }
+
+    func selectTab(index: Int) {
+        select(index: index)
     }
 
 
     private func select(index: Int) {
+        guard childControllers.indices.contains(index) else { return }
         guard index != currentIndex || childControllers[index].parent == nil else { return }
 
         if childControllers[currentIndex].parent != nil {

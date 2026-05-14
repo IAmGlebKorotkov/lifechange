@@ -87,7 +87,9 @@ final class TaskDayView: UIControl {
         let l = UILabel()
         l.font = .systemFont(ofSize: 13, weight: .medium)
         l.textColor = UIColor.main
-        l.setContentHuggingPriority(.required, for: .horizontal)
+        l.adjustsFontSizeToFitWidth = true
+        l.minimumScaleFactor = 0.82
+        l.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return l
     }()
 
@@ -96,7 +98,7 @@ final class TaskDayView: UIControl {
         s.axis = .horizontal
         s.spacing = 4
         s.alignment = .center
-        s.setContentHuggingPriority(.required, for: .horizontal)
+        s.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return s
     }()
 
@@ -206,6 +208,7 @@ final class TaskDayView: UIControl {
         titleLabel.text = taskTitle
         timeLabel.text = time
         timeSpentLabel.text = timeSpent
+        timeSpentLabel.isHidden = timeSpent.isEmpty
 
         priorityLabel.text = priority.title
         priorityLabel.textColor = priority.color
