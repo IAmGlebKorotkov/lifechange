@@ -2,7 +2,7 @@
 //  FocusViewController.swift
 //  lifeisgame
 //
-//  Created by Codex on 14.05.2026.
+//  Created by Gleb Korotkov on 14.05.2026.
 //
 
 import UIKit
@@ -13,6 +13,14 @@ final class FocusViewController: UIViewController {
     private let viewModel: FocusViewModel
     private var selectedPlaylist = "Ничего"
     private var blockedApps = "Не выбрано"
+    private var currentTasks: [FocusTaskItem] = []
+    private var selectedTaskID: UUID?
+    private var completedFocusTaskID: UUID?
+    private var taskViewsByID: [UUID: TaskDayView] = [:]
+    private var taskIDsByViewID: [ObjectIdentifier: UUID] = [:]
+    private var focusTimer: Timer?
+    private var focusEndDate: Date?
+    private var isFocusRunning = false
 
     init(viewModel: FocusViewModel) {
         self.viewModel = viewModel
@@ -21,6 +29,10 @@ final class FocusViewController: UIViewController {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    deinit {
+        focusTimer?.invalidate()
+    }
 
     private let titleLabel: UILabel = {
         let l = UILabel()
@@ -72,7 +84,7 @@ final class FocusViewController: UIViewController {
 
     private let tasksTitleLabel: UILabel = {
         let l = UILabel()
-        l.text = "Невыполненные задачи"
+        l.text = "Выберите задачу"
         l.font = .systemFont(ofSize: 18, weight: .bold)
         l.textColor = .label
         l.translatesAutoresizingMaskIntoConstraints = false
@@ -102,6 +114,45 @@ final class FocusViewController: UIViewController {
         l.textColor = .systemGray2
         l.textAlignment = .center
         l.numberOfLines = 0
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
+    private let timerCard: UIView = {
+        let v = UIView()
+        v.backgroundColor = .white
+        v.layer.cornerRadius = 16
+        v.layer.shadowColor = UIColor.black.cgColor
+        v.layer.shadowOpacity = 0.06
+        v.layer.shadowOffset = CGSize(width: 0, height: 2)
+        v.layer.shadowRadius = 8
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }()
+
+    private let timerTitleLabel: UILabel = {
+        let l = UILabel()
+        l.text = "Таймер фокуса"
+        l.font = .systemFont(ofSize: 18, weight: .bold)
+        l.textColor = .label
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
+    private let timerTaskLabel: UILabel = {
+        let l = UILabel()
+        l.font = .systemFont(ofSize: 14, weight: .medium)
+        l.textColor = .secondaryLabel
+        l.numberOfLines = 2
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
+    private let timerCountdownLabel: UILabel = {
+        let l = UILabel()
+        l.font = .monospacedDigitSystemFont(ofSize: 34, weight: .bold)
+        l.textColor = UIColor.main
+        l.textAlignment = .right
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
@@ -138,12 +189,15 @@ final class FocusViewController: UIViewController {
         setupLayout()
         setupActions()
         bindViewModel()
+        updateStartButtonState()
         viewModel.viewDidLoad()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.refresh()
+        if !isFocusRunning {
+            viewModel.refresh()
+        }
         updateBlockedAppsSummary()
     }
 
@@ -155,10 +209,13 @@ final class FocusViewController: UIViewController {
         outerScrollView.addSubview(contentStack)
 
         contentStack.addArrangedSubview(tasksCard)
+        contentStack.addArrangedSubview(timerCard)
         contentStack.addArrangedSubview(parametersCard)
 
         setupTasksCard()
+        setupTimerCard()
         setupParametersCard()
+        timerCard.isHidden = true
 
         outerScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 92, right: 0)
 
@@ -219,6 +276,29 @@ final class FocusViewController: UIViewController {
         ])
     }
 
+    private func setupTimerCard() {
+        timerCard.addSubview(timerTitleLabel)
+        timerCard.addSubview(timerTaskLabel)
+        timerCard.addSubview(timerCountdownLabel)
+
+        NSLayoutConstraint.activate([
+            timerTitleLabel.topAnchor.constraint(equalTo: timerCard.topAnchor, constant: 18),
+            timerTitleLabel.leadingAnchor.constraint(equalTo: timerCard.leadingAnchor, constant: 16),
+            timerTitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: timerCountdownLabel.leadingAnchor, constant: -12),
+
+            timerTaskLabel.topAnchor.constraint(equalTo: timerTitleLabel.bottomAnchor, constant: 8),
+            timerTaskLabel.leadingAnchor.constraint(equalTo: timerTitleLabel.leadingAnchor),
+            timerTaskLabel.trailingAnchor.constraint(equalTo: timerCountdownLabel.leadingAnchor, constant: -12),
+            timerTaskLabel.bottomAnchor.constraint(lessThanOrEqualTo: timerCard.bottomAnchor, constant: -18),
+
+            timerCountdownLabel.centerYAnchor.constraint(equalTo: timerCard.centerYAnchor),
+            timerCountdownLabel.trailingAnchor.constraint(equalTo: timerCard.trailingAnchor, constant: -16),
+            timerCountdownLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 118),
+
+            timerCard.heightAnchor.constraint(greaterThanOrEqualToConstant: 112)
+        ])
+    }
+
     private func setupParametersCard() {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -266,6 +346,13 @@ final class FocusViewController: UIViewController {
     }
 
     private func configureTasks(_ tasks: [FocusTaskItem]) {
+        currentTasks = tasks
+        taskViewsByID.removeAll()
+        taskIDsByViewID.removeAll()
+        if let selectedTaskID, !tasks.contains(where: { $0.id == selectedTaskID }) {
+            self.selectedTaskID = nil
+        }
+
         tasksStack.arrangedSubviews.forEach { view in
             tasksStack.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -279,7 +366,7 @@ final class FocusViewController: UIViewController {
                     mainTaskName: mainTaskName,
                     subtaskName: task.typeTitle,
                     taskTitle: task.title,
-                    time: scheduleString(task.startDate, task.deadlineDate),
+                    time: scheduleString(for: task),
                     timeSpent: "",
                     priority: priority(for: task.importance),
                     showsCompletionButton: false
@@ -288,14 +375,56 @@ final class FocusViewController: UIViewController {
                 view = TaskDayView(
                     subtaskName: task.typeTitle,
                     taskTitle: task.title,
-                    time: scheduleString(task.startDate, task.deadlineDate),
+                    time: scheduleString(for: task),
                     timeSpent: "",
                     priority: priority(for: task.importance),
                     showsCompletionButton: false
                 )
             }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(taskCardTapped(_:)))
+            tapGesture.cancelsTouchesInView = false
+            view.addGestureRecognizer(tapGesture)
+            view.isUserInteractionEnabled = true
+            taskIDsByViewID[ObjectIdentifier(view)] = task.id
+            taskViewsByID[task.id] = view
             tasksStack.addArrangedSubview(view)
         }
+
+        refreshTaskSelectionStyles()
+        updateStartButtonState()
+    }
+
+    @objc private func taskCardTapped(_ gesture: UITapGestureRecognizer) {
+        guard gesture.state == .ended,
+              let view = gesture.view,
+              let taskID = taskIDsByViewID[ObjectIdentifier(view)] else { return }
+        selectTask(taskID)
+    }
+
+    private var selectedTask: FocusTaskItem? {
+        guard let selectedTaskID else { return nil }
+        return currentTasks.first { $0.id == selectedTaskID }
+    }
+
+    private func selectTask(_ taskID: UUID) {
+        guard !isFocusRunning else { return }
+        selectedTaskID = taskID
+        completedFocusTaskID = nil
+        refreshTaskSelectionStyles()
+        updateStartButtonState()
+    }
+
+    private func refreshTaskSelectionStyles() {
+        for (taskID, view) in taskViewsByID {
+            let isSelected = taskID == selectedTaskID
+            view.layer.borderWidth = isSelected ? 2 : 0
+            view.layer.borderColor = isSelected ? UIColor.main.cgColor : UIColor.clear.cgColor
+            view.backgroundColor = isSelected ? UIColor.main.withAlphaComponent(0.06) : .white
+        }
+    }
+
+    private func setTaskSelectionEnabled(_ isEnabled: Bool) {
+        taskViewsByID.values.forEach { $0.alpha = isEnabled ? 1.0 : 0.75 }
     }
 
     private func makeOptionBlock(title: String, subtitle: String, button: UIButton) -> UIView {
@@ -357,7 +486,22 @@ final class FocusViewController: UIViewController {
     }
 
     @objc private func closeTapped() {
-        dismiss(animated: true)
+        guard isFocusRunning else {
+            dismiss(animated: true)
+            return
+        }
+
+        let alert = UIAlertController(
+            title: "Завершить фокус?",
+            message: "Таймер и блокировки будут остановлены.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Завершить", style: .destructive) { [weak self] _ in
+            self?.finishFocusSession()
+            self?.dismiss(animated: true)
+        })
+        present(alert, animated: true)
     }
 
     @objc private func selectPlaylist() {
@@ -382,9 +526,31 @@ final class FocusViewController: UIViewController {
     }
 
     @objc private func startFocus() {
+        if isFocusRunning {
+            finishFocusSession()
+            return
+        }
+
+        guard let selectedTask else {
+            showAlert(title: "Выберите задачу", message: "Перед началом фокуса нужно выбрать задачу.")
+            return
+        }
+
+        let endDate = Date().addingTimeInterval(selectedTask.focusDuration)
+        focusEndDate = endDate
+        isFocusRunning = true
+        timerTaskLabel.text = selectedTask.displayTitle
+        timerCard.isHidden = false
+        updateTimerLabels()
+        startFocusTimer()
+        setTaskSelectionEnabled(false)
         FocusBlockingSelectionStore.shared.applyShielding()
-        startButton.setTitle("Фокус начат")
-        startButton.isEnabled = false
+        FocusLiveActivityManager.shared.start(
+            taskTitle: selectedTask.displayTitle,
+            taskTypeTitle: selectedTask.typeTitle,
+            endDate: endDate
+        )
+        updateStartButtonState()
     }
 
     private func updateBlockedAppsSummary() {
@@ -394,8 +560,72 @@ final class FocusViewController: UIViewController {
         blockedAppsButton.setTitle(count == 0 ? "Выбрать" : "Изменить", for: .normal)
     }
 
-    private func scheduleString(_ start: Date, _ end: Date) -> String {
-        "\(timeString(start)) - \(timeString(end)) (\(durationString(start, end)))"
+    private func updateStartButtonState() {
+        if isFocusRunning {
+            startButton.setTitle("Завершить фокус")
+            startButton.isEnabled = true
+            return
+        }
+
+        if currentTasks.isEmpty {
+            startButton.setTitle("Нет задач")
+            startButton.isEnabled = false
+            return
+        }
+
+        if selectedTask == nil {
+            startButton.setTitle("Выберите задачу")
+            startButton.isEnabled = false
+            return
+        }
+
+        startButton.setTitle("Начать")
+        startButton.isEnabled = true
+    }
+
+    private func startFocusTimer() {
+        focusTimer?.invalidate()
+        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+            self?.updateTimerLabels()
+        }
+        focusTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    private func updateTimerLabels() {
+        guard let focusEndDate else {
+            timerCountdownLabel.text = "00:00"
+            return
+        }
+
+        timerCountdownLabel.text = remainingString(until: focusEndDate)
+        if focusEndDate.timeIntervalSinceNow <= 0 {
+            finishFocusSession()
+        }
+    }
+
+    private func finishFocusSession() {
+        let taskIDToComplete = selectedTaskID
+        focusTimer?.invalidate()
+        focusTimer = nil
+        focusEndDate = nil
+        isFocusRunning = false
+        timerCard.isHidden = true
+        setTaskSelectionEnabled(true)
+        FocusBlockingSelectionStore.shared.clearShielding()
+        FocusLiveActivityManager.shared.end()
+        completeFocusedTaskIfNeeded(taskIDToComplete)
+        updateStartButtonState()
+    }
+
+    private func completeFocusedTaskIfNeeded(_ taskID: UUID?) {
+        guard let taskID, completedFocusTaskID != taskID else { return }
+        completedFocusTaskID = taskID
+        viewModel.completeTask(id: taskID)
+    }
+
+    private func scheduleString(for task: FocusTaskItem) -> String {
+        "\(timeString(task.startDate)) - \(timeString(task.deadlineDate)) (\(durationString(task.focusDuration)))"
     }
 
     private func timeString(_ date: Date) -> String {
@@ -404,12 +634,24 @@ final class FocusViewController: UIViewController {
         return formatter.string(from: date)
     }
 
-    private func durationString(_ start: Date, _ end: Date) -> String {
-        let mins = max(0, Int(end.timeIntervalSince(start) / 60))
+    private func durationString(_ duration: TimeInterval) -> String {
+        let mins = max(1, Int(ceil(duration / 60)))
         if mins < 60 { return "\(mins) мин" }
         let h = mins / 60
         let m = mins % 60
         return m == 0 ? "\(h) ч" : "\(h) ч \(m) мин"
+    }
+
+    private func remainingString(until endDate: Date) -> String {
+        let seconds = max(0, Int(ceil(endDate.timeIntervalSinceNow)))
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let secs = seconds % 60
+
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, secs)
+        }
+        return String(format: "%02d:%02d", minutes, secs)
     }
 
     private func priority(for importance: Int) -> TaskDayView.Priority {
@@ -418,5 +660,11 @@ final class FocusViewController: UIViewController {
         case 8...10: return .high
         default: return .medium
         }
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .default))
+        present(alert, animated: true)
     }
 }

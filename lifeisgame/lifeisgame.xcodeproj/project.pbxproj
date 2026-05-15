@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C0D3F0012F71000000000001 /* FocusLiveActivityExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C0D3F0022F71000000000002 /* FocusLiveActivityExtension.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9F95B4782F6F5B4D0023BF95 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,21 +25,50 @@
 			remoteGlobalIDString = 9F95B4602F6F5B4B0023BF95;
 			remoteInfo = lifeisgame;
 		};
+		C0D3F00C2F7100000000000C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F95B4592F6F5B4B0023BF95 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C0D3F0072F71000000000007;
+			remoteInfo = FocusLiveActivityExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C0D3F00B2F7100000000000B /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C0D3F0012F71000000000001 /* FocusLiveActivityExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9F95B4612F6F5B4B0023BF95 /* lifeisgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lifeisgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F95B4772F6F5B4D0023BF95 /* lifeisgameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lifeisgameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F95B4812F6F5B4D0023BF95 /* lifeisgameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lifeisgameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D3F0022F71000000000002 /* FocusLiveActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusLiveActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		9F95B4892F6F5B4D0023BF95 /* Exceptions for "lifeisgame" folder in "lifeisgame" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Config/Info.plist,
 			);
 			target = 9F95B4602F6F5B4B0023BF95 /* lifeisgame */;
+		};
+		C0D3F00E2F7100000000000E /* Exceptions for "FocusLiveActivityExtension" folder in "FocusLiveActivityExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = C0D3F0072F71000000000007 /* FocusLiveActivityExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -56,6 +89,14 @@
 		9F95B4842F6F5B4D0023BF95 /* lifeisgameUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = lifeisgameUITests;
+			sourceTree = "<group>";
+		};
+		C0D3F0032F71000000000003 /* FocusLiveActivityExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C0D3F00E2F7100000000000E /* Exceptions for "FocusLiveActivityExtension" folder in "FocusLiveActivityExtension" target */,
+			);
+			path = FocusLiveActivityExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -82,6 +123,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C0D3F0052F71000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -89,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				9F95B4632F6F5B4B0023BF95 /* lifeisgame */,
+				C0D3F0032F71000000000003 /* FocusLiveActivityExtension */,
 				9F95B47A2F6F5B4D0023BF95 /* lifeisgameTests */,
 				9F95B4842F6F5B4D0023BF95 /* lifeisgameUITests */,
 				9F95B4622F6F5B4B0023BF95 /* Products */,
@@ -99,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				9F95B4612F6F5B4B0023BF95 /* lifeisgame.app */,
+				C0D3F0022F71000000000002 /* FocusLiveActivityExtension.appex */,
 				9F95B4772F6F5B4D0023BF95 /* lifeisgameTests.xctest */,
 				9F95B4812F6F5B4D0023BF95 /* lifeisgameUITests.xctest */,
 			);
@@ -115,10 +165,12 @@
 				9F95B45D2F6F5B4B0023BF95 /* Sources */,
 				9F95B45E2F6F5B4B0023BF95 /* Frameworks */,
 				9F95B45F2F6F5B4B0023BF95 /* Resources */,
+				C0D3F00B2F7100000000000B /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C0D3F00D2F7100000000000D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9F95B4632F6F5B4B0023BF95 /* lifeisgame */,
@@ -176,6 +228,28 @@
 			productReference = 9F95B4812F6F5B4D0023BF95 /* lifeisgameUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		C0D3F0072F71000000000007 /* FocusLiveActivityExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C0D3F0082F71000000000008 /* Build configuration list for PBXNativeTarget "FocusLiveActivityExtension" */;
+			buildPhases = (
+				C0D3F0042F71000000000004 /* Sources */,
+				C0D3F0052F71000000000005 /* Frameworks */,
+				C0D3F0062F71000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C0D3F0032F71000000000003 /* FocusLiveActivityExtension */,
+			);
+			name = FocusLiveActivityExtension;
+			packageProductDependencies = (
+			);
+			productName = FocusLiveActivityExtension;
+			productReference = C0D3F0022F71000000000002 /* FocusLiveActivityExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -197,6 +271,9 @@
 						CreatedOnToolsVersion = 26.2;
 						TestTargetID = 9F95B4602F6F5B4B0023BF95;
 					};
+					C0D3F0072F71000000000007 = {
+						CreatedOnToolsVersion = 26.2;
+					};
 				};
 			};
 			buildConfigurationList = 9F95B45C2F6F5B4B0023BF95 /* Build configuration list for PBXProject "lifeisgame" */;
@@ -214,6 +291,7 @@
 			projectRoot = "";
 			targets = (
 				9F95B4602F6F5B4B0023BF95 /* lifeisgame */,
+				C0D3F0072F71000000000007 /* FocusLiveActivityExtension */,
 				9F95B4762F6F5B4D0023BF95 /* lifeisgameTests */,
 				9F95B4802F6F5B4D0023BF95 /* lifeisgameUITests */,
 			);
@@ -236,6 +314,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9F95B47F2F6F5B4D0023BF95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0D3F0062F71000000000006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -266,6 +351,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C0D3F0042F71000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -279,6 +371,11 @@
 			target = 9F95B4602F6F5B4B0023BF95 /* lifeisgame */;
 			targetProxy = 9F95B4822F6F5B4D0023BF95 /* PBXContainerItemProxy */;
 		};
+		C0D3F00D2F7100000000000D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C0D3F0072F71000000000007 /* FocusLiveActivityExtension */;
+			targetProxy = C0D3F00C2F7100000000000C /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -287,12 +384,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = lifeisgame/lifeisgame.entitlements;
+				CODE_SIGN_ENTITLEMENTS = lifeisgame/App/Config/lifeisgame.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TDMHGP7XAD;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = lifeisgame/Info.plist;
+				INFOPLIST_FILE = lifeisgame/App/Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Luma;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Для отображения ваших событий в календаре задач";
@@ -325,12 +422,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = lifeisgame/lifeisgame.entitlements;
+				CODE_SIGN_ENTITLEMENTS = lifeisgame/App/Config/lifeisgame.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TDMHGP7XAD;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = lifeisgame/Info.plist;
+				INFOPLIST_FILE = lifeisgame/App/Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Luma;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Для отображения ваших событий в календаре задач";
@@ -391,7 +488,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = lifeisgame/lifeisgame.entitlements;
+				CODE_SIGN_ENTITLEMENTS = lifeisgame/App/Config/lifeisgame.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = TDMHGP7XAD;
@@ -456,7 +553,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "lifeisgame/lifeisgame.entitlements\n";
+				CODE_SIGN_ENTITLEMENTS = lifeisgame/App/Config/lifeisgame.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = TDMHGP7XAD;
@@ -565,6 +662,64 @@
 			};
 			name = Release;
 		};
+		C0D3F0092F71000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TDMHGP7XAD;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusLiveActivityExtension/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Gleb.lifeisgame.FocusLiveActivityExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C0D3F00A2F7100000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TDMHGP7XAD;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusLiveActivityExtension/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Gleb.lifeisgame.FocusLiveActivityExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -600,6 +755,15 @@
 			buildConfigurations = (
 				9F95B4932F6F5B4D0023BF95 /* Debug */,
 				9F95B4942F6F5B4D0023BF95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C0D3F0082F71000000000008 /* Build configuration list for PBXNativeTarget "FocusLiveActivityExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C0D3F0092F71000000000009 /* Debug */,
+				C0D3F00A2F7100000000000A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

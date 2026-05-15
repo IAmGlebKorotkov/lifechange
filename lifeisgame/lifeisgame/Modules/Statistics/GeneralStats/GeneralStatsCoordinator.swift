@@ -27,7 +27,10 @@ final class GeneralStatsCoordinator: Coordinator {
         }
         viewModel.onFocusTapped = { [weak self, weak vc] in
             guard let self else { return }
-            let focusViewModel = FocusViewModel(fetchTasksUseCase: self.container.makeFetchTasksUseCase())
+            let focusViewModel = FocusViewModel(
+                fetchTasksUseCase: self.container.makeFetchTasksUseCase(),
+                toggleTaskCompletionUseCase: self.container.makeToggleTaskCompletionUseCase()
+            )
             let focus = FocusViewController(viewModel: focusViewModel)
             vc?.present(focus, animated: true)
         }

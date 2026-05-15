@@ -2,7 +2,7 @@
 //  BlockedAppsSelectionView.swift
 //  lifeisgame
 //
-//  Created by Codex on 15.05.2026.
+//  Created by Gleb Korotkov on 15.05.2026.
 //
 
 import FamilyControls

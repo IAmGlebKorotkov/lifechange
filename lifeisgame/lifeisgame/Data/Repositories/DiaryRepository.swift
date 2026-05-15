@@ -2,7 +2,7 @@
 //  DiaryRepository.swift
 //  lifeisgame
 //
-//  Created by Codex on 08.05.2026.
+//  Created by Gleb Korotkov on 08.05.2026.
 //
 
 import Foundation

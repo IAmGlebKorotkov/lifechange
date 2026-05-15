@@ -2,18 +2,32 @@
 //  FocusViewModel.swift
 //  lifeisgame
 //
-//  Created by Codex on 14.05.2026.
+//  Created by Gleb Korotkov on 14.05.2026.
 //
 
 import Foundation
 
 struct FocusTaskItem {
+    let id: UUID
     let mainTaskName: String?
     let typeTitle: String
     let title: String
     let startDate: Date
     let deadlineDate: Date
+    let estimatedDuration: TimeInterval
     let importance: Int
+
+    var focusDuration: TimeInterval {
+        let fallbackDuration = deadlineDate.timeIntervalSince(startDate)
+        return max(60, estimatedDuration > 0 ? estimatedDuration : fallbackDuration)
+    }
+
+    var displayTitle: String {
+        if let mainTaskName {
+            return "\(mainTaskName): \(title)"
+        }
+        return title
+    }
 }
 
 final class FocusViewModel {
@@ -21,10 +35,16 @@ final class FocusViewModel {
     var onTasksUpdated: (([FocusTaskItem]) -> Void)?
 
     private let fetchTasksUseCase: FetchTasksUseCase
+    private let toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase
     private let date: Date
 
-    init(fetchTasksUseCase: FetchTasksUseCase, date: Date = Date()) {
+    init(
+        fetchTasksUseCase: FetchTasksUseCase,
+        toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase,
+        date: Date = Date()
+    ) {
         self.fetchTasksUseCase = fetchTasksUseCase
+        self.toggleTaskCompletionUseCase = toggleTaskCompletionUseCase
         self.date = date
     }
 
@@ -33,6 +53,11 @@ final class FocusViewModel {
     }
 
     func refresh() {
+        loadTasks()
+    }
+
+    func completeTask(id: UUID) {
+        try? toggleTaskCompletionUseCase.execute(taskID: id)
         loadTasks()
     }
 
@@ -54,11 +79,13 @@ final class FocusViewModel {
                     .filter { !$0.isCompleted }
                     .map {
                         FocusTaskItem(
+                            id: $0.id,
                             mainTaskName: task.name,
                             typeTitle: "Подзадача",
                             title: $0.name,
                             startDate: $0.startDate,
                             deadlineDate: $0.deadlineDate,
+                            estimatedDuration: $0.estimatedDuration,
                             importance: $0.importance
                         )
                     }
@@ -68,11 +95,13 @@ final class FocusViewModel {
             let typeTitle = task.source == .calendar ? "Событие" : (task.isHardTask ? "Сложная задача" : "Задача")
             return [
                 FocusTaskItem(
+                    id: task.id,
                     mainTaskName: nil,
                     typeTitle: typeTitle,
                     title: task.name,
                     startDate: task.startDate,
                     deadlineDate: task.deadlineDate,
+                    estimatedDuration: task.estimatedDuration,
                     importance: task.importance
                 )
             ]
