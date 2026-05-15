@@ -47,6 +47,7 @@ final class DiaryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupUI()
+        setupKeyboardDismissGesture()
         bindActions()
         refreshDiaryPicker()
     }
@@ -80,6 +81,13 @@ final class DiaryViewController: UIViewController {
             sleepDiaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             sleepDiaryView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+
+    private func setupKeyboardDismissGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = self
+        view.addGestureRecognizer(tapGesture)
     }
 
 
@@ -164,5 +172,26 @@ final class DiaryViewController: UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ок", style: .default))
         present(alert, animated: true)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+extension DiaryViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        !isTextViewOrDescendant(touch.view)
+    }
+
+    private func isTextViewOrDescendant(_ touchedView: UIView?) -> Bool {
+        var currentView = touchedView
+        while let view = currentView {
+            if view is UITextView {
+                return true
+            }
+            currentView = view.superview
+        }
+        return false
     }
 }

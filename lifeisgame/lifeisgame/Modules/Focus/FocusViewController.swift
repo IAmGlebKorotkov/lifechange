@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class FocusViewController: UIViewController {
 
@@ -143,6 +144,7 @@ final class FocusViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.refresh()
+        updateBlockedAppsSummary()
     }
 
     private func setupLayout() {
@@ -373,23 +375,23 @@ final class FocusViewController: UIViewController {
     }
 
     @objc private func selectBlockedApps() {
-        let alert = UIAlertController(title: "Заблокированные приложения", message: nil, preferredStyle: .actionSheet)
-        ["Соцсети", "Мессенджеры", "Игры", "Видео", "Ничего"].forEach { group in
-            alert.addAction(UIAlertAction(title: group, style: .default) { [weak self] _ in
-                self?.blockedApps = group
-                self?.blockedAppsSubtitleLabel?.text = group == "Ничего" ? "Не выбрано" : group
-                self?.blockedAppsButton.setTitle(group == "Ничего" ? "Выбрать" : group, for: .normal)
-            })
-        }
-        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
-        alert.popoverPresentationController?.sourceView = blockedAppsButton
-        alert.popoverPresentationController?.sourceRect = blockedAppsButton.bounds
-        present(alert, animated: true)
+        let selectionView = BlockedAppsSelectionView(store: FocusBlockingSelectionStore.shared)
+        let controller = UIHostingController(rootView: selectionView)
+        controller.modalPresentationStyle = .fullScreen
+        present(controller, animated: true)
     }
 
     @objc private func startFocus() {
+        FocusBlockingSelectionStore.shared.applyShielding()
         startButton.setTitle("Фокус начат")
         startButton.isEnabled = false
+    }
+
+    private func updateBlockedAppsSummary() {
+        let count = FocusBlockingSelectionStore.shared.selectedItemsCount
+        blockedApps = count == 0 ? "Не выбрано" : "Выбрано: \(count)"
+        blockedAppsSubtitleLabel?.text = blockedApps
+        blockedAppsButton.setTitle(count == 0 ? "Выбрать" : "Изменить", for: .normal)
     }
 
     private func scheduleString(_ start: Date, _ end: Date) -> String {
