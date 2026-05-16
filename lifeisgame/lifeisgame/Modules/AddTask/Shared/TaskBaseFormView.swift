@@ -10,6 +10,7 @@ import UIKit
 class TaskBaseFormView: UIStackView {
 
 
+    private let showsDateSection: Bool
     private let showsTimeSection: Bool
     private let startDateTitle: String
     private let deadlineDateTitle: String
@@ -121,6 +122,7 @@ class TaskBaseFormView: UIStackView {
 
 
     override init(frame: CGRect = .zero) {
+        self.showsDateSection = true
         self.showsTimeSection = true
         self.startDateTitle = "Начало"
         self.deadlineDateTitle = "Дедлайн"
@@ -131,11 +133,13 @@ class TaskBaseFormView: UIStackView {
 
     init(
         frame: CGRect = .zero,
+        showsDateSection: Bool = true,
         showsTimeSection: Bool,
         startDateTitle: String = "Начало",
         deadlineDateTitle: String = "Дедлайн",
         datePickerMode: UIDatePicker.Mode = .date
     ) {
+        self.showsDateSection = showsDateSection
         self.showsTimeSection = showsTimeSection
         self.startDateTitle = startDateTitle
         self.deadlineDateTitle = deadlineDateTitle
@@ -162,7 +166,9 @@ class TaskBaseFormView: UIStackView {
     private func buildForm() {
         addNameSection()
         addDescSection()
-        addDatesSection()
+        if showsDateSection {
+            addDatesSection()
+        }
         addSubtasksSection()
         addSlidersSection()
         if showsTimeSection {
@@ -338,6 +344,10 @@ class TaskBaseFormView: UIStackView {
 
     @objc private func timeChanged() {
         let total = Int(timePicker.countDownDuration)
+        updateTimeValueLabel(total)
+    }
+
+    private func updateTimeValueLabel(_ total: Int) {
         let hours = total / 3600
         let minutes = (total % 3600) / 60
         timeValueLabel.text = "\(hours) часов \(minutes) минут"
@@ -354,6 +364,32 @@ class TaskBaseFormView: UIStackView {
         let val = Int(roundf(difficultySlider.value))
         difficultySlider.value = Float(val)
         difficultyValueLabel.text = "\(val)"
+    }
+
+    func configureFields(
+        name: String,
+        description: String?,
+        importance: Int,
+        difficulty: Int,
+        duration: TimeInterval? = nil
+    ) {
+        nameTextField.text = name
+        descTextView.text = description ?? ""
+        descPlaceholder.isHidden = !(description?.isEmpty ?? true)
+
+        let safeImportance = max(1, min(10, importance))
+        importanceSlider.value = Float(safeImportance)
+        importanceValueLabel.text = "\(safeImportance)"
+
+        let safeDifficulty = max(1, min(10, difficulty))
+        difficultySlider.value = Float(safeDifficulty)
+        difficultyValueLabel.text = "\(safeDifficulty)"
+
+        if let duration {
+            let roundedDuration = max(60, duration)
+            timePicker.countDownDuration = roundedDuration
+            updateTimeValueLabel(Int(roundedDuration))
+        }
     }
 }
 

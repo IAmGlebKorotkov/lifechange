@@ -14,6 +14,7 @@ final class StatisticsViewController: UIViewController {
 
     private let categoryNames = ["Эмоции", "Сон", "Задачи"]
     private let repository: DiaryRepositoryProtocol
+    private let taskRepository: TaskRepositoryProtocol
 
 
     private let titleLabel: UILabel = {
@@ -55,8 +56,9 @@ final class StatisticsViewController: UIViewController {
     private let taskStatsView    = TaskStatsView()
 
 
-    init(repository: DiaryRepositoryProtocol) {
+    init(repository: DiaryRepositoryProtocol, taskRepository: TaskRepositoryProtocol) {
         self.repository = repository
+        self.taskRepository = taskRepository
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -73,6 +75,7 @@ final class StatisticsViewController: UIViewController {
         }
         taskStatsView.presentingViewController = self
         loadDiaryStats()
+        loadTaskStats()
         showStats(for: 0)
     }
 
@@ -83,6 +86,7 @@ final class StatisticsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadDiaryStats()
+        loadTaskStats()
     }
 
 
@@ -160,16 +164,27 @@ final class StatisticsViewController: UIViewController {
             name: .diaryStoreDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(tasksDidChange),
+            name: .taskStoreDidChange,
+            object: nil
+        )
     }
 
     @objc private func diaryDidChange() {
         loadDiaryStats()
     }
 
+    @objc private func tasksDidChange() {
+        loadTaskStats()
+    }
+
     private func loadDiaryStats() {
         guard let userID = SessionManager.shared.currentUserID else {
             emotionStatsView.configure(entries: [])
             sleepStatsView.configure(entries: [])
+            taskStatsView.configure(days: [])
             return
         }
 
@@ -180,5 +195,104 @@ final class StatisticsViewController: UIViewController {
             emotionStatsView.configure(entries: [])
             sleepStatsView.configure(entries: [])
         }
+    }
+
+    private func loadTaskStats() {
+        guard let userID = SessionManager.shared.currentUserID else {
+            taskStatsView.configure(days: [])
+            return
+        }
+
+        let calendar = Calendar.current
+        let endDate = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date())) ?? Date()
+        let startDate = calendar.date(byAdding: .day, value: -29, to: endDate) ?? Date()
+
+        do {
+            let tasks = try taskRepository.fetchTasks(forUserID: userID, from: startDate, to: endDate)
+            taskStatsView.configure(days: makeTaskSummaries(from: tasks, startDate: startDate, endDate: endDate))
+        } catch {
+            taskStatsView.configure(days: [])
+        }
+    }
+
+    private func makeTaskSummaries(from tasks: [TaskItem], startDate: Date, endDate: Date) -> [TaskStatsDaySummary] {
+        let calendar = Calendar.current
+        let startDay = calendar.startOfDay(for: startDate)
+        let endDay = calendar.startOfDay(for: endDate)
+        var grouped: [Date: [TaskDayDetailViewController.TaskItem]] = [:]
+
+        for task in tasks {
+            for detailTask in makeDetailTasks(from: task) {
+                var day = max(calendar.startOfDay(for: detailTask.startDate), startDay)
+                while day < endDay {
+                    guard let nextDay = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+                    if detailTask.startDate < nextDay && detailTask.deadlineDate > day {
+                        grouped[day, default: []].append(detailTask)
+                    }
+                    day = nextDay
+                }
+            }
+        }
+
+        return grouped
+            .map { date, tasks in
+                let sortedTasks = tasks.sorted { $0.startDate < $1.startDate }
+                return TaskStatsDaySummary(
+                    date: date,
+                    title: formattedTaskStatsDate(date),
+                    completed: sortedTasks.filter(\.isCompleted).count,
+                    total: sortedTasks.count,
+                    tasks: sortedTasks
+                )
+            }
+            .filter { $0.total > 0 }
+            .sorted { $0.date > $1.date }
+    }
+
+    private func makeDetailTasks(from task: TaskItem) -> [TaskDayDetailViewController.TaskItem] {
+        if task.isHardTask && !task.subtasks.isEmpty {
+            return task.subtasks.map {
+                TaskDayDetailViewController.TaskItem(
+                    title: $0.name,
+                    typeTitle: "Подзадача",
+                    mainTaskName: task.name,
+                    startDate: $0.startDate,
+                    deadlineDate: $0.deadlineDate,
+                    importance: $0.importance,
+                    isCompleted: $0.isCompleted
+                )
+            }
+        }
+
+        return [
+            TaskDayDetailViewController.TaskItem(
+                title: task.name,
+                typeTitle: task.isHardTask ? "Сложная задача" : "Задача",
+                mainTaskName: nil,
+                startDate: task.startDate,
+                deadlineDate: task.deadlineDate,
+                importance: task.importance,
+                isCompleted: task.isCompleted
+            )
+        ]
+    }
+
+    private func formattedTaskStatsDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+
+        if calendar.isDateInToday(date) {
+            formatter.dateFormat = "d MMMM"
+            return "Сегодня, \(formatter.string(from: date))"
+        }
+        if calendar.isDateInYesterday(date) {
+            formatter.dateFormat = "d MMMM"
+            return "Вчера, \(formatter.string(from: date))"
+        }
+
+        formatter.dateFormat = "EEEE, d MMMM"
+        let raw = formatter.string(from: date)
+        return raw.prefix(1).uppercased() + raw.dropFirst()
     }
 }

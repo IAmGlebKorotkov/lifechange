@@ -9,23 +9,30 @@ import UIKit
 
 final class TaskDayDetailViewController: UIViewController {
 
-
     struct TaskItem {
         let title: String
+        let typeTitle: String
+        let mainTaskName: String?
+        let startDate: Date
+        let deadlineDate: Date
+        let importance: Int
         let isCompleted: Bool
     }
 
     private let date: String
+    private let completed: Int
+    private let total: Int
     private let tasks: [TaskItem]
 
-    init(date: String, tasks: [TaskItem]) {
-        self.date  = date
+    init(date: String, completed: Int, total: Int, tasks: [TaskItem]) {
+        self.date = date
+        self.completed = completed
+        self.total = total
         self.tasks = tasks
         super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
 
     private let dragIndicator: UIView = {
         let v = UIView()
@@ -43,6 +50,15 @@ final class TaskDayDetailViewController: UIViewController {
         return l
     }()
 
+    private let subtitleLabel: UILabel = {
+        let l = UILabel()
+        l.font = .systemFont(ofSize: 13, weight: .medium)
+        l.textColor = .secondaryLabel
+        l.textAlignment = .center
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.showsVerticalScrollIndicator = false
@@ -53,24 +69,24 @@ final class TaskDayDetailViewController: UIViewController {
     private let stack: UIStackView = {
         let s = UIStackView()
         s.axis = .vertical
-        s.spacing = 10
+        s.spacing = 12
         s.translatesAutoresizingMaskIntoConstraints = false
         return s
     }()
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         titleLabel.text = date
+        subtitleLabel.text = "Выполнено \(completed) из \(total)"
         setupLayout()
         buildRows()
     }
 
-
     private func setupLayout() {
         view.addSubview(dragIndicator)
         view.addSubview(titleLabel)
+        view.addSubview(subtitleLabel)
         view.addSubview(scrollView)
         scrollView.addSubview(stack)
 
@@ -81,9 +97,14 @@ final class TaskDayDetailViewController: UIViewController {
             dragIndicator.heightAnchor.constraint(equalToConstant: 5),
 
             titleLabel.topAnchor.constraint(equalTo: dragIndicator.bottomAnchor, constant: 20),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
 
-            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+
+            scrollView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 16),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -98,48 +119,62 @@ final class TaskDayDetailViewController: UIViewController {
 
     private func buildRows() {
         for task in tasks {
-            stack.addArrangedSubview(makeRow(task))
+            let view = makeRow(task)
+            stack.addArrangedSubview(view)
         }
     }
 
     private func makeRow(_ task: TaskItem) -> UIView {
-        let card = UIView()
-        card.backgroundColor = .white
-        card.layer.cornerRadius = 12
-        card.translatesAutoresizingMaskIntoConstraints = false
-
-        let cfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-        let icon = task.isCompleted ? "checkmark.circle.fill" : "circle"
-        let iconView = UIImageView(image: UIImage(systemName: icon, withConfiguration: cfg))
-        iconView.tintColor = task.isCompleted ? UIColor.main : .systemGray3
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = task.title
-        label.font = .systemFont(ofSize: 15, weight: .medium)
-        label.textColor = task.isCompleted ? .secondaryLabel : .label
-        if task.isCompleted {
-            let attrs: [NSAttributedString.Key: Any] = [.strikethroughStyle: NSUnderlineStyle.single.rawValue]
-            label.attributedText = NSAttributedString(string: task.title, attributes: attrs)
+        let view: TaskDayView
+        if let mainTaskName = task.mainTaskName {
+            view = TaskDayView(
+                mainTaskName: mainTaskName,
+                subtaskName: task.typeTitle,
+                taskTitle: task.title,
+                time: scheduleString(task.startDate, task.deadlineDate),
+                timeSpent: "",
+                priority: priority(for: task.importance),
+                isCompleted: task.isCompleted,
+                showsCompletionButton: false
+            )
+        } else {
+            view = TaskDayView(
+                subtaskName: task.typeTitle,
+                taskTitle: task.title,
+                time: scheduleString(task.startDate, task.deadlineDate),
+                timeSpent: "",
+                priority: priority(for: task.importance),
+                isCompleted: task.isCompleted,
+                showsCompletionButton: false
+            )
         }
-        label.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(greaterThanOrEqualToConstant: 92).isActive = true
+        return view
+    }
 
-        card.addSubview(iconView)
-        card.addSubview(label)
+    private func scheduleString(_ start: Date, _ end: Date) -> String {
+        "\(timeString(start)) - \(timeString(end)) (\(durationString(start, end)))"
+    }
 
-        NSLayoutConstraint.activate([
-            iconView.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 14),
-            iconView.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 22),
-            iconView.heightAnchor.constraint(equalToConstant: 22),
+    private func timeString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
+    }
 
-            label.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 12),
-            label.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -14),
-            label.centerYAnchor.constraint(equalTo: card.centerYAnchor),
+    private func durationString(_ start: Date, _ end: Date) -> String {
+        let minutes = Int(end.timeIntervalSince(start) / 60)
+        if minutes < 60 { return "\(minutes) мин" }
+        let hours = minutes / 60
+        let restMinutes = minutes % 60
+        return restMinutes == 0 ? "\(hours) ч" : "\(hours) ч \(restMinutes) мин"
+    }
 
-            card.heightAnchor.constraint(equalToConstant: 52)
-        ])
-
-        return card
+    private func priority(for importance: Int) -> TaskDayView.Priority {
+        switch importance {
+        case 1...3: return .low
+        case 8...10: return .high
+        default: return .medium
+        }
     }
 }

@@ -7,25 +7,35 @@
 
 import UIKit
 
+private struct CalendarTaskRow {
+    let task: TaskItem
+    let mainTaskName: String?
+    let typeTitle: String
+
+    var canEdit: Bool {
+        task.source == .app
+    }
+}
+
 final class CalendarTaskListView: UIView {
 
     var onAddTapped: (() -> Void)?
     var onTaskToggled: ((UUID) -> Void)?
+    var onTaskSelected: ((TaskItem) -> Void)?
+    var onTaskDeleteRequested: ((UUID) -> Void)?
 
+    private var rows: [CalendarTaskRow] = []
 
-    private let scrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.showsVerticalScrollIndicator = false
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
-    }()
-
-    private let taskStackView: UIStackView = {
-        let s = UIStackView()
-        s.axis = .vertical
-        s.spacing = 12
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
+    private let tableView: UITableView = {
+        let tv = UITableView(frame: .zero, style: .plain)
+        tv.backgroundColor = .clear
+        tv.separatorStyle = .none
+        tv.showsVerticalScrollIndicator = false
+        tv.rowHeight = UITableView.automaticDimension
+        tv.estimatedRowHeight = 108
+        tv.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 100, right: 0)
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
     }()
 
     private let addButton: UIButton = {
@@ -38,7 +48,6 @@ final class CalendarTaskListView: UIView {
         b.translatesAutoresizingMaskIntoConstraints = false
         return b
     }()
-
 
     private let emptyLabel: UILabel = {
         let l = UILabel()
@@ -60,25 +69,30 @@ final class CalendarTaskListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func configure(with tasks: [TaskItem]) {
+        rows = tasks.flatMap(makeRows)
+        emptyLabel.isHidden = !rows.isEmpty
+        tableView.isHidden = rows.isEmpty
+        tableView.reloadData()
+    }
 
     private func setupLayout() {
-        addSubview(scrollView)
-        scrollView.addSubview(taskStackView)
+        addSubview(tableView)
+        addSubview(emptyLabel)
         addSubview(addButton)
 
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(CalendarTaskCell.self, forCellReuseIdentifier: CalendarTaskCell.reuseIdentifier)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            taskStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 4),
-            taskStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
-            taskStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-            taskStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -20),
-            taskStackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
+            emptyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            emptyLabel.topAnchor.constraint(equalTo: topAnchor, constant: 40),
 
             addButton.widthAnchor.constraint(equalToConstant: 56),
             addButton.heightAnchor.constraint(equalToConstant: 56),
@@ -86,6 +100,7 @@ final class CalendarTaskListView: UIView {
             addButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -96)
         ])
 
+        emptyLabel.isHidden = true
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.enablePressScale()
     }
@@ -94,67 +109,15 @@ final class CalendarTaskListView: UIView {
         onAddTapped?()
     }
 
-    func configure(with tasks: [TaskItem]) {
-        taskStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        emptyLabel.removeFromSuperview()
-
-        if tasks.isEmpty {
-            addSubview(emptyLabel)
-            NSLayoutConstraint.activate([
-                emptyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-                emptyLabel.topAnchor.constraint(equalTo: topAnchor, constant: 40)
-            ])
-            return
-        }
-
-        for task in tasks {
-            let views = makeTaskViews(for: task)
-            for view in views {
-                taskStackView.addArrangedSubview(view)
-            }
-        }
-    }
-
-    private func makeTaskViews(for task: TaskItem) -> [TaskDayView] {
+    private func makeRows(for task: TaskItem) -> [CalendarTaskRow] {
         if task.isHardTask && !task.subtasks.isEmpty {
-            return task.subtasks.map { subtask in
-                let view = TaskDayView(
-                    mainTaskName: task.name,
-                    subtaskName: "Подзадача",
-                    taskTitle: subtask.name,
-                    time: scheduleString(subtask.startDate, subtask.deadlineDate),
-                    timeSpent: "",
-                    priority: priority(for: subtask.importance),
-                    isCompleted: subtask.isCompleted
-                )
-                let id = subtask.id
-                view.onCompletionChanged = { [weak self, weak view] isCompleted in
-                    guard let self, let view else { return }
-                    if isCompleted { self.moveCompletedTaskToBottom(view) }
-                    self.onTaskToggled?(id)
-                }
-                return view
+            return task.subtasks.map {
+                CalendarTaskRow(task: $0, mainTaskName: task.name, typeTitle: "Подзадача")
             }
-        } else {
-            let subtaskLabel = task.source == .calendar ? "Событие" : (task.isHardTask ? "Сложная задача" : "Задача")
-            let view = TaskDayView(
-                subtaskName: subtaskLabel,
-                taskTitle: task.name,
-                time: scheduleString(task.startDate, task.deadlineDate),
-                timeSpent: "",
-                priority: priority(for: task.importance),
-                isCompleted: task.isCompleted
-            )
-            if task.source == .app {
-                let id = task.id
-                view.onCompletionChanged = { [weak self, weak view] isCompleted in
-                    guard let self, let view else { return }
-                    if isCompleted { self.moveCompletedTaskToBottom(view) }
-                    self.onTaskToggled?(id)
-                }
-            }
-            return [view]
         }
+
+        let typeTitle = task.source == .calendar ? "Событие" : (task.isHardTask ? "Сложная задача" : "Задача")
+        return [CalendarTaskRow(task: task, mainTaskName: nil, typeTitle: typeTitle)]
     }
 
     private func scheduleString(_ start: Date, _ end: Date) -> String {
@@ -170,8 +133,9 @@ final class CalendarTaskListView: UIView {
     private func durationString(_ start: Date, _ end: Date) -> String {
         let mins = Int(end.timeIntervalSince(start) / 60)
         if mins < 60 { return "\(mins) мин" }
-        let h = mins / 60; let m = mins % 60
-        return m == 0 ? "\(h) ч" : "\(h) ч \(m) мин"
+        let hours = mins / 60
+        let minutes = mins % 60
+        return minutes == 0 ? "\(hours) ч" : "\(hours) ч \(minutes) мин"
     }
 
     private func priority(for importance: Int) -> TaskDayView.Priority {
@@ -181,29 +145,140 @@ final class CalendarTaskListView: UIView {
         default: return .medium
         }
     }
+}
 
+extension CalendarTaskListView: UITableViewDataSource, UITableViewDelegate {
 
-    private func moveCompletedTaskToBottom(_ taskView: TaskDayView) {
-        let originalFrame = taskView.convert(taskView.bounds, to: scrollView)
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        rows.count
+    }
 
-        taskStackView.removeArrangedSubview(taskView)
-        taskView.removeFromSuperview()
-        taskStackView.addArrangedSubview(taskView)
-
-        taskStackView.layoutIfNeeded()
-        let newFrame = taskView.convert(taskView.bounds, to: scrollView)
-
-        let delta = originalFrame.minY - newFrame.minY
-        taskView.transform = CGAffineTransform(translationX: 0, y: delta)
-
-        UIView.animate(
-            withDuration: 0.4,
-            delay: 0,
-            usingSpringWithDamping: 0.8,
-            initialSpringVelocity: 0.3,
-            options: .curveEaseInOut
-        ) {
-            taskView.transform = .identity
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CalendarTaskCell.reuseIdentifier,
+            for: indexPath
+        ) as? CalendarTaskCell else {
+            return UITableViewCell()
         }
+
+        let row = rows[indexPath.row]
+        cell.configure(
+            row: row,
+            time: scheduleString(row.task.startDate, row.task.deadlineDate),
+            priority: priority(for: row.task.importance),
+            onEdit: { [weak self] in
+                self?.onTaskSelected?(row.task)
+            },
+            onToggle: { [weak self] in
+                self?.onTaskToggled?(row.task.id)
+            }
+        )
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let row = rows[indexPath.row]
+        guard row.canEdit else { return }
+        onTaskSelected?(row.task)
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let row = rows[indexPath.row]
+        guard row.canEdit else { return nil }
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { [weak self] _, _, completion in
+            self?.onTaskDeleteRequested?(row.task.id)
+            completion(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
+}
+
+private final class CalendarTaskCell: UITableViewCell {
+
+    static let reuseIdentifier = "CalendarTaskCell"
+
+    private var taskView: TaskDayView?
+    private var taskViewConstraints: [NSLayoutConstraint] = []
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
+        selectionStyle = .none
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        removeTaskView()
+    }
+
+    func configure(
+        row: CalendarTaskRow,
+        time: String,
+        priority: TaskDayView.Priority,
+        onEdit: @escaping () -> Void,
+        onToggle: @escaping () -> Void
+    ) {
+        removeTaskView()
+
+        let view: TaskDayView
+        if let mainTaskName = row.mainTaskName {
+            view = TaskDayView(
+                mainTaskName: mainTaskName,
+                subtaskName: row.typeTitle,
+                taskTitle: row.task.name,
+                time: time,
+                timeSpent: "",
+                priority: priority,
+                isCompleted: row.task.isCompleted,
+                showsCompletionButton: row.canEdit,
+                showsEditButton: row.canEdit
+            )
+        } else {
+            view = TaskDayView(
+                subtaskName: row.typeTitle,
+                taskTitle: row.task.name,
+                time: time,
+                timeSpent: "",
+                priority: priority,
+                isCompleted: row.task.isCompleted,
+                showsCompletionButton: row.canEdit,
+                showsEditButton: row.canEdit
+            )
+        }
+
+        view.onTap = row.canEdit ? onEdit : nil
+        view.onEditTapped = row.canEdit ? onEdit : nil
+        view.onCompletionChanged = row.canEdit ? { _ in onToggle() } : nil
+
+        contentView.addSubview(view)
+        taskView = view
+        taskViewConstraints = [
+            view.topAnchor.constraint(equalTo: contentView.topAnchor),
+            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
+        ]
+        NSLayoutConstraint.activate(taskViewConstraints)
+    }
+
+    private func removeTaskView() {
+        taskViewConstraints.forEach { $0.isActive = false }
+        taskViewConstraints.removeAll()
+        taskView?.removeFromSuperview()
+        taskView = nil
     }
 }

@@ -63,6 +63,14 @@ final class CalendarViewController: UIViewController {
             self?.viewModel.toggleTask(id: id)
         }
 
+        taskListView.onTaskSelected = { [weak self] task in
+            self?.viewModel.editTaskTapped(task)
+        }
+
+        taskListView.onTaskDeleteRequested = { [weak self] id in
+            self?.viewModel.deleteTask(id: id)
+        }
+
         filterView.onFilterChanged = { [weak self] filter in
             self?.viewModel.filterSelected(filter)
         }

@@ -13,8 +13,10 @@ final class CalendarViewModel {
 
     private let fetchTasksUseCase: FetchTasksUseCase
     private let toggleUseCase: ToggleTaskCompletionUseCase
+    private let deleteUseCase: DeleteTaskUseCase
 
     var onAddTaskTapped: ((Date) -> Void)?
+    var onEditTaskTapped: ((TaskItem) -> Void)?
     var onTasksUpdated: (([TaskItem]) -> Void)?
 
     private var selectedDate: Date = Date()
@@ -22,9 +24,11 @@ final class CalendarViewModel {
     private var reloadWorkItem: DispatchWorkItem?
 
     init(fetchTasksUseCase: FetchTasksUseCase,
-         toggleUseCase: ToggleTaskCompletionUseCase) {
+         toggleUseCase: ToggleTaskCompletionUseCase,
+         deleteUseCase: DeleteTaskUseCase) {
         self.fetchTasksUseCase = fetchTasksUseCase
         self.toggleUseCase = toggleUseCase
+        self.deleteUseCase = deleteUseCase
         observeTaskChanges()
     }
 
@@ -54,8 +58,18 @@ final class CalendarViewModel {
         onAddTaskTapped?(selectedDate)
     }
 
+    func editTaskTapped(_ task: TaskItem) {
+        guard task.source == .app else { return }
+        onEditTaskTapped?(task)
+    }
+
     func toggleTask(id: UUID) {
         try? toggleUseCase.execute(taskID: id)
+        loadTasks()
+    }
+
+    func deleteTask(id: UUID) {
+        try? deleteUseCase.execute(taskID: id)
         loadTasks()
     }
 

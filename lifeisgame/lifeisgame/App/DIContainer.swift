@@ -36,6 +36,10 @@ final class DIContainer {
         userRepository
     }
 
+    func makeTaskRepository() -> TaskRepositoryProtocol {
+        taskRepository
+    }
+
     func makeFetchTasksUseCase() -> FetchTasksUseCase {
         FetchTasksUseCase(repository: taskRepository, calendarService: calendarService)
     }
@@ -46,6 +50,14 @@ final class DIContainer {
 
     func makeToggleTaskCompletionUseCase() -> ToggleTaskCompletionUseCase {
         ToggleTaskCompletionUseCase(repository: taskRepository)
+    }
+
+    func makeUpdateTaskDetailsUseCase() -> UpdateTaskDetailsUseCase {
+        UpdateTaskDetailsUseCase(repository: taskRepository)
+    }
+
+    func makeDeleteTaskUseCase() -> DeleteTaskUseCase {
+        DeleteTaskUseCase(repository: taskRepository)
     }
 
     func makeDiaryRepository() -> DiaryRepositoryProtocol {

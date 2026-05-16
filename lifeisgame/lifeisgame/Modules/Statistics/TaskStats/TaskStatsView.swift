@@ -7,47 +7,17 @@
 
 import UIKit
 
+struct TaskStatsDaySummary {
+    let date: Date
+    let title: String
+    let completed: Int
+    let total: Int
+    let tasks: [TaskDayDetailViewController.TaskItem]
+}
+
 final class TaskStatsView: UIView {
 
-
-    private struct DaySummary {
-        let date: String
-        let completed: Int
-        let total: Int
-        let tasks: [TaskDayDetailViewController.TaskItem]
-    }
-
-    private let days: [DaySummary] = [
-        DaySummary(date: "30 марта", completed: 3, total: 5, tasks: [
-            .init(title: "Утренняя зарядка",    isCompleted: true),
-            .init(title: "Прочитать 20 страниц", isCompleted: true),
-            .init(title: "Медитация",            isCompleted: true),
-            .init(title: "Вечерняя пробежка",    isCompleted: false),
-            .init(title: "Написать дневник",     isCompleted: false)
-        ]),
-        DaySummary(date: "29 марта", completed: 5, total: 5, tasks: [
-            .init(title: "Утренняя зарядка",    isCompleted: true),
-            .init(title: "Прочитать 20 страниц", isCompleted: true),
-            .init(title: "Медитация",            isCompleted: true),
-            .init(title: "Вечерняя пробежка",    isCompleted: true),
-            .init(title: "Написать дневник",     isCompleted: true)
-        ]),
-        DaySummary(date: "28 марта", completed: 2, total: 4, tasks: [
-            .init(title: "Утренняя зарядка",    isCompleted: true),
-            .init(title: "Прочитать 20 страниц", isCompleted: false),
-            .init(title: "Медитация",            isCompleted: true),
-            .init(title: "Вечерняя пробежка",    isCompleted: false)
-        ]),
-        DaySummary(date: "27 марта", completed: 4, total: 6, tasks: [
-            .init(title: "Утренняя зарядка",    isCompleted: true),
-            .init(title: "Прочитать 20 страниц", isCompleted: true),
-            .init(title: "Медитация",            isCompleted: true),
-            .init(title: "Вечерняя пробежка",    isCompleted: false),
-            .init(title: "Написать дневник",     isCompleted: true),
-            .init(title: "Витамины",             isCompleted: false)
-        ]),
-    ]
-
+    private var days: [TaskStatsDaySummary] = []
 
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -64,21 +34,34 @@ final class TaskStatsView: UIView {
         return s
     }()
 
-    weak var presentingViewController: UIViewController?
+    private let emptyLabel: UILabel = {
+        let l = UILabel()
+        l.text = "Пока нет задач для статистики"
+        l.font = .systemFont(ofSize: 15, weight: .regular)
+        l.textColor = .systemGray2
+        l.textAlignment = .center
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
 
+    weak var presentingViewController: UIViewController?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setupLayout()
-        buildRows()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    func configure(days: [TaskStatsDaySummary]) {
+        self.days = days
+        buildRows()
+    }
 
     private func setupLayout() {
         addSubview(scrollView)
+        addSubview(emptyLabel)
         scrollView.addSubview(stack)
 
         NSLayoutConstraint.activate([
@@ -91,18 +74,106 @@ final class TaskStatsView: UIView {
             stack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             stack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             stack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -16),
-            stack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40)
+            stack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
+
+            emptyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            emptyLabel.topAnchor.constraint(equalTo: topAnchor, constant: 40)
         ])
     }
 
     private func buildRows() {
+        stack.arrangedSubviews.forEach {
+            stack.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+
+        emptyLabel.isHidden = !days.isEmpty
+        scrollView.isHidden = days.isEmpty
+        guard !days.isEmpty else { return }
+
+        stack.addArrangedSubview(makeSummaryCard())
         for (i, day) in days.enumerated() {
-            let row = makeRow(day, index: i)
-            stack.addArrangedSubview(row)
+            stack.addArrangedSubview(makeRow(day, index: i))
         }
     }
 
-    private func makeRow(_ day: DaySummary, index: Int) -> UIView {
+    private func makeSummaryCard() -> UIView {
+        let total = days.reduce(0) { $0 + $1.total }
+        let completed = days.reduce(0) { $0 + $1.completed }
+
+        let card = UIView()
+        card.backgroundColor = .white
+        card.layer.cornerRadius = 14
+        card.layer.shadowColor = UIColor.black.cgColor
+        card.layer.shadowOpacity = 0.06
+        card.layer.shadowOffset = CGSize(width: 0, height: 2)
+        card.layer.shadowRadius = 8
+        card.translatesAutoresizingMaskIntoConstraints = false
+
+        let titleLabel = UILabel()
+        titleLabel.text = "Всего выполнено"
+        titleLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let valueLabel = UILabel()
+        valueLabel.text = "\(completed) из \(total)"
+        valueLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        valueLabel.textColor = UIColor.main
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = "Дней с задачами: \(days.count)"
+        subtitleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let progressBg = UIView()
+        progressBg.backgroundColor = UIColor.systemGray5
+        progressBg.layer.cornerRadius = 4
+        progressBg.translatesAutoresizingMaskIntoConstraints = false
+
+        let progressFill = UIView()
+        let ratio = CGFloat(completed) / CGFloat(max(total, 1))
+        progressFill.backgroundColor = UIColor.main
+        progressFill.layer.cornerRadius = 4
+        progressFill.translatesAutoresizingMaskIntoConstraints = false
+        progressBg.addSubview(progressFill)
+
+        card.addSubview(titleLabel)
+        card.addSubview(valueLabel)
+        card.addSubview(subtitleLabel)
+        card.addSubview(progressBg)
+
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: card.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
+
+            valueLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            valueLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            valueLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+
+            subtitleLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 2),
+            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+
+            progressBg.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
+            progressBg.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            progressBg.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            progressBg.heightAnchor.constraint(equalToConstant: 8),
+            progressBg.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -16),
+
+            progressFill.leadingAnchor.constraint(equalTo: progressBg.leadingAnchor),
+            progressFill.topAnchor.constraint(equalTo: progressBg.topAnchor),
+            progressFill.bottomAnchor.constraint(equalTo: progressBg.bottomAnchor),
+            progressFill.widthAnchor.constraint(equalTo: progressBg.widthAnchor, multiplier: ratio)
+        ])
+
+        return card
+    }
+
+    private func makeRow(_ day: TaskStatsDaySummary, index: Int) -> UIView {
         let card = UIControl()
         card.backgroundColor = .white
         card.layer.cornerRadius = 14
@@ -126,7 +197,7 @@ final class TaskStatsView: UIView {
         iconBg.addSubview(iconView)
 
         let dateLabel = UILabel()
-        dateLabel.text = day.date
+        dateLabel.text = day.title
         dateLabel.font = .systemFont(ofSize: 15, weight: .semibold)
         dateLabel.textColor = .label
 
@@ -199,12 +270,17 @@ final class TaskStatsView: UIView {
         return card
     }
 
-
     @objc private func rowTapped(_ sender: UIControl) {
         let day = days[sender.tag]
-        let detail = TaskDayDetailViewController(date: day.date, tasks: day.tasks)
+        let detail = TaskDayDetailViewController(
+            date: day.title,
+            completed: day.completed,
+            total: day.total,
+            tasks: day.tasks
+        )
         if let presenter = detail.sheetPresentationController {
-            let height = CGFloat(min(day.tasks.count, 6)) * 62 + 100
+            let availableHeight = presentingViewController?.view.bounds.height ?? bounds.height
+            let height = min(CGFloat(day.tasks.count) * 106 + 154, max(320, availableHeight * 0.82))
             presenter.detents = [.custom { _ in height }]
             presenter.prefersGrabberVisible = false
             presenter.preferredCornerRadius = 24

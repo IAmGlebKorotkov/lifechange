@@ -94,6 +94,22 @@ final class TaskRepository: TaskRepositoryProtocol {
         return item
     }
 
+    func updateTaskDetails(taskID: UUID, name: String, description: String?, importance: Int, difficulty: Int) throws -> TaskItem {
+        guard let entity = try fetchTaskEntity(id: taskID) else {
+            throw RepositoryError.notFound
+        }
+        entity.name = name
+        entity.taskDescription = description
+        entity.importance = Int16(max(1, min(10, importance)))
+        entity.difficulty = Int16(max(1, min(10, difficulty)))
+        persistence.save()
+        NotificationCenter.default.post(name: .taskStoreDidChange, object: nil)
+        guard let item = TaskMapper.toDomain(entity) else {
+            throw RepositoryError.mappingFailed
+        }
+        return item
+    }
+
     func toggleCompletion(taskID: UUID) throws {
         guard let entity = try fetchTaskEntity(id: taskID) else { return }
         entity.isCompleted = !entity.isCompleted
@@ -103,6 +119,7 @@ final class TaskRepository: TaskRepositoryProtocol {
 
     func deleteTask(id: UUID) throws {
         guard let entity = try fetchTaskEntity(id: id) else { return }
+        entity.subtasksArray.forEach { persistence.context.delete($0) }
         persistence.context.delete(entity)
         persistence.save()
         NotificationCenter.default.post(name: .taskStoreDidChange, object: nil)

@@ -37,7 +37,10 @@ final class TaskDayView: UIControl {
 
     private(set) var isTaskCompleted: Bool = false
     var onCompletionChanged: ((Bool) -> Void)?
+    var onTap: (() -> Void)?
+    var onEditTapped: (() -> Void)?
     private var showsCompletionButton = true
+    private var showsEditButton = false
 
 
     private let subtaskLabel: UILabel = {
@@ -136,11 +139,21 @@ final class TaskDayView: UIControl {
         return b
     }()
 
+    private let editButton: UIButton = {
+        let b = UIButton(type: .custom)
+        let cfg = UIImage.SymbolConfiguration(pointSize: 21, weight: .semibold)
+        b.setImage(UIImage(systemName: "square.and.pencil", withConfiguration: cfg), for: .normal)
+        b.tintColor = UIColor.main
+        b.translatesAutoresizingMaskIntoConstraints = false
+        b.setContentHuggingPriority(.required, for: .horizontal)
+        return b
+    }()
+
     private lazy var block3: UIStackView = {
         let spacer = UIView()
         spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
-        let s = UIStackView(arrangedSubviews: [timeStack, timeSpentLabel, priorityBadge, spacer, completeButton])
+        let s = UIStackView(arrangedSubviews: [timeStack, timeSpentLabel, priorityBadge, spacer, editButton, completeButton])
         s.axis = .horizontal
         s.spacing = 8
         s.alignment = .center
@@ -164,9 +177,11 @@ final class TaskDayView: UIControl {
          timeSpent: String,
          priority: Priority,
          isCompleted: Bool = false,
-         showsCompletionButton: Bool = true) {
+         showsCompletionButton: Bool = true,
+         showsEditButton: Bool = false) {
         super.init(frame: .zero)
         self.showsCompletionButton = showsCompletionButton
+        self.showsEditButton = showsEditButton
         applyContent(type: .light,
                      subtaskName: subtaskName,
                      taskTitle: taskTitle,
@@ -185,9 +200,11 @@ final class TaskDayView: UIControl {
          timeSpent: String,
          priority: Priority,
          isCompleted: Bool = false,
-         showsCompletionButton: Bool = true) {
+         showsCompletionButton: Bool = true,
+         showsEditButton: Bool = false) {
         super.init(frame: .zero)
         self.showsCompletionButton = showsCompletionButton
+        self.showsEditButton = showsEditButton
         applyContent(type: .hard(mainTaskName: mainTaskName),
                      subtaskName: subtaskName,
                      taskTitle: taskTitle,
@@ -268,10 +285,22 @@ final class TaskDayView: UIControl {
         ])
 
         completeButton.addTarget(self, action: #selector(completeTapped), for: .touchUpInside)
+        editButton.addTarget(self, action: #selector(editTapped), for: .touchUpInside)
+        addTarget(self, action: #selector(cardTapped), for: .touchUpInside)
         completeButton.enablePressScale()
+        editButton.enablePressScale()
         completeButton.isHidden = !showsCompletionButton
+        editButton.isHidden = !showsEditButton
     }
 
+
+    @objc private func cardTapped() {
+        onTap?()
+    }
+
+    @objc private func editTapped() {
+        onEditTapped?()
+    }
 
     @objc private func completeTapped() {
         isTaskCompleted.toggle()
