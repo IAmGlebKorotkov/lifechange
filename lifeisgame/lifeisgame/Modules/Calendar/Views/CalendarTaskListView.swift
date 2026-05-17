@@ -84,6 +84,7 @@ final class CalendarTaskListView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CalendarTaskCell.self, forCellReuseIdentifier: CalendarTaskCell.reuseIdentifier)
+        tableView.tableFooterView = makeBottomSpacer()
 
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: topAnchor),
@@ -103,6 +104,10 @@ final class CalendarTaskListView: UIView {
         emptyLabel.isHidden = true
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.enablePressScale()
+    }
+
+    private func makeBottomSpacer() -> UIView {
+        UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 120))
     }
 
     @objc private func addTapped() {

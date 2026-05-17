@@ -95,6 +95,14 @@ final class TaskStatsView: UIView {
         for (i, day) in days.enumerated() {
             stack.addArrangedSubview(makeRow(day, index: i))
         }
+        stack.addArrangedSubview(makeBottomSpacer())
+    }
+
+    private func makeBottomSpacer() -> UIView {
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        return spacer
     }
 
     private func makeSummaryCard() -> UIView {
