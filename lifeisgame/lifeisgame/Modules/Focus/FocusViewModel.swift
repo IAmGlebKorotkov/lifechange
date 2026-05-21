@@ -36,15 +36,18 @@ final class FocusViewModel {
 
     private let fetchTasksUseCase: FetchTasksUseCase
     private let toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase
+    private let achievementRepository: AchievementRepositoryProtocol
     private let date: Date
 
     init(
         fetchTasksUseCase: FetchTasksUseCase,
         toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase,
+        achievementRepository: AchievementRepositoryProtocol = AchievementRepository(),
         date: Date = Date()
     ) {
         self.fetchTasksUseCase = fetchTasksUseCase
         self.toggleTaskCompletionUseCase = toggleTaskCompletionUseCase
+        self.achievementRepository = achievementRepository
         self.date = date
     }
 
@@ -59,6 +62,17 @@ final class FocusViewModel {
     func completeTask(id: UUID) {
         try? toggleTaskCompletionUseCase.execute(taskID: id)
         loadTasks()
+    }
+
+    func recordFocusSession(taskID: UUID?, startedAt: Date?, endedAt: Date) {
+        guard let userID = SessionManager.shared.currentUserID,
+              let startedAt else { return }
+        try? achievementRepository.recordFocusSession(
+            forUserID: userID,
+            taskID: taskID,
+            startedAt: startedAt,
+            endedAt: endedAt
+        )
     }
 
     private func loadTasks() {

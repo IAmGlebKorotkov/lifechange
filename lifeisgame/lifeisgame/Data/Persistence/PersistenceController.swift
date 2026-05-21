@@ -33,12 +33,12 @@ final class PersistenceController {
     }
 
     func save() {
-        let ctx = container.viewContext
-        guard ctx.hasChanges else { return }
+        let context = container.viewContext
+        guard context.hasChanges else { return }
         do {
-            try ctx.save()
+            try context.save()
         } catch {
-            ctx.rollback()
+            context.rollback()
         }
     }
 

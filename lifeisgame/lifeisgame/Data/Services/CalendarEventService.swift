@@ -24,28 +24,15 @@ final class CalendarEventService: CalendarServiceProtocol {
     }
 
     private func requestAccess(completion: @escaping (Bool) -> Void) {
-        if #available(iOS 17.0, *) {
-            switch EKEventStore.authorizationStatus(for: .event) {
-            case .fullAccess:
-                completion(true)
-            case .notDetermined:
-                store.requestFullAccessToEvents { granted, _ in
-                    completion(granted)
-                }
-            default:
-                completion(false)
+        switch EKEventStore.authorizationStatus(for: .event) {
+        case .fullAccess:
+            completion(true)
+        case .notDetermined:
+            store.requestFullAccessToEvents { granted, _ in
+                completion(granted)
             }
-        } else {
-            switch EKEventStore.authorizationStatus(for: .event) {
-            case .authorized:
-                completion(true)
-            case .notDetermined:
-                store.requestAccess(to: .event) { granted, _ in
-                    completion(granted)
-                }
-            default:
-                completion(false)
-            }
+        default:
+            completion(false)
         }
     }
 

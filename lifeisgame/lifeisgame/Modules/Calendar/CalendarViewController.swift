@@ -59,6 +59,10 @@ final class CalendarViewController: UIViewController {
             self?.viewModel.addTaskTapped()
         }
 
+        headerView.onBellTapped = { [weak self] in
+            self?.viewModel.notificationsTapped()
+        }
+
         taskListView.onTaskToggled = { [weak self] id in
             self?.viewModel.toggleTask(id: id)
         }

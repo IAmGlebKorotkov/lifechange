@@ -180,15 +180,15 @@ class TaskBaseFormView: UIStackView {
 
 
     private func addNameSection() {
-        let header = makeTaskSectionHeader("Название задачи")
-        addArrangedSubview(makeFieldBlock(header: header, field: nameTextField))
+        let header = AddTaskUIHelpers.makeTaskSectionHeader("Название задачи")
+        addArrangedSubview(AddTaskUIHelpers.makeFieldBlock(header: header, field: nameTextField))
     }
 
     private func addDescSection() {
         let card = UIView()
-        styleCard(card)
+        AddTaskUIHelpers.styleCard(card)
 
-        let header = makeTaskSectionHeader("Описание")
+        let header = AddTaskUIHelpers.makeTaskSectionHeader("Описание")
         card.addSubview(header)
         card.addSubview(descTextView)
         descTextView.addSubview(descPlaceholder)
@@ -212,16 +212,16 @@ class TaskBaseFormView: UIStackView {
     }
 
     private func addDatesSection() {
-        addArrangedSubview(makeDateCard(icon: "Calendar", title: startDateTitle, picker: startDatePicker))
-        addArrangedSubview(makeDateCard(icon: "Calendar", title: deadlineDateTitle, picker: deadlineDatePicker))
+        addArrangedSubview(AddTaskUIHelpers.makeDateCard(icon: "Calendar", title: startDateTitle, picker: startDatePicker))
+        addArrangedSubview(AddTaskUIHelpers.makeDateCard(icon: "Calendar", title: deadlineDateTitle, picker: deadlineDatePicker))
     }
 
     private func addSlidersSection() {
-        let importanceHeader = makeTaskSectionHeader("Важность")
-        addArrangedSubview(makeSliderBlock(header: importanceHeader, valueLabel: importanceValueLabel, slider: importanceSlider))
+        let importanceHeader = AddTaskUIHelpers.makeTaskSectionHeader("Важность")
+        addArrangedSubview(AddTaskUIHelpers.makeSliderBlock(header: importanceHeader, valueLabel: importanceValueLabel, slider: importanceSlider))
 
-        let difficultyHeader = makeTaskSectionHeader("Сложность")
-        addArrangedSubview(makeSliderBlock(header: difficultyHeader, valueLabel: difficultyValueLabel, slider: difficultySlider))
+        let difficultyHeader = AddTaskUIHelpers.makeTaskSectionHeader("Сложность")
+        addArrangedSubview(AddTaskUIHelpers.makeSliderBlock(header: difficultyHeader, valueLabel: difficultyValueLabel, slider: difficultySlider))
     }
 
     private func addTimeSection() {
@@ -231,7 +231,7 @@ class TaskBaseFormView: UIStackView {
 
 
     private func setupTimeCard() {
-        styleCard(timeCard)
+        AddTaskUIHelpers.styleCard(timeCard)
         timeCard.clipsToBounds = true
 
         let iconBg = UIView()

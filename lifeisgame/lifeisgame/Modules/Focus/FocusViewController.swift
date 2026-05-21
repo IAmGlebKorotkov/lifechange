@@ -6,19 +6,18 @@
 //
 
 import UIKit
-import SwiftUI
 
 final class FocusViewController: UIViewController {
 
     private let viewModel: FocusViewModel
     private var selectedPlaylist = "Ничего"
-    private var blockedApps = "Не выбрано"
     private var currentTasks: [FocusTaskItem] = []
     private var selectedTaskID: UUID?
     private var completedFocusTaskID: UUID?
     private var taskViewsByID: [UUID: TaskDayView] = [:]
     private var taskIDsByViewID: [ObjectIdentifier: UUID] = [:]
     private var focusTimer: Timer?
+    private var focusStartDate: Date?
     private var focusEndDate: Date?
     private var isFocusRunning = false
 
@@ -179,9 +178,7 @@ final class FocusViewController: UIViewController {
     }()
 
     private lazy var playlistButton = makeOptionButton(title: selectedPlaylist)
-    private lazy var blockedAppsButton = makeOptionButton(title: "Выбрать")
     private let startButton = CustomButton(title: "Начать", type: .main)
-    private weak var blockedAppsSubtitleLabel: UILabel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -198,7 +195,6 @@ final class FocusViewController: UIViewController {
         if !isFocusRunning {
             viewModel.refresh()
         }
-        updateBlockedAppsSummary()
     }
 
     private func setupLayout() {
@@ -313,11 +309,6 @@ final class FocusViewController: UIViewController {
             subtitle: "Плейлист",
             button: playlistButton
         ))
-        stack.addArrangedSubview(makeOptionBlock(
-            title: "Заблокированные приложения",
-            subtitle: blockedApps,
-            button: blockedAppsButton
-        ))
 
         NSLayoutConstraint.activate([
             parametersTitleLabel.topAnchor.constraint(equalTo: parametersCard.topAnchor, constant: 18),
@@ -335,7 +326,6 @@ final class FocusViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.enablePressScale(to: 0.90)
         playlistButton.addTarget(self, action: #selector(selectPlaylist), for: .touchUpInside)
-        blockedAppsButton.addTarget(self, action: #selector(selectBlockedApps), for: .touchUpInside)
         startButton.addTarget(self, action: #selector(startFocus), for: .touchUpInside)
     }
 
@@ -444,9 +434,6 @@ final class FocusViewController: UIViewController {
         subtitleLabel.font = .systemFont(ofSize: 13, weight: .regular)
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        if title == "Заблокированные приложения" {
-            blockedAppsSubtitleLabel = subtitleLabel
-        }
 
         block.addSubview(titleLabel)
         block.addSubview(subtitleLabel)
@@ -493,7 +480,7 @@ final class FocusViewController: UIViewController {
 
         let alert = UIAlertController(
             title: "Завершить фокус?",
-            message: "Таймер и блокировки будут остановлены.",
+            message: "Таймер будет остановлен.",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
@@ -518,13 +505,6 @@ final class FocusViewController: UIViewController {
         present(alert, animated: true)
     }
 
-    @objc private func selectBlockedApps() {
-        let selectionView = BlockedAppsSelectionView(store: FocusBlockingSelectionStore.shared)
-        let controller = UIHostingController(rootView: selectionView)
-        controller.modalPresentationStyle = .fullScreen
-        present(controller, animated: true)
-    }
-
     @objc private func startFocus() {
         if isFocusRunning {
             finishFocusSession()
@@ -536,7 +516,9 @@ final class FocusViewController: UIViewController {
             return
         }
 
-        let endDate = Date().addingTimeInterval(selectedTask.focusDuration)
+        let startDate = Date()
+        let endDate = startDate.addingTimeInterval(selectedTask.focusDuration)
+        focusStartDate = startDate
         focusEndDate = endDate
         isFocusRunning = true
         timerTaskLabel.text = selectedTask.displayTitle
@@ -544,20 +526,12 @@ final class FocusViewController: UIViewController {
         updateTimerLabels()
         startFocusTimer()
         setTaskSelectionEnabled(false)
-        FocusBlockingSelectionStore.shared.applyShielding()
         FocusLiveActivityManager.shared.start(
             taskTitle: selectedTask.displayTitle,
             taskTypeTitle: selectedTask.typeTitle,
             endDate: endDate
         )
         updateStartButtonState()
-    }
-
-    private func updateBlockedAppsSummary() {
-        let count = FocusBlockingSelectionStore.shared.selectedItemsCount
-        blockedApps = count == 0 ? "Не выбрано" : "Выбрано: \(count)"
-        blockedAppsSubtitleLabel?.text = blockedApps
-        blockedAppsButton.setTitle(count == 0 ? "Выбрать" : "Изменить", for: .normal)
     }
 
     private func updateStartButtonState() {
@@ -605,15 +579,19 @@ final class FocusViewController: UIViewController {
     }
 
     private func finishFocusSession() {
+        guard isFocusRunning else { return }
         let taskIDToComplete = selectedTaskID
+        let startedAt = focusStartDate
+        let endedAt = Date()
         focusTimer?.invalidate()
         focusTimer = nil
+        focusStartDate = nil
         focusEndDate = nil
         isFocusRunning = false
         timerCard.isHidden = true
         setTaskSelectionEnabled(true)
-        FocusBlockingSelectionStore.shared.clearShielding()
         FocusLiveActivityManager.shared.end()
+        viewModel.recordFocusSession(taskID: taskIDToComplete, startedAt: startedAt, endedAt: endedAt)
         completeFocusedTaskIfNeeded(taskIDToComplete)
         updateStartButtonState()
     }

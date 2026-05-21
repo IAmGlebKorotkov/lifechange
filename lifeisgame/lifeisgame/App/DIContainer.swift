@@ -12,15 +12,18 @@ final class DIContainer {
     private let userRepository: UserRepositoryProtocol
     private let taskRepository: TaskRepositoryProtocol
     private let diaryRepository: DiaryRepositoryProtocol
+    private let achievementRepository: AchievementRepositoryProtocol
     private let calendarService: CalendarServiceProtocol
 
     init(userRepository: UserRepositoryProtocol = UserRepository(),
          taskRepository: TaskRepositoryProtocol = TaskRepository(),
          diaryRepository: DiaryRepositoryProtocol = DiaryRepository(),
+         achievementRepository: AchievementRepositoryProtocol = AchievementRepository(),
          calendarService: CalendarServiceProtocol = CalendarEventService()) {
         self.userRepository = userRepository
         self.taskRepository = taskRepository
         self.diaryRepository = diaryRepository
+        self.achievementRepository = achievementRepository
         self.calendarService = calendarService
     }
 
@@ -62,5 +65,18 @@ final class DIContainer {
 
     func makeDiaryRepository() -> DiaryRepositoryProtocol {
         diaryRepository
+    }
+
+    func makeAchievementRepository() -> AchievementRepositoryProtocol {
+        achievementRepository
+    }
+
+    func makeAnalyzeUserDayUseCase() -> AnalyzeUserDayUseCase {
+        AnalyzeUserDayUseCase(
+            userRepository: userRepository,
+            diaryRepository: diaryRepository,
+            taskRepository: taskRepository,
+            analysisEngine: MLCoreUserAnalysisEngine()
+        )
     }
 }

@@ -17,6 +17,7 @@ final class CalendarViewModel {
 
     var onAddTaskTapped: ((Date) -> Void)?
     var onEditTaskTapped: ((TaskItem) -> Void)?
+    var onNotificationsTapped: (() -> Void)?
     var onTasksUpdated: (([TaskItem]) -> Void)?
 
     private var selectedDate: Date = Date()
@@ -61,6 +62,10 @@ final class CalendarViewModel {
     func editTaskTapped(_ task: TaskItem) {
         guard task.source == .app else { return }
         onEditTaskTapped?(task)
+    }
+
+    func notificationsTapped() {
+        onNotificationsTapped?()
     }
 
     func toggleTask(id: UUID) {

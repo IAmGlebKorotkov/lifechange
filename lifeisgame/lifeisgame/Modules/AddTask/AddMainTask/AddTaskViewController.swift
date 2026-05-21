@@ -221,7 +221,7 @@ final class AddTaskViewController: UIViewController {
 
 
     private func setupKindToggleCard() {
-        styleCard(taskKindCard)
+        AddTaskUIHelpers.styleCard(taskKindCard)
         taskKindCard.addSubview(taskKindLabel)
         taskKindCard.addSubview(taskKindToggle)
 
@@ -237,7 +237,7 @@ final class AddTaskViewController: UIViewController {
     }
 
     private func setupTypeToggleCard() {
-        styleCard(taskTypeCard)
+        AddTaskUIHelpers.styleCard(taskTypeCard)
         taskTypeCard.addSubview(taskTypeLabel)
         taskTypeCard.addSubview(taskTypeToggle)
 

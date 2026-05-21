@@ -33,6 +33,9 @@ final class CalendarCoordinator: Coordinator {
                 viewModel?.refresh()
             })
         }
+        viewModel.onNotificationsTapped = { [weak self] in
+            self?.showNotifications()
+        }
         navigationController.setViewControllers([vc], animated: false)
     }
 
@@ -67,6 +70,15 @@ final class CalendarCoordinator: Coordinator {
             updateTaskDetailsUseCase: container.makeUpdateTaskDetailsUseCase()
         )
         vc.onSaved = onSaved
+        navigationController.pushViewController(vc, animated: true)
+    }
+
+    private func showNotifications() {
+        let mainTab = navigationController.parent as? MainTabBarController
+        mainTab?.setTabBarHidden(true, animated: true)
+        navigationController.setNavigationBarHidden(false, animated: true)
+
+        let vc = NotificationsViewController()
         navigationController.pushViewController(vc, animated: true)
     }
 }

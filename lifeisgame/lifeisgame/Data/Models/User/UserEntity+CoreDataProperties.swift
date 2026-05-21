@@ -22,6 +22,8 @@ extension UserEntity {
     @NSManaged public var tasks: NSSet?
     @NSManaged public var emotionEntries: NSSet?
     @NSManaged public var sleepEntries: NSSet?
+    @NSManaged public var achievements: NSSet?
+    @NSManaged public var focusSessions: NSSet?
 
     var tasksArray: [TaskEntity] {
         (tasks as? Set<TaskEntity>)?.sorted { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) } ?? []
@@ -37,6 +39,14 @@ extension UserEntity {
 
     var sleepEntriesArray: [SleepEntryEntity] {
         (sleepEntries as? Set<SleepEntryEntity>)?.sorted { ($0.dayDate ?? .distantPast) < ($1.dayDate ?? .distantPast) } ?? []
+    }
+
+    var achievementsArray: [AchievementEntity] {
+        (achievements as? Set<AchievementEntity>)?.sorted { $0.sortOrder < $1.sortOrder } ?? []
+    }
+
+    var focusSessionsArray: [FocusSessionEntity] {
+        (focusSessions as? Set<FocusSessionEntity>)?.sorted { ($0.startedAt ?? .distantPast) < ($1.startedAt ?? .distantPast) } ?? []
     }
 }
 
@@ -83,4 +93,34 @@ extension UserEntity {
 
     @objc(removeSleepEntries:)
     @NSManaged public func removeFromSleepEntries(_ values: NSSet)
+}
+
+extension UserEntity {
+
+    @objc(addAchievementsObject:)
+    @NSManaged public func addToAchievements(_ value: AchievementEntity)
+
+    @objc(removeAchievementsObject:)
+    @NSManaged public func removeFromAchievements(_ value: AchievementEntity)
+
+    @objc(addAchievements:)
+    @NSManaged public func addToAchievements(_ values: NSSet)
+
+    @objc(removeAchievements:)
+    @NSManaged public func removeFromAchievements(_ values: NSSet)
+}
+
+extension UserEntity {
+
+    @objc(addFocusSessionsObject:)
+    @NSManaged public func addToFocusSessions(_ value: FocusSessionEntity)
+
+    @objc(removeFocusSessionsObject:)
+    @NSManaged public func removeFromFocusSessions(_ value: FocusSessionEntity)
+
+    @objc(addFocusSessions:)
+    @NSManaged public func addToFocusSessions(_ values: NSSet)
+
+    @objc(removeFocusSessions:)
+    @NSManaged public func removeFromFocusSessions(_ values: NSSet)
 }

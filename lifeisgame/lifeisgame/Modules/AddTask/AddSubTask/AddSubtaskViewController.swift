@@ -234,19 +234,19 @@ final class AddSubtaskViewController: UIViewController {
             contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40)
         ])
 
-        let parentHeader = makeTaskSectionHeader("Название задачи")
-        contentStack.addArrangedSubview(makeFieldBlock(header: parentHeader, field: parentTaskTextField))
+        let parentHeader = AddTaskUIHelpers.makeTaskSectionHeader("Название задачи")
+        contentStack.addArrangedSubview(AddTaskUIHelpers.makeFieldBlock(header: parentHeader, field: parentTaskTextField))
 
-        let subtaskHeader = makeTaskSectionHeader("Название подзадачи")
-        contentStack.addArrangedSubview(makeFieldBlock(header: subtaskHeader, field: subtaskNameTextField))
+        let subtaskHeader = AddTaskUIHelpers.makeTaskSectionHeader("Название подзадачи")
+        contentStack.addArrangedSubview(AddTaskUIHelpers.makeFieldBlock(header: subtaskHeader, field: subtaskNameTextField))
 
         contentStack.addArrangedSubview(makeDescCard())
 
-        let importanceHeader = makeTaskSectionHeader("Важность")
-        contentStack.addArrangedSubview(makeSliderBlock(header: importanceHeader, valueLabel: importanceValueLabel, slider: importanceSlider))
+        let importanceHeader = AddTaskUIHelpers.makeTaskSectionHeader("Важность")
+        contentStack.addArrangedSubview(AddTaskUIHelpers.makeSliderBlock(header: importanceHeader, valueLabel: importanceValueLabel, slider: importanceSlider))
 
-        let difficultyHeader = makeTaskSectionHeader("Сложность")
-        contentStack.addArrangedSubview(makeSliderBlock(header: difficultyHeader, valueLabel: difficultyValueLabel, slider: difficultySlider))
+        let difficultyHeader = AddTaskUIHelpers.makeTaskSectionHeader("Сложность")
+        contentStack.addArrangedSubview(AddTaskUIHelpers.makeSliderBlock(header: difficultyHeader, valueLabel: difficultyValueLabel, slider: difficultySlider))
 
         setupTimeCard()
         contentStack.addArrangedSubview(timeCard)
@@ -258,9 +258,9 @@ final class AddSubtaskViewController: UIViewController {
 
     private func makeDescCard() -> UIView {
         let card = UIView()
-        styleCard(card)
+        AddTaskUIHelpers.styleCard(card)
 
-        let header = makeTaskSectionHeader("Описание")
+        let header = AddTaskUIHelpers.makeTaskSectionHeader("Описание")
         card.addSubview(header)
         card.addSubview(descTextView)
         descTextView.addSubview(descPlaceholder)
@@ -284,7 +284,7 @@ final class AddSubtaskViewController: UIViewController {
     }
 
     private func setupTimeCard() {
-        styleCard(timeCard)
+        AddTaskUIHelpers.styleCard(timeCard)
         timeCard.clipsToBounds = true
 
         let iconBg = UIView()

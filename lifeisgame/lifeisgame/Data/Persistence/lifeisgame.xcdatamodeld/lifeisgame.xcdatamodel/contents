@@ -6,9 +6,28 @@
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="achievements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AchievementEntity" inverseName="owner" inverseEntity="AchievementEntity"/>
         <relationship name="emotionEntries" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EmotionEntryEntity" inverseName="owner" inverseEntity="EmotionEntryEntity"/>
+        <relationship name="focusSessions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FocusSessionEntity" inverseName="owner" inverseEntity="FocusSessionEntity"/>
         <relationship name="sleepEntries" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SleepEntryEntity" inverseName="owner" inverseEntity="SleepEntryEntity"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TaskEntity" inverseName="owner" inverseEntity="TaskEntity"/>
+    </entity>
+    <entity name="AchievementEntity" representedClassName="AchievementEntity" syncable="YES" codeGenerationType="none">
+        <attribute name="cellHeight" optional="YES" attributeType="Double" defaultValueString="160" usesScalarValueType="YES"/>
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currentValue" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="goal" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="kind" optional="YES" attributeType="String"/>
+        <attribute name="openedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sortOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="targetValue" optional="YES" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="unlockedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="achievements" inverseEntity="UserEntity"/>
     </entity>
     <entity name="EmotionEntryEntity" representedClassName="EmotionEntryEntity" syncable="YES" codeGenerationType="none">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -19,6 +38,15 @@
         <attribute name="reason" optional="YES" attributeType="String"/>
         <attribute name="sfSymbol" optional="YES" attributeType="String"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="emotionEntries" inverseEntity="UserEntity"/>
+    </entity>
+    <entity name="FocusSessionEntity" representedClassName="FocusSessionEntity" syncable="YES" codeGenerationType="none">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="durationSeconds" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="startedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="taskID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserEntity" inverseName="focusSessions" inverseEntity="UserEntity"/>
     </entity>
     <entity name="SleepEntryEntity" representedClassName="SleepEntryEntity" syncable="YES" codeGenerationType="none">
         <attribute name="bedtime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

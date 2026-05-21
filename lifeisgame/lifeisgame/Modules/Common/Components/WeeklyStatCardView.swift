@@ -46,6 +46,7 @@ final class WeeklyStatCardView: UIView {
 
 
     private var fillFraction: CGFloat = 0
+    private var progressFillWidthConstraint: NSLayoutConstraint?
 
 
     init(style: WeeklyStatCardStyle) {
@@ -72,11 +73,13 @@ final class WeeklyStatCardView: UIView {
     private func setupLayout() {
         progressFill.backgroundColor = UIColor.main
         progressFill.layer.cornerRadius = 4
+        progressFill.translatesAutoresizingMaskIntoConstraints = false
         progressTrack.addSubview(progressFill)
 
         addSubview(titleLabel)
         addSubview(valueLabel)
         addSubview(progressTrack)
+        progressFillWidthConstraint = progressFill.widthAnchor.constraint(equalToConstant: 0)
 
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
@@ -91,9 +94,19 @@ final class WeeklyStatCardView: UIView {
             valueLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             valueLabel.centerYAnchor.constraint(equalTo: progressTrack.centerYAnchor),
             valueLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+
+            progressFill.leadingAnchor.constraint(equalTo: progressTrack.leadingAnchor),
+            progressFill.topAnchor.constraint(equalTo: progressTrack.topAnchor),
+            progressFill.bottomAnchor.constraint(equalTo: progressTrack.bottomAnchor),
+            progressFillWidthConstraint!
         ])
     }
 
+
+    func configure(style: WeeklyStatCardStyle, animated: Bool = true) {
+        apply(style: style)
+        updateProgress(animated: animated)
+    }
 
     private func apply(style: WeeklyStatCardStyle) {
         switch style {
@@ -103,7 +116,7 @@ final class WeeklyStatCardView: UIView {
             fillFraction = total > 0 ? CGFloat(completed) / CGFloat(total) : 0
         case .percentage(let title, let value):
             titleLabel.text = title
-            valueLabel.text = "\(Int(value * 100))%"
+            valueLabel.text = "\(Int((value * 100).rounded()))%"
             fillFraction = CGFloat(max(0, min(1, value)))
         }
     }
@@ -111,10 +124,18 @@ final class WeeklyStatCardView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        progressFill.frame = CGRect(
-            x: 0, y: 0,
-            width: progressTrack.bounds.width * fillFraction,
-            height: progressTrack.bounds.height
-        )
+        updateProgress(animated: false)
+    }
+
+    private func updateProgress(animated: Bool) {
+        progressFillWidthConstraint?.constant = progressTrack.bounds.width * fillFraction
+        guard animated, window != nil else {
+            layoutIfNeeded()
+            return
+        }
+
+        UIView.animate(withDuration: 0.25) {
+            self.layoutIfNeeded()
+        }
     }
 }

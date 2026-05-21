@@ -114,7 +114,7 @@ final class EditTaskViewController: UIViewController {
 
     private func makeTimeInfoCard() -> UIView {
         let card = UIView()
-        styleCard(card)
+        AddTaskUIHelpers.styleCard(card)
 
         let iconBg = UIView()
         iconBg.backgroundColor = UIColor.main.withAlphaComponent(0.1)

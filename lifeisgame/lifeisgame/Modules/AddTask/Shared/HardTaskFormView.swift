@@ -84,8 +84,8 @@ final class HardTaskFormView: TaskBaseFormView {
 
 
     private func setupSubtasksCard() {
-        styleCard(subtasksCard)
-        let header = makeTaskSectionHeader("Подзадачи")
+        AddTaskUIHelpers.styleCard(subtasksCard)
+        let header = AddTaskUIHelpers.makeTaskSectionHeader("Подзадачи")
         subtasksCard.addSubview(header)
         subtasksCard.addSubview(subtasksStack)
         subtasksCard.addSubview(addSubtaskButton)

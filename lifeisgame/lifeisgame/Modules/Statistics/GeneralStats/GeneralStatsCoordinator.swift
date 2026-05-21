@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class GeneralStatsCoordinator: Coordinator {
 
@@ -18,10 +19,18 @@ final class GeneralStatsCoordinator: Coordinator {
     }
 
     func start() {
-        let viewModel = GeneralStatsViewModel()
+        let viewModel = GeneralStatsViewModel(
+            analyzeUserDayUseCase: container.makeAnalyzeUserDayUseCase(),
+            userRepository: container.makeUserRepository(),
+            diaryRepository: container.makeDiaryRepository(),
+            taskRepository: container.makeTaskRepository()
+        )
         let vc = GeneralStatisticsViewController(viewModel: viewModel)
-        viewModel.onAchievementsTapped = { [weak vc] in
-            let achievements = AchievementsViewController()
+        viewModel.onAchievementsTapped = { [weak self, weak vc] in
+            guard let self else { return }
+            let achievements = UIHostingController(
+                rootView: AchievementsView(repository: self.container.makeAchievementRepository())
+            )
             achievements.modalPresentationStyle = .fullScreen
             vc?.present(achievements, animated: true)
         }
@@ -29,7 +38,8 @@ final class GeneralStatsCoordinator: Coordinator {
             guard let self else { return }
             let focusViewModel = FocusViewModel(
                 fetchTasksUseCase: self.container.makeFetchTasksUseCase(),
-                toggleTaskCompletionUseCase: self.container.makeToggleTaskCompletionUseCase()
+                toggleTaskCompletionUseCase: self.container.makeToggleTaskCompletionUseCase(),
+                achievementRepository: self.container.makeAchievementRepository()
             )
             let focus = FocusViewController(viewModel: focusViewModel)
             vc?.present(focus, animated: true)
