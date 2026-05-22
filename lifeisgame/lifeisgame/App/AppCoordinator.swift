@@ -12,6 +12,7 @@ final class AppCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let window: UIWindow
     private let container = DIContainer()
+    private var pendingURL: URL?
 
     init(window: UIWindow) {
         self.window = window
@@ -30,6 +31,38 @@ final class AppCoordinator: Coordinator {
     func refreshNotificationsIfNeeded() {
         guard SessionManager.shared.canRestoreSessionWithoutAuth else { return }
         LocalNotificationService.shared.refreshDiaryReminders(repository: container.makeDiaryRepository())
+    }
+
+    func handle(url: URL) {
+        guard url.scheme == "lifeisgame",
+              url.host == "focus",
+              url.path == "/complete",
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let taskIDValue = components.queryItems?.first(where: { $0.name == "taskID" })?.value,
+              let taskID = UUID(uuidString: taskIDValue) else { return }
+
+        guard SessionManager.shared.canRestoreSessionWithoutAuth else {
+            pendingURL = url
+            return
+        }
+
+        completeLiveActivityTask(taskID)
+    }
+
+    private func completeLiveActivityTask(_ taskID: UUID) {
+        try? container.makeTaskRepository().setCompletion(taskID: taskID, isCompleted: true)
+        FocusLiveActivityManager.shared.end()
+        NotificationCenter.default.post(
+            name: .focusLiveActivityTaskCompleted,
+            object: nil,
+            userInfo: [FocusLiveActivityNotificationKey.taskID: taskID]
+        )
+    }
+
+    private func processPendingURLIfNeeded() {
+        guard let pendingURL else { return }
+        self.pendingURL = nil
+        handle(url: pendingURL)
     }
 
     private func showAuth() {
@@ -68,5 +101,6 @@ final class AppCoordinator: Coordinator {
         }
         addChild(tabCoordinator)
         refreshNotificationsIfNeeded()
+        processPendingURLIfNeeded()
     }
 }

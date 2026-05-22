@@ -117,6 +117,14 @@ final class TaskRepository: TaskRepositoryProtocol {
         NotificationCenter.default.post(name: .taskStoreDidChange, object: nil)
     }
 
+    func setCompletion(taskID: UUID, isCompleted: Bool) throws {
+        guard let entity = try fetchTaskEntity(id: taskID),
+              entity.isCompleted != isCompleted else { return }
+        entity.isCompleted = isCompleted
+        persistence.save()
+        NotificationCenter.default.post(name: .taskStoreDidChange, object: nil)
+    }
+
     func deleteTask(id: UUID) throws {
         guard let entity = try fetchTaskEntity(id: id) else { return }
         entity.subtasksArray.forEach { persistence.context.delete($0) }

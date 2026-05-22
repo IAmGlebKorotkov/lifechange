@@ -28,5 +28,6 @@ protocol TaskRepositoryProtocol {
     func updateTaskSchedule(taskID: UUID, startDate: Date, deadlineDate: Date, estimatedDuration: TimeInterval) throws -> TaskItem
     func updateTaskDetails(taskID: UUID, name: String, description: String?, importance: Int, difficulty: Int) throws -> TaskItem
     func toggleCompletion(taskID: UUID) throws
+    func setCompletion(taskID: UUID, isCompleted: Bool) throws
     func deleteTask(id: UUID) throws
 }

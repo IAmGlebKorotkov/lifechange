@@ -31,6 +31,7 @@ final class FocusViewController: UIViewController {
 
     deinit {
         focusTimer?.invalidate()
+        NotificationCenter.default.removeObserver(self)
     }
 
     private let titleLabel: UILabel = {
@@ -186,6 +187,7 @@ final class FocusViewController: UIViewController {
         setupLayout()
         setupActions()
         bindViewModel()
+        observeLiveActivityActions()
         updateStartButtonState()
         viewModel.viewDidLoad()
     }
@@ -327,6 +329,15 @@ final class FocusViewController: UIViewController {
         closeButton.enablePressScale(to: 0.90)
         playlistButton.addTarget(self, action: #selector(selectPlaylist), for: .touchUpInside)
         startButton.addTarget(self, action: #selector(startFocus), for: .touchUpInside)
+    }
+
+    private func observeLiveActivityActions() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(liveActivityTaskCompleted(_:)),
+            name: .focusLiveActivityTaskCompleted,
+            object: nil
+        )
     }
 
     private func bindViewModel() {
@@ -527,6 +538,7 @@ final class FocusViewController: UIViewController {
         startFocusTimer()
         setTaskSelectionEnabled(false)
         FocusLiveActivityManager.shared.start(
+            taskID: selectedTask.id,
             taskTitle: selectedTask.displayTitle,
             taskTypeTitle: selectedTask.typeTitle,
             endDate: endDate
@@ -578,7 +590,17 @@ final class FocusViewController: UIViewController {
         }
     }
 
-    private func finishFocusSession() {
+    @objc private func liveActivityTaskCompleted(_ notification: Notification) {
+        guard let taskID = notification.userInfo?[FocusLiveActivityNotificationKey.taskID] as? UUID else { return }
+
+        if isFocusRunning, selectedTaskID == taskID {
+            finishFocusSession(shouldCompleteTask: false)
+        } else {
+            viewModel.refresh()
+        }
+    }
+
+    private func finishFocusSession(shouldCompleteTask: Bool = true) {
         guard isFocusRunning else { return }
         let taskIDToComplete = selectedTaskID
         let startedAt = focusStartDate
@@ -592,7 +614,12 @@ final class FocusViewController: UIViewController {
         setTaskSelectionEnabled(true)
         FocusLiveActivityManager.shared.end()
         viewModel.recordFocusSession(taskID: taskIDToComplete, startedAt: startedAt, endedAt: endedAt)
-        completeFocusedTaskIfNeeded(taskIDToComplete)
+        if shouldCompleteTask {
+            completeFocusedTaskIfNeeded(taskIDToComplete)
+        } else {
+            completedFocusTaskID = taskIDToComplete
+            viewModel.refresh()
+        }
         updateStartButtonState()
     }
 

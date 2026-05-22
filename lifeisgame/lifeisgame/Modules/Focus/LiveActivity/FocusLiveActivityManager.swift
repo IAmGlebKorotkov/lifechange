@@ -18,7 +18,7 @@ final class FocusLiveActivityManager {
 
     private init() {}
 
-    func start(taskTitle: String, taskTypeTitle: String, endDate: Date) {
+    func start(taskID: UUID, taskTitle: String, taskTypeTitle: String, endDate: Date) {
         Task { @MainActor in
             await endExistingActivities()
 
@@ -27,6 +27,7 @@ final class FocusLiveActivityManager {
             }
 
             let attributes = FocusActivityAttributes(
+                taskID: taskID,
                 taskTitle: taskTitle,
                 taskTypeTitle: taskTypeTitle
             )

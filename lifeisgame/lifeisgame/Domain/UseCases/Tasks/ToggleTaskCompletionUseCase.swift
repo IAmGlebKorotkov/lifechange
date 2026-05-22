@@ -18,4 +18,8 @@ final class ToggleTaskCompletionUseCase {
     func execute(taskID: UUID) throws {
         try repository.toggleCompletion(taskID: taskID)
     }
+
+    func setCompleted(taskID: UUID) throws {
+        try repository.setCompletion(taskID: taskID, isCompleted: true)
+    }
 }

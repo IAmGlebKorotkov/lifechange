@@ -22,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let coordinator = AppCoordinator(window: win)
         appCoordinator = coordinator
         coordinator.start()
+        connectionOptions.urlContexts.forEach { coordinator.handle(url: $0.url) }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -40,5 +41,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        URLContexts.forEach { appCoordinator?.handle(url: $0.url) }
+    }
 
 }

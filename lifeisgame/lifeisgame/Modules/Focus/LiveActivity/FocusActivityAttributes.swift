@@ -13,6 +13,7 @@ struct FocusActivityAttributes: ActivityAttributes {
         let endDate: Date
     }
 
+    let taskID: UUID
     let taskTitle: String
     let taskTypeTitle: String
 }

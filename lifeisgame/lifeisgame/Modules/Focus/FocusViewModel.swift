@@ -60,7 +60,7 @@ final class FocusViewModel {
     }
 
     func completeTask(id: UUID) {
-        try? toggleTaskCompletionUseCase.execute(taskID: id)
+        try? toggleTaskCompletionUseCase.setCompleted(taskID: id)
         loadTasks()
     }
 
