@@ -10,7 +10,8 @@ import UIKit
 final class FocusViewController: UIViewController {
 
     private let viewModel: FocusViewModel
-    private var selectedPlaylist = "Ничего"
+    private var playlists: [FocusMusicPlaylist] = FocusMusicLibrary.playlists
+    private var selectedPlaylistID = FocusMusicLibrary.silentPlaylistID
     private var currentTasks: [FocusTaskItem] = []
     private var selectedTaskID: UUID?
     private var completedFocusTaskID: UUID?
@@ -31,6 +32,7 @@ final class FocusViewController: UIViewController {
 
     deinit {
         focusTimer?.invalidate()
+        viewModel.stopMusic()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -178,7 +180,7 @@ final class FocusViewController: UIViewController {
         return l
     }()
 
-    private lazy var playlistButton = makeOptionButton(title: selectedPlaylist)
+    private lazy var playlistButton = makeOptionButton(title: selectedPlaylistTitle)
     private let startButton = CustomButton(title: "Начать", type: .main)
 
     override func viewDidLoad() {
@@ -344,6 +346,20 @@ final class FocusViewController: UIViewController {
         viewModel.onTasksUpdated = { [weak self] tasks in
             self?.configureTasks(tasks)
         }
+        viewModel.onPlaylistsUpdated = { [weak self] playlists in
+            self?.configurePlaylists(playlists)
+        }
+        viewModel.onMusicPlaybackError = { [weak self] message in
+            self?.showAlert(title: "Музыка не запустилась", message: message)
+        }
+    }
+
+    private func configurePlaylists(_ playlists: [FocusMusicPlaylist]) {
+        self.playlists = playlists
+        if !playlists.contains(where: { $0.id == selectedPlaylistID }) {
+            selectedPlaylistID = FocusMusicLibrary.silentPlaylistID
+        }
+        playlistButton.setTitle(selectedPlaylistTitle, for: .normal)
     }
 
     private func configureTasks(_ tasks: [FocusTaskItem]) {
@@ -405,6 +421,10 @@ final class FocusViewController: UIViewController {
     private var selectedTask: FocusTaskItem? {
         guard let selectedTaskID else { return nil }
         return currentTasks.first { $0.id == selectedTaskID }
+    }
+
+    private var selectedPlaylistTitle: String {
+        playlists.first { $0.id == selectedPlaylistID }?.title ?? "Без музыки"
     }
 
     private func selectTask(_ taskID: UUID) {
@@ -503,11 +523,13 @@ final class FocusViewController: UIViewController {
     }
 
     @objc private func selectPlaylist() {
+        guard !isFocusRunning else { return }
         let alert = UIAlertController(title: "Выбор музыки", message: nil, preferredStyle: .actionSheet)
-        ["Ничего", "Deep Focus", "Lo-fi", "Классика", "Белый шум"].forEach { playlist in
-            alert.addAction(UIAlertAction(title: playlist, style: .default) { [weak self] _ in
-                self?.selectedPlaylist = playlist
-                self?.playlistButton.setTitle(playlist, for: .normal)
+        playlists.forEach { playlist in
+            let title = playlist.isSilent ? playlist.title : "\(playlist.title) • \(playlist.tracks.count)"
+            alert.addAction(UIAlertAction(title: title, style: .default) { [weak self] _ in
+                self?.selectedPlaylistID = playlist.id
+                self?.playlistButton.setTitle(playlist.title, for: .normal)
             })
         }
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
@@ -543,6 +565,7 @@ final class FocusViewController: UIViewController {
             taskTypeTitle: selectedTask.typeTitle,
             endDate: endDate
         )
+        viewModel.playMusic(playlistID: selectedPlaylistID)
         updateStartButtonState()
     }
 
@@ -550,8 +573,13 @@ final class FocusViewController: UIViewController {
         if isFocusRunning {
             startButton.setTitle("Завершить фокус")
             startButton.isEnabled = true
+            playlistButton.isEnabled = false
+            playlistButton.alpha = 0.65
             return
         }
+
+        playlistButton.isEnabled = true
+        playlistButton.alpha = 1.0
 
         if currentTasks.isEmpty {
             startButton.setTitle("Нет задач")
@@ -613,6 +641,7 @@ final class FocusViewController: UIViewController {
         timerCard.isHidden = true
         setTaskSelectionEnabled(true)
         FocusLiveActivityManager.shared.end()
+        viewModel.stopMusic()
         viewModel.recordFocusSession(taskID: taskIDToComplete, startedAt: startedAt, endedAt: endedAt)
         if shouldCompleteTask {
             completeFocusedTaskIfNeeded(taskIDToComplete)

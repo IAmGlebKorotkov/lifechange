@@ -2,7 +2,7 @@
 //  EditTaskViewController.swift
 //  lifeisgame
 //
-//  Created by Codex on 16.05.2026.
+//  Created by Gleb Korotkov on 16.05.2026.
 //
 
 import UIKit

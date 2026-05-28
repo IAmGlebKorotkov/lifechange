@@ -33,25 +33,34 @@ struct FocusTaskItem {
 final class FocusViewModel {
 
     var onTasksUpdated: (([FocusTaskItem]) -> Void)?
+    var onPlaylistsUpdated: (([FocusMusicPlaylist]) -> Void)?
+    var onMusicPlaybackError: ((String) -> Void)?
 
     private let fetchTasksUseCase: FetchTasksUseCase
     private let toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase
     private let achievementRepository: AchievementRepositoryProtocol
+    private let musicPlayer: FocusMusicPlaying
+    private let playlists: [FocusMusicPlaylist]
     private let date: Date
 
     init(
         fetchTasksUseCase: FetchTasksUseCase,
         toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase,
         achievementRepository: AchievementRepositoryProtocol = AchievementRepository(),
+        musicPlayer: FocusMusicPlaying = FocusMusicPlayer.shared,
+        playlists: [FocusMusicPlaylist] = FocusMusicLibrary.playlists,
         date: Date = Date()
     ) {
         self.fetchTasksUseCase = fetchTasksUseCase
         self.toggleTaskCompletionUseCase = toggleTaskCompletionUseCase
         self.achievementRepository = achievementRepository
+        self.musicPlayer = musicPlayer
+        self.playlists = playlists
         self.date = date
     }
 
     func viewDidLoad() {
+        onPlaylistsUpdated?(playlists)
         loadTasks()
     }
 
@@ -73,6 +82,23 @@ final class FocusViewModel {
             startedAt: startedAt,
             endedAt: endedAt
         )
+    }
+
+    func playMusic(playlistID: FocusMusicPlaylist.ID) {
+        guard let playlist = playlists.first(where: { $0.id == playlistID }) else {
+            return
+        }
+
+        do {
+            try musicPlayer.play(playlist)
+        } catch {
+            musicPlayer.stop()
+            onMusicPlaybackError?(error.localizedDescription)
+        }
+    }
+
+    func stopMusic() {
+        musicPlayer.stop()
     }
 
     private func loadTasks() {
