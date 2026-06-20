@@ -24,6 +24,7 @@ final class CalendarViewController: UIViewController {
     private let dateStripView = CalendarDateStripView()
     private let filterView    = CalendarFilterView()
     private let taskListView  = CalendarTaskListView()
+    private var didPositionDateStrip = false
 
     private let selectedDateLabel: UILabel = {
         let l = UILabel()
@@ -33,20 +34,13 @@ final class CalendarViewController: UIViewController {
         return l
     }()
 
-    private static let dayFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "ru_RU")
-        f.dateFormat = "EEEE, d MMMM"
-        return f
-    }()
-
     private func formattedDate(_ date: Date) -> String {
         let cal = Calendar.current
-        if cal.isDateInToday(date)    { return "Сегодня, \(Self.dayFormatter.string(from: date).components(separatedBy: ", ").last ?? "")" }
-        if cal.isDateInTomorrow(date) { return "Завтра, \(Self.dayFormatter.string(from: date).components(separatedBy: ", ").last ?? "")" }
-        if cal.isDateInYesterday(date){ return "Вчера, \(Self.dayFormatter.string(from: date).components(separatedBy: ", ").last ?? "")" }
-        let raw = Self.dayFormatter.string(from: date)
-        return raw.prefix(1).uppercased() + raw.dropFirst()
+        let dateText = DateFormatter.appDateString(from: date)
+        if cal.isDateInToday(date) { return "Сегодня, \(dateText)" }
+        if cal.isDateInTomorrow(date) { return "Завтра, \(dateText)" }
+        if cal.isDateInYesterday(date) { return "Вчера, \(dateText)" }
+        return DateFormatter.appWeekdayDateString(from: date)
     }
 
 
@@ -98,6 +92,8 @@ final class CalendarViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        guard !didPositionDateStrip else { return }
+        didPositionDateStrip = true
         dateStripView.scrollToToday()
     }
 

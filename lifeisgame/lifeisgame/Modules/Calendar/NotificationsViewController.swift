@@ -2,22 +2,15 @@
 //  NotificationsViewController.swift
 //  lifeisgame
 //
-//  Created by Gleb Korotkov on 19.05.2026.
+//  Created by Gleb Korotkov on 12.05.2026.
 //
 
 import UIKit
-import UserNotifications
 
 final class NotificationsViewController: UIViewController {
 
-    private struct NotificationItem {
-        let id: String
-        let title: String
-        let body: String
-        let date: Date?
-    }
-
-    private var items: [NotificationItem] = []
+    private let viewModel: NotificationsViewModel
+    private var items: [NotificationViewData] = []
 
     private let tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
@@ -29,51 +22,13 @@ final class NotificationsViewController: UIViewController {
         return tv
     }()
 
-    private let emptyStack: UIStackView = {
-        let s = UIStackView()
-        s.axis = .vertical
-        s.alignment = .center
-        s.spacing = 12
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
-    private let emptyIconView: UIImageView = {
-        let cfg = UIImage.SymbolConfiguration(pointSize: 38, weight: .regular)
-        let iv = UIImageView(image: UIImage(systemName: "bell.slash", withConfiguration: cfg))
-        iv.tintColor = UIColor.main.withAlphaComponent(0.65)
-        iv.contentMode = .scaleAspectFit
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
-
-    private let emptyTitleLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 18, weight: .semibold)
-        l.textColor = .label
-        l.textAlignment = .center
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let emptySubtitleLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 14, weight: .regular)
-        l.textColor = .secondaryLabel
-        l.textAlignment = .center
-        l.numberOfLines = 0
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
+    private let emptyStateView = EmptyStateView(
+        iconSystemName: "bell.slash",
+        title: "Пока нет уведомлений",
+        subtitle: "Здесь появятся уведомления после доставки."
+    )
 
     private let refreshControl = UIRefreshControl()
-
-    private static let relativeFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "ru_RU")
-        f.dateFormat = "d MMMM, HH:mm"
-        return f
-    }()
 
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -82,19 +37,29 @@ final class NotificationsViewController: UIViewController {
         return f
     }()
 
+    init(viewModel: NotificationsViewModel = NotificationsViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         title = "Уведомления"
         setupNavigation()
         setupLayout()
-        loadNotifications()
+        bindViewModel()
+        viewModel.loadNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
-        loadNotifications()
+        viewModel.loadNotifications()
     }
 
     private func setupNavigation() {
@@ -110,10 +75,7 @@ final class NotificationsViewController: UIViewController {
 
     private func setupLayout() {
         view.addSubview(tableView)
-        view.addSubview(emptyStack)
-        emptyStack.addArrangedSubview(emptyIconView)
-        emptyStack.addArrangedSubview(emptyTitleLabel)
-        emptyStack.addArrangedSubview(emptySubtitleLabel)
+        view.addSubview(emptyStateView)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -128,62 +90,42 @@ final class NotificationsViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            emptyIconView.widthAnchor.constraint(equalToConstant: 48),
-            emptyIconView.heightAnchor.constraint(equalToConstant: 48),
-
-            emptyStack.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            emptyStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36),
-            emptyStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -36)
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -36)
         ])
     }
 
-    private func loadNotifications() {
-        let center = UNUserNotificationCenter.current()
-        center.getDeliveredNotifications { notifications in
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.items = notifications
-                    .map(self.makeItem)
-                    .sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
-                self.refreshControl.endRefreshing()
-                self.updateState()
-            }
+    private func bindViewModel() {
+        viewModel.onNotificationsLoaded = { [weak self] items in
+            self?.items = items
+            self?.refreshControl.endRefreshing()
+            self?.updateState()
         }
-    }
-
-    private func makeItem(from notification: UNNotification) -> NotificationItem {
-        NotificationItem(
-            id: notification.request.identifier,
-            title: titleText(from: notification.request.content.title),
-            body: bodyText(from: notification.request.content.body),
-            date: notification.date
-        )
-    }
-
-    private func titleText(from value: String) -> String {
-        value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Уведомление" : value
-    }
-
-    private func bodyText(from value: String) -> String {
-        value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Без описания" : value
     }
 
     private func updateState() {
         tableView.isHidden = items.isEmpty
-        emptyStack.isHidden = !items.isEmpty
+        emptyStateView.isHidden = !items.isEmpty
 
-        if LocalNotificationService.shared.isEnabled {
-            emptyTitleLabel.text = "Пока нет уведомлений"
-            emptySubtitleLabel.text = "Здесь появятся уведомления после доставки."
+        if viewModel.areNotificationsEnabled {
+            emptyStateView.configure(
+                title: "Пока нет уведомлений",
+                subtitle: "Здесь появятся уведомления после доставки.",
+                iconSystemName: "bell.slash"
+            )
         } else {
-            emptyTitleLabel.text = "Уведомления выключены"
-            emptySubtitleLabel.text = "Включить их можно в профиле."
+            emptyStateView.configure(
+                title: "Уведомления выключены",
+                subtitle: "Включить их можно в профиле.",
+                iconSystemName: "bell.slash"
+            )
         }
 
         tableView.reloadData()
     }
 
-    private func dateText(for item: NotificationItem) -> String {
+    private func dateText(for item: NotificationViewData) -> String {
         guard let date = item.date else { return "Время не задано" }
 
         let time = Self.timeFormatter.string(from: date)
@@ -196,11 +138,11 @@ final class NotificationsViewController: UIViewController {
         if Calendar.current.isDateInYesterday(date) {
             return "Вчера, \(time)"
         }
-        return Self.relativeFormatter.string(from: date)
+        return DateFormatter.appDateTimeString(from: date)
     }
 
     @objc private func refreshPulled() {
-        loadNotifications()
+        viewModel.loadNotifications()
     }
 
     @objc private func backTapped() {

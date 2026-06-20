@@ -16,6 +16,7 @@ final class StatsCarouselView: UIView {
 
     private let circleRadius: CGFloat = 110
     private let nodeSize:     CGFloat = 70
+    private let labelSize     = CGSize(width: 96, height: 18)
     private let step:         CGFloat = 2 * .pi / 3
     private let nodeCount     = 3
 
@@ -95,7 +96,10 @@ final class StatsCarouselView: UIView {
             label.font = .systemFont(ofSize: 11, weight: .medium)
             label.textColor = .secondaryLabel
             label.textAlignment = .center
-            label.sizeToFit()
+            label.lineBreakMode = .byClipping
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 0.85
+            label.bounds = CGRect(origin: .zero, size: labelSize)
             addSubview(label)
             nodeLabels.append(label)
         }

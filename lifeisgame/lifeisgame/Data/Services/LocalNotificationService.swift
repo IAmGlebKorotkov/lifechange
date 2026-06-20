@@ -26,7 +26,7 @@ final class LocalNotificationService {
 
     func setNotificationsEnabled(
         _ enabled: Bool,
-        diaryRepository: DiaryRepositoryProtocol,
+        diaryService: DiaryService,
         completion: ((Bool) -> Void)? = nil
     ) {
         guard enabled else {
@@ -43,7 +43,7 @@ final class LocalNotificationService {
                 guard let self else { return }
                 self.isEnabled = granted
                 if granted {
-                    self.refreshDiaryReminders(repository: diaryRepository)
+                    self.refreshDiaryReminders(diaryService: diaryService)
                 }
                 completion?(granted)
             }
@@ -70,7 +70,7 @@ final class LocalNotificationService {
         }
     }
 
-    func refreshDiaryReminders(repository: DiaryRepositoryProtocol) {
+    func refreshDiaryReminders(diaryService: DiaryService) {
         guard isEnabled else { return }
 
         ensureAuthorization { [weak self] isGranted in
@@ -84,8 +84,8 @@ final class LocalNotificationService {
                 )
 
                 for date in dates {
-                    let hasEmotionEntry = (try? repository.hasEmotionEntry(forUserID: userID, on: date)) ?? false
-                    let hasSleepEntry = (try? repository.hasSleepEntry(forUserID: userID, on: date)) ?? false
+                    let hasEmotionEntry = (try? diaryService.hasEmotionEntry(forUserID: userID, on: date)) ?? false
+                    let hasSleepEntry = (try? diaryService.hasSleepEntry(forUserID: userID, on: date)) ?? false
 
                     if !hasEmotionEntry {
                         self.scheduleDiaryReminder(

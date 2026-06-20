@@ -12,13 +12,13 @@ final class DiaryViewController: UIViewController {
 
     private enum DiaryType: CaseIterable {
         case emotions, sleep
-        var iconName: String { self == .emotions ? "Lol"            : "Time_sleep" }
+        var iconName: String { self == .emotions ? "Lol" : "Time_sleep" }
         var title: String    { self == .emotions ? "Дневник эмоций" : "Дневник сна" }
     }
 
 
     private var selectedDiary: DiaryType = .emotions
-    private let repository: DiaryRepositoryProtocol
+    private let viewModel: DiaryViewModel
 
 
     private let titleLabel: UILabel = {
@@ -35,8 +35,8 @@ final class DiaryViewController: UIViewController {
     private let sleepDiaryView   = SleepDiaryView()
 
 
-    init(repository: DiaryRepositoryProtocol) {
-        self.repository = repository
+    init(viewModel: DiaryViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -49,6 +49,7 @@ final class DiaryViewController: UIViewController {
         setupUI()
         setupKeyboardDismissGesture()
         bindActions()
+        bindViewModel()
         refreshDiaryPicker()
     }
 
@@ -131,40 +132,22 @@ final class DiaryViewController: UIViewController {
 
     private func bindActions() {
         emotionDiaryView.onSaveRequested = { [weak self] entries in
-            self?.saveEmotionEntries(entries)
+            self?.viewModel.saveEmotionEntries(entries)
         }
         sleepDiaryView.onSaveRequested = { [weak self] bedtime, wakeTime in
-            self?.saveSleepEntry(bedtime: bedtime, wakeTime: wakeTime)
+            self?.viewModel.saveSleepEntry(bedtime: bedtime, wakeTime: wakeTime)
         }
     }
 
-    private func saveEmotionEntries(_ entries: [EmotionDiaryInput]) {
-        guard let userID = SessionManager.shared.currentUserID else {
-            showAlert(title: "Не удалось сохранить", message: "Пользователь не найден.")
-            return
+    private func bindViewModel() {
+        viewModel.onEmotionEntriesSaved = { [weak self] in
+            self?.emotionDiaryView.resetAfterSave()
         }
-
-        do {
-            try repository.saveEmotionEntries(entries, forUserID: userID, on: Date())
-            LocalNotificationService.shared.cancelEmotionDiaryReminders(on: Date())
-            emotionDiaryView.resetAfterSave()
-        } catch {
-            showAlert(title: "Не удалось сохранить", message: error.localizedDescription)
+        viewModel.onSleepEntrySaved = { [weak self] in
+            self?.sleepDiaryView.showSavedState()
         }
-    }
-
-    private func saveSleepEntry(bedtime: Date, wakeTime: Date) {
-        guard let userID = SessionManager.shared.currentUserID else {
-            showAlert(title: "Не удалось сохранить", message: "Пользователь не найден.")
-            return
-        }
-
-        do {
-            try repository.saveSleepEntry(bedtime: bedtime, wakeTime: wakeTime, forUserID: userID, on: Date())
-            LocalNotificationService.shared.cancelSleepDiaryReminders(on: Date())
-            sleepDiaryView.showSavedState()
-        } catch {
-            showAlert(title: "Не удалось сохранить", message: error.localizedDescription)
+        viewModel.onSaveFailed = { [weak self] message in
+            self?.showAlert(title: "Не удалось сохранить", message: message)
         }
     }
 

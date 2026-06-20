@@ -11,14 +11,14 @@ final class AddTaskCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator] = []
     private let navigationController: UINavigationController
-    private let createTaskUseCase: CreateTaskUseCase
+    private let viewModel: AddTaskFlowViewModel
     private let initialDate: Date
 
     var onCompleted: (() -> Void)?
 
-    init(navigationController: UINavigationController, createTaskUseCase: CreateTaskUseCase, initialDate: Date = Date()) {
+    init(navigationController: UINavigationController, taskService: TaskService, initialDate: Date = Date()) {
         self.navigationController = navigationController
-        self.createTaskUseCase = createTaskUseCase
+        self.viewModel = AddTaskFlowViewModel(taskService: taskService)
         self.initialDate = initialDate
     }
 
@@ -37,34 +37,36 @@ final class AddTaskCoordinator: Coordinator {
         navigationController.pushViewController(vc, animated: true)
     }
 
-    private func showAddSubtask(parentTaskName: String, onAdded: @escaping (CreateTaskUseCase.SubtaskInput) -> Void) {
-        let vc = AddSubtaskViewController(parentTaskName: parentTaskName, mode: .add)
+    private func showAddSubtask(parentTaskName: String, onAdded: @escaping (TaskService.SubtaskInput) -> Void) {
+        let viewModel = AddSubtaskViewModel(parentTaskName: parentTaskName, mode: .add)
+        let vc = AddSubtaskViewController(viewModel: viewModel)
         vc.onSubtaskAdded = onAdded
         navigationController.pushViewController(vc, animated: true)
     }
 
     private func showEditSubtask(
         parentTaskName: String,
-        currentSubtask: CreateTaskUseCase.SubtaskInput,
-        onSaved: @escaping (CreateTaskUseCase.SubtaskInput) -> Void
+        currentSubtask: TaskService.SubtaskInput,
+        onSaved: @escaping (TaskService.SubtaskInput) -> Void
     ) {
-        let vc = AddSubtaskViewController(parentTaskName: parentTaskName, mode: .edit(currentSubtask: currentSubtask, onSaved: onSaved))
+        let viewModel = AddSubtaskViewModel(
+            parentTaskName: parentTaskName,
+            mode: .edit(currentSubtask: currentSubtask, onSaved: onSaved)
+        )
+        let vc = AddSubtaskViewController(viewModel: viewModel)
         navigationController.pushViewController(vc, animated: true)
     }
 
-    private func showGeneratedPlan(input: CreateTaskUseCase.Input) {
-        guard let userID = SessionManager.shared.currentUserID else {
-            return
-        }
-
-        createTaskUseCase.execute(input: input, userID: userID) { [weak self] result in
+    private func showGeneratedPlan(input: TaskService.Input) {
+        viewModel.createTask(input: input) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let task):
-                if input.isEvent {
+            case .success(let output):
+                switch output {
+                case .event(let task):
                     self.presentGeneratedPlan(tasks: [task], isEvent: true)
-                } else {
-                    self.presentSplitPromptIfNeeded(task: task, userID: userID)
+                case .task(let task, let lateBoundary):
+                    self.presentSplitPromptIfNeeded(task: task, lateBoundary: lateBoundary)
                 }
             case .failure:
                 break
@@ -72,8 +74,8 @@ final class AddTaskCoordinator: Coordinator {
         }
     }
 
-    private func presentSplitPromptIfNeeded(task: TaskItem, userID: UUID) {
-        guard let boundary = createTaskUseCase.lateBoundary(for: task),
+    private func presentSplitPromptIfNeeded(task: TaskItem, lateBoundary: Date?) {
+        guard let boundary = lateBoundary,
               let presenter = navigationController.topViewController else {
             presentGeneratedPlan(tasks: [task])
             return
@@ -92,7 +94,7 @@ final class AddTaskCoordinator: Coordinator {
         })
         alert.addAction(UIAlertAction(title: "Разделить", style: .default) { [weak self] _ in
             guard let self else { return }
-            let tasks = (try? self.createTaskUseCase.splitTaskAtLateBoundary(task, userID: userID)) ?? [task]
+            let tasks = self.viewModel.splitTaskAtLateBoundary(task)
             self.presentGeneratedPlan(tasks: tasks)
         })
 
@@ -100,7 +102,7 @@ final class AddTaskCoordinator: Coordinator {
     }
 
     private func presentGeneratedPlan(tasks: [TaskItem], isEvent: Bool = false) {
-        LocalNotificationService.shared.scheduleTaskReminders(for: tasks)
+        viewModel.scheduleReminders(for: tasks)
 
         let resultVC = GeneratePlanLoadingViewController(tasks: tasks, isEvent: isEvent)
         resultVC.modalPresentationStyle = .overFullScreen

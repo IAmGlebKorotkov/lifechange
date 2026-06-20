@@ -10,12 +10,12 @@ import UIKit
 final class HardTaskFormView: TaskBaseFormView {
 
 
-    private var subtasks: [CreateTaskUseCase.SubtaskInput] = [] {
+    private var subtasks: [TaskService.SubtaskInput] = [] {
         didSet { onValidationChanged?() }
     }
 
     var subtasksCount: Int { subtasks.count }
-    var subtaskInputs: [CreateTaskUseCase.SubtaskInput] { subtasks }
+    var subtaskInputs: [TaskService.SubtaskInput] { subtasks }
     var totalSubtasksDuration: TimeInterval {
         subtasks.reduce(0) { $0 + max(15 * 60, $1.estimatedDuration) }
     }
@@ -63,7 +63,7 @@ final class HardTaskFormView: TaskBaseFormView {
 
     var onAddSubtaskTapped: (() -> Void)?
 
-    var onEditSubtask: ((Int, CreateTaskUseCase.SubtaskInput, @escaping (CreateTaskUseCase.SubtaskInput) -> Void) -> Void)?
+    var onEditSubtask: ((Int, TaskService.SubtaskInput, @escaping (TaskService.SubtaskInput) -> Void) -> Void)?
 
     override init(frame: CGRect = .zero) {
         super.init(frame: frame, showsTimeSection: false)
@@ -109,13 +109,13 @@ final class HardTaskFormView: TaskBaseFormView {
         onAddSubtaskTapped?()
     }
 
-    func appendSubtask(_ subtask: CreateTaskUseCase.SubtaskInput) {
+    func appendSubtask(_ subtask: TaskService.SubtaskInput) {
         subtasks.append(subtask)
         addSubtaskRow(subtask)
         updateSubtasksMenu()
     }
 
-    private func addSubtaskRow(_ subtask: CreateTaskUseCase.SubtaskInput) {
+    private func addSubtaskRow(_ subtask: TaskService.SubtaskInput) {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = 8

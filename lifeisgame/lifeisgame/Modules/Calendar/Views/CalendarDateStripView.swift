@@ -11,9 +11,11 @@ final class CalendarDateStripView: UIView {
 
     var onDateSelected: ((Date) -> Void)?
 
-
-    private var dates: [Date] = []
-    private var selectedIndex: Int = 0
+    private let calendar = Calendar.current
+    private let today = Calendar.current.startOfDay(for: Date())
+    private let todayIndex = 36_500
+    private let dateCount = 73_001
+    private var selectedIndex = 36_500
 
 
     private lazy var collectionView: UICollectionView = {
@@ -33,18 +35,24 @@ final class CalendarDateStripView: UIView {
         return cv
     }()
 
+    private var cellWidth: CGFloat {
+        let insets = collectionLayout.sectionInset.left + collectionLayout.sectionInset.right
+        let spacing = collectionLayout.minimumLineSpacing * 4
+        return max(44, floor((collectionView.bounds.width - insets - spacing) / 4.5))
+    }
+
     private var slotWidth: CGFloat {
-        let insets: CGFloat = 40
-        let spacing: CGFloat = 40
-        let cellWidth = floor((collectionView.bounds.width - insets - spacing) / 4.5)
-        return cellWidth + 10
+        cellWidth + collectionLayout.minimumLineSpacing
+    }
+
+    private var collectionLayout: UICollectionViewFlowLayout {
+        collectionView.collectionViewLayout as? UICollectionViewFlowLayout ?? UICollectionViewFlowLayout()
     }
 
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        generateDates()
         addSubview(collectionView)
 
         NSLayoutConstraint.activate([
@@ -61,6 +69,8 @@ final class CalendarDateStripView: UIView {
 
 
     func scrollToToday() {
+        selectedIndex = todayIndex
+        collectionView.layoutIfNeeded()
         collectionView.scrollToItem(
             at: IndexPath(item: selectedIndex, section: 0),
             at: .centeredHorizontally,
@@ -68,14 +78,35 @@ final class CalendarDateStripView: UIView {
         )
     }
 
+    private func date(for index: Int) -> Date {
+        calendar.date(byAdding: .day, value: index - todayIndex, to: today) ?? today
+    }
 
-    private func generateDates() {
-        let calendar = Calendar.current
-        let today = Date()
-        dates = (-30...60).compactMap { offset in
-            calendar.date(byAdding: .day, value: offset, to: today)
+    private func centeredContentOffsetX(for index: Int) -> CGFloat {
+        let itemCenterX = collectionLayout.sectionInset.left
+            + CGFloat(index) * slotWidth
+            + cellWidth / 2
+        let maxOffsetX = max(0, collectionView.contentSize.width - collectionView.bounds.width)
+        return min(max(0, itemCenterX - collectionView.bounds.width / 2), maxOffsetX)
+    }
+
+    private func nearestIndex(for contentOffsetX: CGFloat, velocityX: CGFloat) -> Int {
+        let centeredX = contentOffsetX
+            + collectionView.bounds.width / 2
+            - collectionLayout.sectionInset.left
+            - cellWidth / 2
+        let rawIndex = centeredX / slotWidth
+        let roundedIndex: CGFloat
+
+        if velocityX > 0.3 {
+            roundedIndex = ceil(rawIndex)
+        } else if velocityX < -0.3 {
+            roundedIndex = floor(rawIndex)
+        } else {
+            roundedIndex = rawIndex.rounded()
         }
-        selectedIndex = 30
+
+        return Int(max(0, min(CGFloat(dateCount - 1), roundedIndex)))
     }
 }
 
@@ -83,15 +114,17 @@ final class CalendarDateStripView: UIView {
 extension CalendarDateStripView: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dates.count
+        dateCount
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
+        guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: DateCell.reuseID,
             for: indexPath
-        ) as! DateCell
-        cell.configure(date: dates[indexPath.item], isSelected: indexPath.item == selectedIndex)
+        ) as? DateCell else {
+            return UICollectionViewCell()
+        }
+        cell.configure(date: date(for: indexPath.item), isSelected: indexPath.item == selectedIndex)
         return cell
     }
 }
@@ -106,7 +139,7 @@ extension CalendarDateStripView: UICollectionViewDelegate {
         selectedIndex = indexPath.item
 
         collectionView.reloadItems(at: [previousIndex, indexPath])
-        onDateSelected?(dates[indexPath.item])
+        onDateSelected?(date(for: indexPath.item))
     }
 
     func scrollViewWillEndDragging(
@@ -114,20 +147,10 @@ extension CalendarDateStripView: UICollectionViewDelegate {
         withVelocity velocity: CGPoint,
         targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
-        let slot = slotWidth
-        guard slot > 0 else { return }
+        guard slotWidth > 0 else { return }
 
-        let rawIndex: CGFloat
-        if velocity.x > 0.3 {
-            rawIndex = ceil(targetContentOffset.pointee.x / slot)
-        } else if velocity.x < -0.3 {
-            rawIndex = floor(targetContentOffset.pointee.x / slot)
-        } else {
-            rawIndex = (targetContentOffset.pointee.x / slot).rounded()
-        }
-
-        let index = Int(max(0, min(CGFloat(dates.count - 1), rawIndex)))
-        targetContentOffset.pointee = CGPoint(x: CGFloat(index) * slot, y: 0)
+        let index = nearestIndex(for: targetContentOffset.pointee.x, velocityX: velocity.x)
+        targetContentOffset.pointee = CGPoint(x: centeredContentOffsetX(for: index), y: 0)
     }
 }
 
@@ -139,10 +162,6 @@ extension CalendarDateStripView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let insets: CGFloat = 20 * 2
-        let spacing: CGFloat = 10 * 4
-        let availableWidth = collectionView.bounds.width - insets - spacing
-        let cellWidth = floor(availableWidth / 4.5)
-        return CGSize(width: cellWidth, height: 102)
+        CGSize(width: cellWidth, height: 102)
     }
 }

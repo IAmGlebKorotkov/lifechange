@@ -96,8 +96,6 @@ final class ProfileViewController: UIViewController {
         logoutButton.enablePressScale()
         changePasswordButton.enablePressScale()
 
-        notificationsRow.isOn = LocalNotificationService.shared.isEnabled
-
         viewModel.loadProfile()
 
         faceIDRow.onValueChanged = { [weak self] isOn in
@@ -119,6 +117,7 @@ final class ProfileViewController: UIViewController {
             self?.loginField.value = profile.email
             self?.passwordField.value = profile.passwordMask
             self?.faceIDRow.isOn = profile.isFaceIDEnabled
+            self?.notificationsRow.isOn = profile.isNotificationsEnabled
         }
 
         viewModel.onFaceIDStateChanged = { [weak self] isEnabled in

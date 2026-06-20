@@ -26,10 +26,7 @@ final class AuthCoordinator: Coordinator {
     }
 
     func showLogin() {
-        let viewModel = LoginViewModel(
-            loginUseCase: container.makeLoginUseCase(),
-            userRepository: container.makeUserRepository()
-        )
+        let viewModel = LoginViewModel(authService: container.makeAuthService())
         let viewController = LoginViewController(viewModel: viewModel)
         viewModel.onRegisterTapped = { [weak self] in
             self?.showRegistration()
@@ -41,7 +38,7 @@ final class AuthCoordinator: Coordinator {
     }
 
     func showRegistration() {
-        let viewModel = RegistrationViewModel(registerUseCase: container.makeRegisterUseCase())
+        let viewModel = RegistrationViewModel(authService: container.makeAuthService())
         let viewController = RegistrationViewController(viewModel: viewModel)
         viewModel.onLoginTapped = { [weak self] in
             self?.showLogin()

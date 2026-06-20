@@ -28,7 +28,10 @@ final class UserRepository: UserRepositoryProtocol {
         entity.birthDate = birthDate
         entity.createdAt = Date()
         persistence.save()
-        keychain.savePassword(password, forUserID: entity.id!)
+        guard let id = entity.id else {
+            throw RepositoryError.mappingFailed
+        }
+        keychain.savePassword(password, forUserID: id)
         guard let user = UserMapper.toDomain(entity) else {
             throw RepositoryError.mappingFailed
         }

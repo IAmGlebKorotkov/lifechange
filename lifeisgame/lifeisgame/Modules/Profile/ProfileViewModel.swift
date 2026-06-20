@@ -13,12 +13,13 @@ struct ProfileViewData {
     let email: String
     let passwordMask: String
     let isFaceIDEnabled: Bool
+    let isNotificationsEnabled: Bool
 }
 
 final class ProfileViewModel {
 
-    private let userRepository: UserRepositoryProtocol
-    private let diaryRepository: DiaryRepositoryProtocol
+    private let authService: AuthService
+    private let diaryService: DiaryService
 
     var onLogoutRequested: (() -> Void)?
     var onProfileUpdated: ((ProfileViewData) -> Void)?
@@ -26,9 +27,9 @@ final class ProfileViewModel {
     var onNotificationsStateChanged: ((Bool) -> Void)?
     var onError: ((String) -> Void)?
 
-    init(userRepository: UserRepositoryProtocol, diaryRepository: DiaryRepositoryProtocol) {
-        self.userRepository = userRepository
-        self.diaryRepository = diaryRepository
+    init(authService: AuthService, diaryService: DiaryService) {
+        self.authService = authService
+        self.diaryService = diaryService
     }
 
     func loadProfile() {
@@ -38,7 +39,7 @@ final class ProfileViewModel {
         }
 
         do {
-            guard let user = try userRepository.fetchUser(byID: userID) else {
+            guard let user = try authService.fetchUser(byID: userID) else {
                 onError?("Пользователь не найден")
                 return
             }
@@ -48,7 +49,8 @@ final class ProfileViewModel {
                 email: user.email,
                 passwordMask: "••••••••",
                 isFaceIDEnabled: SessionManager.shared.isFaceIDEnabled
-                    && SessionManager.shared.faceIDUserID == user.id
+                    && SessionManager.shared.faceIDUserID == user.id,
+                isNotificationsEnabled: LocalNotificationService.shared.isEnabled
             ))
         } catch {
             onError?(error.localizedDescription)
@@ -96,7 +98,7 @@ final class ProfileViewModel {
     func setNotificationsEnabled(_ isEnabled: Bool) {
         LocalNotificationService.shared.setNotificationsEnabled(
             isEnabled,
-            diaryRepository: diaryRepository
+            diaryService: diaryService
         ) { [weak self] isGranted in
             self?.onNotificationsStateChanged?(isGranted)
             if isEnabled && !isGranted {

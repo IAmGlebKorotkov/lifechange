@@ -11,9 +11,7 @@ import UIKit
 
 final class CalendarViewModel {
 
-    private let fetchTasksUseCase: FetchTasksUseCase
-    private let toggleUseCase: ToggleTaskCompletionUseCase
-    private let deleteUseCase: DeleteTaskUseCase
+    private let taskService: TaskService
 
     var onAddTaskTapped: ((Date) -> Void)?
     var onEditTaskTapped: ((TaskItem) -> Void)?
@@ -24,12 +22,8 @@ final class CalendarViewModel {
     private var selectedFilter: CalendarFilter = .all
     private var reloadWorkItem: DispatchWorkItem?
 
-    init(fetchTasksUseCase: FetchTasksUseCase,
-         toggleUseCase: ToggleTaskCompletionUseCase,
-         deleteUseCase: DeleteTaskUseCase) {
-        self.fetchTasksUseCase = fetchTasksUseCase
-        self.toggleUseCase = toggleUseCase
-        self.deleteUseCase = deleteUseCase
+    init(taskService: TaskService) {
+        self.taskService = taskService
         observeTaskChanges()
     }
 
@@ -69,12 +63,12 @@ final class CalendarViewModel {
     }
 
     func toggleTask(id: UUID) {
-        try? toggleUseCase.execute(taskID: id)
+        try? taskService.toggleCompletion(taskID: id)
         loadTasks()
     }
 
     func deleteTask(id: UUID) {
-        try? deleteUseCase.execute(taskID: id)
+        try? taskService.deleteTask(taskID: id)
         loadTasks()
     }
 
@@ -117,7 +111,7 @@ final class CalendarViewModel {
             onTasksUpdated?([])
             return
         }
-        fetchTasksUseCase.execute(userID: userID, date: selectedDate) { [weak self] tasks in
+        taskService.fetchTasks(userID: userID, date: selectedDate) { [weak self] tasks in
             guard let self else { return }
             self.onTasksUpdated?(self.filter(tasks))
         }

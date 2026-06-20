@@ -11,13 +11,6 @@ final class SleepStatsView: UIView {
 
     private var entries: [SleepDiaryEntry] = []
 
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM"
-        return formatter
-    }()
-
     private let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -90,72 +83,12 @@ final class SleepStatsView: UIView {
     }
 
     private func makeRow(_ entry: SleepDiaryEntry) -> UIView {
-        let card = UIView()
-        card.backgroundColor = .white
-        card.layer.cornerRadius = 14
-        card.translatesAutoresizingMaskIntoConstraints = false
-
-        let iconBg = UIView()
-        iconBg.backgroundColor = UIColor.main.withAlphaComponent(0.1)
-        iconBg.layer.cornerRadius = 22
-        iconBg.translatesAutoresizingMaskIntoConstraints = false
-
-        let cfg = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
-        let iconView = UIImageView(image: UIImage(systemName: "moon.zzz.fill", withConfiguration: cfg))
-        iconView.tintColor = UIColor.main
-        iconView.contentMode = .scaleAspectFit
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconBg.addSubview(iconView)
-
-        let dateLabel = UILabel()
-        dateLabel.text = dateFormatter.string(from: entry.dayDate)
-        dateLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        dateLabel.textColor = .label
-
-        let timeLabel = UILabel()
-        timeLabel.text = "\(timeFormatter.string(from: entry.bedtime)) - \(timeFormatter.string(from: entry.wakeTime))"
-        timeLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        timeLabel.textColor = .secondaryLabel
-
-        let textStack = UIStackView(arrangedSubviews: [dateLabel, timeLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 3
-        textStack.translatesAutoresizingMaskIntoConstraints = false
-
-        let durationLabel = UILabel()
-        durationLabel.text = durationText(entry.durationMinutes)
-        durationLabel.font = .systemFont(ofSize: 14, weight: .bold)
-        durationLabel.textColor = UIColor.main
-        durationLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        card.addSubview(iconBg)
-        card.addSubview(textStack)
-        card.addSubview(durationLabel)
-
-        NSLayoutConstraint.activate([
-            iconBg.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 14),
-            iconBg.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-            iconBg.widthAnchor.constraint(equalToConstant: 44),
-            iconBg.heightAnchor.constraint(equalToConstant: 44),
-
-            iconView.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
-            iconView.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 22),
-            iconView.heightAnchor.constraint(equalToConstant: 22),
-
-            textStack.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 12),
-            textStack.topAnchor.constraint(greaterThanOrEqualTo: card.topAnchor, constant: 12),
-            textStack.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-            textStack.trailingAnchor.constraint(lessThanOrEqualTo: durationLabel.leadingAnchor, constant: -12),
-            textStack.bottomAnchor.constraint(lessThanOrEqualTo: card.bottomAnchor, constant: -12),
-
-            durationLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
-            durationLabel.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-
-            card.heightAnchor.constraint(equalToConstant: 68)
-        ])
-
-        return card
+        IconInfoRowView(
+            iconSystemName: "moon.zzz.fill",
+            title: DateFormatter.appDateString(from: entry.dayDate),
+            subtitle: "\(timeFormatter.string(from: entry.bedtime)) - \(timeFormatter.string(from: entry.wakeTime))",
+            trailingText: durationText(entry.durationMinutes)
+        )
     }
 
     private func makeEmptyState() -> UIView {

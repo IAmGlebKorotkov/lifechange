@@ -10,17 +10,17 @@ import LocalAuthentication
 
 final class LoginViewModel {
 
-    private let loginUseCase: LoginUseCase
-    private let userRepository: UserRepositoryProtocol
+    private let authService: AuthService
+    private let validator: LoginValidator
 
     var onRegisterTapped: (() -> Void)?
     var onLoginSuccess: (() -> Void)?
     var onError: ((String) -> Void)?
     var onFaceIDAvailabilityChanged: ((Bool) -> Void)?
 
-    init(loginUseCase: LoginUseCase, userRepository: UserRepositoryProtocol) {
-        self.loginUseCase = loginUseCase
-        self.userRepository = userRepository
+    init(authService: AuthService, validator: LoginValidator = LoginValidator()) {
+        self.authService = authService
+        self.validator = validator
     }
 
     func registerTapped() {
@@ -39,9 +39,13 @@ final class LoginViewModel {
         )
     }
 
+    func validate(email: String, password: String) -> LoginValidationResult {
+        validator.validate(LoginValidationInput(email: email, password: password))
+    }
+
     func loginTapped(email: String, password: String) {
         do {
-            let user = try loginUseCase.execute(email: email, password: password)
+            let user = try authService.login(email: email, password: password)
             SessionManager.shared.currentUserID = user.id
             onLoginSuccess?()
         } catch {
@@ -77,7 +81,7 @@ final class LoginViewModel {
                 }
 
                 do {
-                    guard try self.userRepository.fetchUser(byID: userID) != nil else {
+                    guard try self.authService.fetchUser(byID: userID) != nil else {
                         SessionManager.shared.disableFaceID()
                         self.updateFaceIDAvailability()
                         self.onError?("Аккаунт для Face ID не найден")

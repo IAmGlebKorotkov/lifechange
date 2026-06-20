@@ -7,6 +7,74 @@
 
 import UIKit
 
+extension DateFormatter {
+
+    private static var appDateLocale: Locale { Locale(identifier: "ru_RU") }
+    private static let appShortMonths = [
+        "янв.", "февр.", "мар.", "апр.", "мая", "июн.",
+        "июл.", "авг.", "сент.", "окт.", "нояб.", "дек."
+    ]
+
+    static func appDateString(from date: Date) -> String {
+        let components = Calendar.current.dateComponents([.day, .month, .year], from: date)
+        let day = components.day ?? 1
+        let monthIndex = max(0, min((components.month ?? 1) - 1, appShortMonths.count - 1))
+        let year = components.year ?? Calendar.current.component(.year, from: date)
+        return "\(day) \(appShortMonths[monthIndex]) \(year) г."
+    }
+
+    static func appDateTimeString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = appDateLocale
+        formatter.dateFormat = "HH:mm"
+        return "\(appDateString(from: date)), \(formatter.string(from: date))"
+    }
+
+    static func appWeekdayDateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = appDateLocale
+        formatter.dateFormat = "EEEE"
+        let raw = formatter.string(from: date)
+        let weekday = raw.prefix(1).uppercased() + raw.dropFirst()
+        return "\(weekday), \(appDateString(from: date))"
+    }
+
+    static func appDate(from text: String) -> Date? {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalized = trimmed
+            .replacingOccurrences(of: " г.", with: "")
+            .replacingOccurrences(of: " г", with: "")
+            .replacingOccurrences(of: "  ", with: " ")
+        let parts = normalized.split(separator: " ")
+
+        if parts.count == 3,
+           let day = Int(parts[0]),
+           let monthIndex = appShortMonths.firstIndex(of: String(parts[1])),
+           let year = Int(parts[2]) {
+            var components = DateComponents()
+            components.calendar = Calendar.current
+            components.day = day
+            components.month = monthIndex + 1
+            components.year = year
+            if let date = components.date {
+                return date
+            }
+        }
+
+        let currentFormatter = DateFormatter()
+        currentFormatter.locale = appDateLocale
+        currentFormatter.dateFormat = "d MMMM yyyy 'г.'"
+        if let date = currentFormatter.date(from: trimmed) {
+            return date
+        }
+
+        let legacyFormatter = DateFormatter()
+        legacyFormatter.locale = appDateLocale
+        legacyFormatter.dateFormat = "dd.MM.yyyy"
+        return legacyFormatter.date(from: trimmed)
+    }
+}
+
 enum TextFieldType {
     case email
     case password
@@ -143,9 +211,6 @@ final class CustomTextField: UITextField {
     }
 
     private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM yyyy'г.'"
-        return formatter.string(from: date)
+        DateFormatter.appDateString(from: date)
     }
 }

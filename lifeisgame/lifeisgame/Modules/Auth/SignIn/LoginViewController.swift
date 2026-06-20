@@ -10,7 +10,19 @@ import UIKit
 final class LoginViewController: UIViewController {
 
 
-    private let validationUseCase = LoginValidationUseCase()
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
 
     private let titleLabel: UILabel = {
@@ -56,7 +68,6 @@ final class LoginViewController: UIViewController {
         button.isHidden = true
         return button
     }()
-    private let telegramButton = CustomButton(title: "Войти с помощью Телеграм", type: .secondary)
 
     private lazy var registerButton: UIButton = {
         let button = UIButton(type: .system)
@@ -114,10 +125,10 @@ final class LoginViewController: UIViewController {
     }
 
     private func validateAndUpdate() {
-        let result = validationUseCase.validate(LoginValidationInput(
+        let result = viewModel.validate(
             email: emailTextField.text ?? "",
             password: passwordTextField.text ?? ""
-        ))
+        )
         loginButton.isEnabled = result.isValid
         hintView.update(with: result.errors.map { $0.message })
     }
@@ -126,9 +137,8 @@ final class LoginViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor.background
 
-        let emailContainer = makeFieldContainer(title: "Логин", textField: emailTextField)
-        let passwordContainer = makeFieldContainer(title: "Пароль", textField: passwordTextField)
-        let separator = makeSeparatorView()
+        let emailContainer = LabeledInputCard(title: "Логин", field: emailTextField)
+        let passwordContainer = LabeledInputCard(title: "Пароль", field: passwordTextField)
 
         let stackView = UIStackView(arrangedSubviews: [
             emailContainer,
@@ -136,9 +146,7 @@ final class LoginViewController: UIViewController {
             forgotPasswordButton,
             hintView,
             loginButton,
-            faceIDButton,
-            separator,
-            telegramButton
+            faceIDButton
         ])
         stackView.axis = .vertical
         stackView.spacing = 16
@@ -147,29 +155,44 @@ final class LoginViewController: UIViewController {
         stackView.setCustomSpacing(12, after: hintView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
-        view.addSubview(stackView)
-        view.addSubview(bottomStackView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(stackView)
+        contentView.addSubview(bottomStackView)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+
+            titleLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
 
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            subtitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -24),
 
             stackView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 32),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
 
-            bottomStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            bottomStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            bottomStackView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
+            bottomStackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
 
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         faceIDButton.addTarget(self, action: #selector(faceIDLoginTapped), for: .touchUpInside)
-        telegramButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
 
         viewModel.onError = { [weak self] message in
             self?.hintView.update(with: [message])
@@ -181,87 +204,6 @@ final class LoginViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-    }
-
-
-    private func makeFieldContainer(title: String, textField: CustomTextField) -> UIView {
-        let wrapper = UIView()
-        wrapper.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = title
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemGray
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        let container = UIView()
-        container.backgroundColor = .white
-        container.layer.cornerRadius = 12
-        container.layer.borderWidth = 1
-        container.layer.borderColor = UIColor.systemGray4.cgColor
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        wrapper.addSubview(label)
-        wrapper.addSubview(container)
-        container.addSubview(textField)
-
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: wrapper.topAnchor),
-            label.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor),
-
-            container.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 8),
-            container.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
-            container.heightAnchor.constraint(equalToConstant: 52),
-
-            textField.topAnchor.constraint(equalTo: container.topAnchor),
-            textField.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            textField.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8)
-        ])
-
-        return wrapper
-    }
-
-    private func makeSeparatorView() -> UIView {
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        let leftLine = UIView()
-        leftLine.backgroundColor = .systemGray4
-        leftLine.translatesAutoresizingMaskIntoConstraints = false
-
-        let rightLine = UIView()
-        rightLine.backgroundColor = .systemGray4
-        rightLine.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = "или"
-        label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .systemGray
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        container.addSubview(leftLine)
-        container.addSubview(label)
-        container.addSubview(rightLine)
-
-        NSLayoutConstraint.activate([
-            container.heightAnchor.constraint(equalToConstant: 20),
-            label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            leftLine.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            leftLine.trailingAnchor.constraint(equalTo: label.leadingAnchor, constant: -12),
-            leftLine.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            leftLine.heightAnchor.constraint(equalToConstant: 1),
-            rightLine.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 12),
-            rightLine.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            rightLine.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            rightLine.heightAnchor.constraint(equalToConstant: 1)
-        ])
-
-        return container
     }
 
 

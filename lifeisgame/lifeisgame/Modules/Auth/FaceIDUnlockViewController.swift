@@ -5,12 +5,11 @@
 //  Created by Gleb Korotkov on 14.05.2026.
 //
 
-import LocalAuthentication
 import UIKit
 
 final class FaceIDUnlockViewController: UIViewController {
 
-    private let userRepository: UserRepositoryProtocol
+    private let viewModel: FaceIDUnlockViewModel
     private var didStartAuthentication = false
 
     var onUnlocked: (() -> Void)?
@@ -68,8 +67,8 @@ final class FaceIDUnlockViewController: UIViewController {
     private let retryButton = CustomButton(title: "Повторить Face ID", type: .main)
     private let fallbackButton = CustomButton(title: "Войти другим способом", type: .secondary)
 
-    init(userRepository: UserRepositoryProtocol) {
-        self.userRepository = userRepository
+    init(viewModel: FaceIDUnlockViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -81,6 +80,7 @@ final class FaceIDUnlockViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupLayout()
+        bindViewModel()
         retryButton.addTarget(self, action: #selector(retryTapped), for: .touchUpInside)
         fallbackButton.addTarget(self, action: #selector(fallbackTapped), for: .touchUpInside)
     }
@@ -134,50 +134,18 @@ final class FaceIDUnlockViewController: UIViewController {
         ])
     }
 
-    private func authenticate() {
-        errorLabel.isHidden = true
-        guard SessionManager.shared.isFaceIDEnabled,
-              let userID = SessionManager.shared.faceIDUserID else {
-            showError("Вход через Face ID не включен")
-            return
+    private func bindViewModel() {
+        viewModel.onUnlocked = { [weak self] in
+            self?.onUnlocked?()
         }
-
-        let context = LAContext()
-        var error: NSError?
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error),
-              context.biometryType == .faceID else {
-            showError("Face ID недоступен на этом устройстве")
-            return
-        }
-
-        context.evaluatePolicy(
-            .deviceOwnerAuthenticationWithBiometrics,
-            localizedReason: "Войдите в аккаунт через Face ID"
-        ) { [weak self] success, error in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                guard success else {
-                    self.showError(error?.localizedDescription ?? "Face ID не подтвержден")
-                    return
-                }
-                self.unlock(userID: userID)
-            }
+        viewModel.onError = { [weak self] message in
+            self?.showError(message)
         }
     }
 
-    private func unlock(userID: UUID) {
-        do {
-            guard try userRepository.fetchUser(byID: userID) != nil else {
-                SessionManager.shared.disableFaceID()
-                showError("Аккаунт для Face ID не найден")
-                return
-            }
-
-            SessionManager.shared.currentUserID = userID
-            onUnlocked?()
-        } catch {
-            showError(error.localizedDescription)
-        }
+    private func authenticate() {
+        errorLabel.isHidden = true
+        viewModel.authenticate()
     }
 
     private func showError(_ message: String) {

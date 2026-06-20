@@ -18,9 +18,10 @@ final class StatisticsCoordinator: Coordinator {
     }
 
     func start() {
-        rootViewController = StatisticsViewController(
-            repository: container.makeDiaryRepository(),
-            taskRepository: container.makeTaskRepository()
+        let viewModel = StatisticsViewModel(
+            diaryService: container.makeDiaryService(),
+            taskService: container.makeTaskService()
         )
+        rootViewController = StatisticsViewController(viewModel: viewModel)
     }
 }

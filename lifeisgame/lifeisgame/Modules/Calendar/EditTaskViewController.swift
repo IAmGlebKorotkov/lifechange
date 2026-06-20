@@ -2,7 +2,7 @@
 //  EditTaskViewController.swift
 //  lifeisgame
 //
-//  Created by Gleb Korotkov on 16.05.2026.
+//  Created by Gleb Korotkov on 09.05.2026.
 //
 
 import UIKit
@@ -11,8 +11,7 @@ final class EditTaskViewController: UIViewController {
 
     var onSaved: (() -> Void)?
 
-    private let task: TaskItem
-    private let updateTaskDetailsUseCase: UpdateTaskDetailsUseCase
+    private let viewModel: EditTaskViewModel
 
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -33,9 +32,8 @@ final class EditTaskViewController: UIViewController {
     private let formView = TaskBaseFormView(showsDateSection: false, showsTimeSection: false)
     private let saveButton = CustomButton(title: "Сохранить изменения", type: .main)
 
-    init(task: TaskItem, updateTaskDetailsUseCase: UpdateTaskDetailsUseCase) {
-        self.task = task
-        self.updateTaskDetailsUseCase = updateTaskDetailsUseCase
+    init(viewModel: EditTaskViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -51,6 +49,7 @@ final class EditTaskViewController: UIViewController {
         setupLayout()
         configureForm()
         setupActions()
+        bindViewModel()
         updateSaveButton()
     }
 
@@ -94,11 +93,21 @@ final class EditTaskViewController: UIViewController {
 
     private func configureForm() {
         formView.configureFields(
-            name: task.name,
-            description: task.taskDescription,
-            importance: task.importance,
-            difficulty: task.difficulty
+            name: viewModel.viewData.name,
+            description: viewModel.viewData.description,
+            importance: viewModel.viewData.importance,
+            difficulty: viewModel.viewData.difficulty
         )
+    }
+
+    private func bindViewModel() {
+        viewModel.onSaved = { [weak self] in
+            self?.onSaved?()
+            self?.navigationController?.popViewController(animated: true)
+        }
+        viewModel.onSaveFailed = { [weak self] message in
+            self?.showError(message)
+        }
     }
 
     private func setupActions() {
@@ -139,7 +148,7 @@ final class EditTaskViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let valueLabel = UILabel()
-        valueLabel.text = "\(dateTimeString(task.startDate)) - \(dateTimeString(task.deadlineDate))"
+        valueLabel.text = viewModel.viewData.timeRangeText
         valueLabel.font = .systemFont(ofSize: 13, weight: .medium)
         valueLabel.textColor = UIColor.main
         valueLabel.adjustsFontSizeToFitWidth = true
@@ -147,7 +156,7 @@ final class EditTaskViewController: UIViewController {
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let durationLabel = UILabel()
-        durationLabel.text = durationString(task.estimatedDuration)
+        durationLabel.text = viewModel.viewData.durationText
         durationLabel.font = .systemFont(ofSize: 13)
         durationLabel.textColor = .secondaryLabel
         durationLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -187,32 +196,16 @@ final class EditTaskViewController: UIViewController {
     }
 
     private func updateSaveButton() {
-        saveButton.isEnabled = !(formView.nameTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        saveButton.isEnabled = viewModel.canSaveTaskName(formView.nameTextField.text)
     }
 
     @objc private func saveTapped() {
-        let name = (formView.nameTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !name.isEmpty else {
-            showError("Введите название задачи")
-            return
-        }
-
-        let description = formView.descTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        let input = UpdateTaskDetailsUseCase.Input(
-            taskID: task.id,
-            name: name,
-            description: description.isEmpty ? nil : description,
-            importance: Int(roundf(formView.importanceSlider.value)),
-            difficulty: Int(roundf(formView.difficultySlider.value))
+        viewModel.save(
+            name: formView.nameTextField.text,
+            description: formView.descTextView.text,
+            importance: formView.importance,
+            difficulty: formView.difficulty
         )
-
-        do {
-            _ = try updateTaskDetailsUseCase.execute(input: input)
-            onSaved?()
-            navigationController?.popViewController(animated: true)
-        } catch {
-            showError(error.localizedDescription)
-        }
     }
 
     @objc private func backTapped() {
@@ -229,18 +222,4 @@ final class EditTaskViewController: UIViewController {
         present(alert, animated: true)
     }
 
-    private func dateTimeString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMM, HH:mm"
-        return formatter.string(from: date)
-    }
-
-    private func durationString(_ duration: TimeInterval) -> String {
-        let minutes = max(0, Int(duration / 60))
-        if minutes < 60 { return "\(minutes) мин" }
-        let hours = minutes / 60
-        let restMinutes = minutes % 60
-        return restMinutes == 0 ? "\(hours) ч" : "\(hours) ч \(restMinutes) мин"
-    }
 }

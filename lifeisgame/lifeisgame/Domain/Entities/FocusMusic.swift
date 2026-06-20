@@ -2,7 +2,7 @@
 //  FocusMusic.swift
 //  lifeisgame
 //
-//  Created by Gleb Korotkov on 28.05.2026.
+//  Created by Gleb Korotkov on 21.05.2026.
 //
 
 import Foundation

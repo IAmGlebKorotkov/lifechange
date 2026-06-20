@@ -20,8 +20,8 @@ final class ProfileCoordinator: Coordinator {
 
     func start() {
         let viewModel = ProfileViewModel(
-            userRepository: container.makeUserRepository(),
-            diaryRepository: container.makeDiaryRepository()
+            authService: container.makeAuthService(),
+            diaryService: container.makeDiaryService()
         )
         let vc = ProfileViewController(viewModel: viewModel)
         viewModel.onLogoutRequested = { [weak self] in

@@ -36,24 +36,21 @@ final class FocusViewModel {
     var onPlaylistsUpdated: (([FocusMusicPlaylist]) -> Void)?
     var onMusicPlaybackError: ((String) -> Void)?
 
-    private let fetchTasksUseCase: FetchTasksUseCase
-    private let toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase
-    private let achievementRepository: AchievementRepositoryProtocol
+    private let taskService: TaskService
+    private let achievementService: AchievementService
     private let musicPlayer: FocusMusicPlaying
     private let playlists: [FocusMusicPlaylist]
     private let date: Date
 
     init(
-        fetchTasksUseCase: FetchTasksUseCase,
-        toggleTaskCompletionUseCase: ToggleTaskCompletionUseCase,
-        achievementRepository: AchievementRepositoryProtocol = AchievementRepository(),
+        taskService: TaskService,
+        achievementService: AchievementService = AchievementService(),
         musicPlayer: FocusMusicPlaying = FocusMusicPlayer.shared,
         playlists: [FocusMusicPlaylist] = FocusMusicLibrary.playlists,
         date: Date = Date()
     ) {
-        self.fetchTasksUseCase = fetchTasksUseCase
-        self.toggleTaskCompletionUseCase = toggleTaskCompletionUseCase
-        self.achievementRepository = achievementRepository
+        self.taskService = taskService
+        self.achievementService = achievementService
         self.musicPlayer = musicPlayer
         self.playlists = playlists
         self.date = date
@@ -69,14 +66,14 @@ final class FocusViewModel {
     }
 
     func completeTask(id: UUID) {
-        try? toggleTaskCompletionUseCase.setCompleted(taskID: id)
+        try? taskService.setCompleted(taskID: id)
         loadTasks()
     }
 
     func recordFocusSession(taskID: UUID?, startedAt: Date?, endedAt: Date) {
         guard let userID = SessionManager.shared.currentUserID,
               let startedAt else { return }
-        try? achievementRepository.recordFocusSession(
+        try? achievementService.recordFocusSession(
             forUserID: userID,
             taskID: taskID,
             startedAt: startedAt,
@@ -107,7 +104,7 @@ final class FocusViewModel {
             return
         }
 
-        fetchTasksUseCase.execute(userID: userID, date: date) { [weak self] tasks in
+        taskService.fetchTasks(userID: userID, date: date) { [weak self] tasks in
             self?.onTasksUpdated?(Self.incompleteFocusTasks(from: tasks))
         }
     }

@@ -9,74 +9,49 @@ import Foundation
 
 final class DIContainer {
 
-    private let userRepository: UserRepositoryProtocol
-    private let taskRepository: TaskRepositoryProtocol
-    private let diaryRepository: DiaryRepositoryProtocol
-    private let achievementRepository: AchievementRepositoryProtocol
-    private let calendarService: CalendarServiceProtocol
+    private let authService: AuthService
+    private let taskService: TaskService
+    private let diaryService: DiaryService
+    private let analysisService: AnalysisService
+    private let achievementService: AchievementService
 
-    init(userRepository: UserRepositoryProtocol = UserRepository(),
-         taskRepository: TaskRepositoryProtocol = TaskRepository(),
-         diaryRepository: DiaryRepositoryProtocol = DiaryRepository(),
-         achievementRepository: AchievementRepositoryProtocol = AchievementRepository(),
-         calendarService: CalendarServiceProtocol = CalendarEventService()) {
-        self.userRepository = userRepository
-        self.taskRepository = taskRepository
-        self.diaryRepository = diaryRepository
-        self.achievementRepository = achievementRepository
-        self.calendarService = calendarService
-    }
+    init(authService: AuthService? = nil,
+         taskService: TaskService? = nil,
+         diaryService: DiaryService? = nil,
+         analysisService: AnalysisService? = nil,
+         achievementService: AchievementService? = nil) {
+        let resolvedAuthService = authService ?? AuthService()
+        let resolvedTaskService = taskService ?? TaskService()
+        let resolvedDiaryService = diaryService ?? DiaryService()
 
-    func makeLoginUseCase() -> LoginUseCase {
-        LoginUseCase(repository: userRepository)
-    }
-
-    func makeRegisterUseCase() -> RegisterUseCase {
-        RegisterUseCase(repository: userRepository)
-    }
-
-    func makeUserRepository() -> UserRepositoryProtocol {
-        userRepository
-    }
-
-    func makeTaskRepository() -> TaskRepositoryProtocol {
-        taskRepository
-    }
-
-    func makeFetchTasksUseCase() -> FetchTasksUseCase {
-        FetchTasksUseCase(repository: taskRepository, calendarService: calendarService)
-    }
-
-    func makeCreateTaskUseCase() -> CreateTaskUseCase {
-        CreateTaskUseCase(repository: taskRepository, calendarService: calendarService)
-    }
-
-    func makeToggleTaskCompletionUseCase() -> ToggleTaskCompletionUseCase {
-        ToggleTaskCompletionUseCase(repository: taskRepository)
-    }
-
-    func makeUpdateTaskDetailsUseCase() -> UpdateTaskDetailsUseCase {
-        UpdateTaskDetailsUseCase(repository: taskRepository)
-    }
-
-    func makeDeleteTaskUseCase() -> DeleteTaskUseCase {
-        DeleteTaskUseCase(repository: taskRepository)
-    }
-
-    func makeDiaryRepository() -> DiaryRepositoryProtocol {
-        diaryRepository
-    }
-
-    func makeAchievementRepository() -> AchievementRepositoryProtocol {
-        achievementRepository
-    }
-
-    func makeAnalyzeUserDayUseCase() -> AnalyzeUserDayUseCase {
-        AnalyzeUserDayUseCase(
-            userRepository: userRepository,
-            diaryRepository: diaryRepository,
-            taskRepository: taskRepository,
-            analysisEngine: MLCoreUserAnalysisEngine()
+        self.authService = resolvedAuthService
+        self.taskService = resolvedTaskService
+        self.diaryService = resolvedDiaryService
+        self.analysisService = analysisService ?? AnalysisService(
+            authService: resolvedAuthService,
+            diaryService: resolvedDiaryService,
+            taskService: resolvedTaskService
         )
+        self.achievementService = achievementService ?? AchievementService()
+    }
+
+    func makeAuthService() -> AuthService {
+        authService
+    }
+
+    func makeTaskService() -> TaskService {
+        taskService
+    }
+
+    func makeDiaryService() -> DiaryService {
+        diaryService
+    }
+
+    func makeAnalysisService() -> AnalysisService {
+        analysisService
+    }
+
+    func makeAchievementService() -> AchievementService {
+        achievementService
     }
 }

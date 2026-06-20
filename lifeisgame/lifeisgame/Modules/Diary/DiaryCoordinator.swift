@@ -18,6 +18,7 @@ final class DiaryCoordinator: Coordinator {
     }
 
     func start() {
-        rootViewController = DiaryViewController(repository: container.makeDiaryRepository())
+        let viewModel = DiaryViewModel(diaryService: container.makeDiaryService())
+        rootViewController = DiaryViewController(viewModel: viewModel)
     }
 }

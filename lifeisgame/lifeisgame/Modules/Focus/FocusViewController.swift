@@ -15,8 +15,6 @@ final class FocusViewController: UIViewController {
     private var currentTasks: [FocusTaskItem] = []
     private var selectedTaskID: UUID?
     private var completedFocusTaskID: UUID?
-    private var taskViewsByID: [UUID: TaskDayView] = [:]
-    private var taskIDsByViewID: [ObjectIdentifier: UUID] = [:]
     private var focusTimer: Timer?
     private var focusStartDate: Date?
     private var focusEndDate: Date?
@@ -72,115 +70,10 @@ final class FocusViewController: UIViewController {
         return s
     }()
 
-    private let tasksCard: UIView = {
-        let v = UIView()
-        v.backgroundColor = .white
-        v.layer.cornerRadius = 16
-        v.layer.shadowColor = UIColor.black.cgColor
-        v.layer.shadowOpacity = 0.06
-        v.layer.shadowOffset = CGSize(width: 0, height: 2)
-        v.layer.shadowRadius = 8
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
+    private let taskPickerView = FocusTaskPickerView()
 
-    private let tasksTitleLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Выберите задачу"
-        l.font = .systemFont(ofSize: 18, weight: .bold)
-        l.textColor = .label
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let tasksScrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.showsVerticalScrollIndicator = true
-        sv.alwaysBounceVertical = true
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
-    }()
-
-    private let tasksStack: UIStackView = {
-        let s = UIStackView()
-        s.axis = .vertical
-        s.spacing = 12
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
-    private let emptyTasksLabel: UILabel = {
-        let l = UILabel()
-        l.text = "На сегодня нет невыполненных задач"
-        l.font = .systemFont(ofSize: 15, weight: .regular)
-        l.textColor = .systemGray2
-        l.textAlignment = .center
-        l.numberOfLines = 0
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let timerCard: UIView = {
-        let v = UIView()
-        v.backgroundColor = .white
-        v.layer.cornerRadius = 16
-        v.layer.shadowColor = UIColor.black.cgColor
-        v.layer.shadowOpacity = 0.06
-        v.layer.shadowOffset = CGSize(width: 0, height: 2)
-        v.layer.shadowRadius = 8
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-    private let timerTitleLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Таймер фокуса"
-        l.font = .systemFont(ofSize: 18, weight: .bold)
-        l.textColor = .label
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let timerTaskLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 14, weight: .medium)
-        l.textColor = .secondaryLabel
-        l.numberOfLines = 2
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let timerCountdownLabel: UILabel = {
-        let l = UILabel()
-        l.font = .monospacedDigitSystemFont(ofSize: 34, weight: .bold)
-        l.textColor = UIColor.main
-        l.textAlignment = .right
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let parametersCard: UIView = {
-        let v = UIView()
-        v.backgroundColor = .white
-        v.layer.cornerRadius = 16
-        v.layer.shadowColor = UIColor.black.cgColor
-        v.layer.shadowOpacity = 0.06
-        v.layer.shadowOffset = CGSize(width: 0, height: 2)
-        v.layer.shadowRadius = 8
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-    private let parametersTitleLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Параметры фокуса"
-        l.font = .systemFont(ofSize: 18, weight: .bold)
-        l.textColor = .label
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private lazy var playlistButton = makeOptionButton(title: selectedPlaylistTitle)
+    private let timerCard = FocusTimerCardView()
+    private let parametersView = FocusParametersView()
     private let startButton = CustomButton(title: "Начать", type: .main)
 
     override func viewDidLoad() {
@@ -208,13 +101,10 @@ final class FocusViewController: UIViewController {
         view.addSubview(startButton)
         outerScrollView.addSubview(contentStack)
 
-        contentStack.addArrangedSubview(tasksCard)
+        contentStack.addArrangedSubview(taskPickerView)
         contentStack.addArrangedSubview(timerCard)
-        contentStack.addArrangedSubview(parametersCard)
+        contentStack.addArrangedSubview(parametersView)
 
-        setupTasksCard()
-        setupTimerCard()
-        setupParametersCard()
         timerCard.isHidden = true
 
         outerScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 92, right: 0)
@@ -239,7 +129,7 @@ final class FocusViewController: UIViewController {
             contentStack.bottomAnchor.constraint(equalTo: outerScrollView.contentLayoutGuide.bottomAnchor),
             contentStack.widthAnchor.constraint(equalTo: outerScrollView.frameLayoutGuide.widthAnchor, constant: -40),
 
-            tasksCard.heightAnchor.constraint(equalToConstant: 400),
+            taskPickerView.heightAnchor.constraint(equalToConstant: 400),
 
             startButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -247,90 +137,16 @@ final class FocusViewController: UIViewController {
         ])
     }
 
-    private func setupTasksCard() {
-        tasksCard.addSubview(tasksTitleLabel)
-        tasksCard.addSubview(tasksScrollView)
-        tasksScrollView.addSubview(tasksStack)
-        tasksScrollView.addSubview(emptyTasksLabel)
-
-        NSLayoutConstraint.activate([
-            tasksTitleLabel.topAnchor.constraint(equalTo: tasksCard.topAnchor, constant: 18),
-            tasksTitleLabel.leadingAnchor.constraint(equalTo: tasksCard.leadingAnchor, constant: 16),
-            tasksTitleLabel.trailingAnchor.constraint(equalTo: tasksCard.trailingAnchor, constant: -16),
-
-            tasksScrollView.topAnchor.constraint(equalTo: tasksTitleLabel.bottomAnchor, constant: 14),
-            tasksScrollView.leadingAnchor.constraint(equalTo: tasksCard.leadingAnchor, constant: 16),
-            tasksScrollView.trailingAnchor.constraint(equalTo: tasksCard.trailingAnchor, constant: -16),
-            tasksScrollView.bottomAnchor.constraint(equalTo: tasksCard.bottomAnchor, constant: -16),
-
-            tasksStack.topAnchor.constraint(equalTo: tasksScrollView.contentLayoutGuide.topAnchor),
-            tasksStack.leadingAnchor.constraint(equalTo: tasksScrollView.contentLayoutGuide.leadingAnchor),
-            tasksStack.trailingAnchor.constraint(equalTo: tasksScrollView.contentLayoutGuide.trailingAnchor),
-            tasksStack.bottomAnchor.constraint(equalTo: tasksScrollView.contentLayoutGuide.bottomAnchor),
-            tasksStack.widthAnchor.constraint(equalTo: tasksScrollView.frameLayoutGuide.widthAnchor),
-
-            emptyTasksLabel.centerXAnchor.constraint(equalTo: tasksScrollView.frameLayoutGuide.centerXAnchor),
-            emptyTasksLabel.centerYAnchor.constraint(equalTo: tasksScrollView.frameLayoutGuide.centerYAnchor),
-            emptyTasksLabel.leadingAnchor.constraint(greaterThanOrEqualTo: tasksScrollView.frameLayoutGuide.leadingAnchor, constant: 16),
-            emptyTasksLabel.trailingAnchor.constraint(lessThanOrEqualTo: tasksScrollView.frameLayoutGuide.trailingAnchor, constant: -16)
-        ])
-    }
-
-    private func setupTimerCard() {
-        timerCard.addSubview(timerTitleLabel)
-        timerCard.addSubview(timerTaskLabel)
-        timerCard.addSubview(timerCountdownLabel)
-
-        NSLayoutConstraint.activate([
-            timerTitleLabel.topAnchor.constraint(equalTo: timerCard.topAnchor, constant: 18),
-            timerTitleLabel.leadingAnchor.constraint(equalTo: timerCard.leadingAnchor, constant: 16),
-            timerTitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: timerCountdownLabel.leadingAnchor, constant: -12),
-
-            timerTaskLabel.topAnchor.constraint(equalTo: timerTitleLabel.bottomAnchor, constant: 8),
-            timerTaskLabel.leadingAnchor.constraint(equalTo: timerTitleLabel.leadingAnchor),
-            timerTaskLabel.trailingAnchor.constraint(equalTo: timerCountdownLabel.leadingAnchor, constant: -12),
-            timerTaskLabel.bottomAnchor.constraint(lessThanOrEqualTo: timerCard.bottomAnchor, constant: -18),
-
-            timerCountdownLabel.centerYAnchor.constraint(equalTo: timerCard.centerYAnchor),
-            timerCountdownLabel.trailingAnchor.constraint(equalTo: timerCard.trailingAnchor, constant: -16),
-            timerCountdownLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 118),
-
-            timerCard.heightAnchor.constraint(greaterThanOrEqualToConstant: 112)
-        ])
-    }
-
-    private func setupParametersCard() {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 12
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        parametersCard.addSubview(parametersTitleLabel)
-        parametersCard.addSubview(stack)
-
-        stack.addArrangedSubview(makeOptionBlock(
-            title: "Выбор музыки",
-            subtitle: "Плейлист",
-            button: playlistButton
-        ))
-
-        NSLayoutConstraint.activate([
-            parametersTitleLabel.topAnchor.constraint(equalTo: parametersCard.topAnchor, constant: 18),
-            parametersTitleLabel.leadingAnchor.constraint(equalTo: parametersCard.leadingAnchor, constant: 16),
-            parametersTitleLabel.trailingAnchor.constraint(equalTo: parametersCard.trailingAnchor, constant: -16),
-
-            stack.topAnchor.constraint(equalTo: parametersTitleLabel.bottomAnchor, constant: 14),
-            stack.leadingAnchor.constraint(equalTo: parametersCard.leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: parametersCard.trailingAnchor, constant: -16),
-            stack.bottomAnchor.constraint(equalTo: parametersCard.bottomAnchor, constant: -16)
-        ])
-    }
-
     private func setupActions() {
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.enablePressScale(to: 0.90)
-        playlistButton.addTarget(self, action: #selector(selectPlaylist), for: .touchUpInside)
+        parametersView.onPlaylistTapped = { [weak self] in
+            self?.selectPlaylist()
+        }
         startButton.addTarget(self, action: #selector(startFocus), for: .touchUpInside)
+        taskPickerView.onTaskSelected = { [weak self] taskID in
+            self?.selectTask(taskID)
+        }
     }
 
     private func observeLiveActivityActions() {
@@ -359,63 +175,16 @@ final class FocusViewController: UIViewController {
         if !playlists.contains(where: { $0.id == selectedPlaylistID }) {
             selectedPlaylistID = FocusMusicLibrary.silentPlaylistID
         }
-        playlistButton.setTitle(selectedPlaylistTitle, for: .normal)
+        parametersView.setPlaylistTitle(selectedPlaylistTitle)
     }
 
     private func configureTasks(_ tasks: [FocusTaskItem]) {
         currentTasks = tasks
-        taskViewsByID.removeAll()
-        taskIDsByViewID.removeAll()
         if let selectedTaskID, !tasks.contains(where: { $0.id == selectedTaskID }) {
             self.selectedTaskID = nil
         }
-
-        tasksStack.arrangedSubviews.forEach { view in
-            tasksStack.removeArrangedSubview(view)
-            view.removeFromSuperview()
-        }
-        emptyTasksLabel.isHidden = !tasks.isEmpty
-
-        for task in tasks {
-            let view: TaskDayView
-            if let mainTaskName = task.mainTaskName {
-                view = TaskDayView(
-                    mainTaskName: mainTaskName,
-                    subtaskName: task.typeTitle,
-                    taskTitle: task.title,
-                    time: scheduleString(for: task),
-                    timeSpent: "",
-                    priority: priority(for: task.importance),
-                    showsCompletionButton: false
-                )
-            } else {
-                view = TaskDayView(
-                    subtaskName: task.typeTitle,
-                    taskTitle: task.title,
-                    time: scheduleString(for: task),
-                    timeSpent: "",
-                    priority: priority(for: task.importance),
-                    showsCompletionButton: false
-                )
-            }
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(taskCardTapped(_:)))
-            tapGesture.cancelsTouchesInView = false
-            view.addGestureRecognizer(tapGesture)
-            view.isUserInteractionEnabled = true
-            taskIDsByViewID[ObjectIdentifier(view)] = task.id
-            taskViewsByID[task.id] = view
-            tasksStack.addArrangedSubview(view)
-        }
-
-        refreshTaskSelectionStyles()
+        taskPickerView.configure(tasks: tasks, selectedTaskID: selectedTaskID)
         updateStartButtonState()
-    }
-
-    @objc private func taskCardTapped(_ gesture: UITapGestureRecognizer) {
-        guard gesture.state == .ended,
-              let view = gesture.view,
-              let taskID = taskIDsByViewID[ObjectIdentifier(view)] else { return }
-        selectTask(taskID)
     }
 
     private var selectedTask: FocusTaskItem? {
@@ -431,76 +200,12 @@ final class FocusViewController: UIViewController {
         guard !isFocusRunning else { return }
         selectedTaskID = taskID
         completedFocusTaskID = nil
-        refreshTaskSelectionStyles()
+        taskPickerView.setSelectedTaskID(taskID)
         updateStartButtonState()
     }
 
-    private func refreshTaskSelectionStyles() {
-        for (taskID, view) in taskViewsByID {
-            let isSelected = taskID == selectedTaskID
-            view.layer.borderWidth = isSelected ? 2 : 0
-            view.layer.borderColor = isSelected ? UIColor.main.cgColor : UIColor.clear.cgColor
-            view.backgroundColor = isSelected ? UIColor.main.withAlphaComponent(0.06) : .white
-        }
-    }
-
     private func setTaskSelectionEnabled(_ isEnabled: Bool) {
-        taskViewsByID.values.forEach { $0.alpha = isEnabled ? 1.0 : 0.75 }
-    }
-
-    private func makeOptionBlock(title: String, subtitle: String, button: UIButton) -> UIView {
-        let block = UIView()
-        block.backgroundColor = UIColor.main.withAlphaComponent(0.06)
-        block.layer.cornerRadius = 14
-        block.translatesAutoresizingMaskIntoConstraints = false
-
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        titleLabel.textColor = .label
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        let subtitleLabel = UILabel()
-        subtitleLabel.text = subtitle
-        subtitleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-        subtitleLabel.textColor = .secondaryLabel
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        block.addSubview(titleLabel)
-        block.addSubview(subtitleLabel)
-        block.addSubview(button)
-
-        NSLayoutConstraint.activate([
-            block.heightAnchor.constraint(greaterThanOrEqualToConstant: 76),
-
-            titleLabel.topAnchor.constraint(equalTo: block.topAnchor, constant: 14),
-            titleLabel.leadingAnchor.constraint(equalTo: block.leadingAnchor, constant: 14),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: button.leadingAnchor, constant: -12),
-
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
-            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: button.leadingAnchor, constant: -12),
-            subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: block.bottomAnchor, constant: -14),
-
-            button.centerYAnchor.constraint(equalTo: block.centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: block.trailingAnchor, constant: -14),
-            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 108),
-            button.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        return block
-    }
-
-    private func makeOptionButton(title: String) -> UIButton {
-        let b = UIButton(type: .system)
-        b.setTitle(title, for: .normal)
-        b.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
-        b.tintColor = UIColor.main
-        b.backgroundColor = .white
-        b.layer.cornerRadius = 12
-        b.contentEdgeInsets = UIEdgeInsets(top: 8, left: 14, bottom: 8, right: 14)
-        b.translatesAutoresizingMaskIntoConstraints = false
-        return b
+        taskPickerView.setSelectionEnabled(isEnabled)
     }
 
     @objc private func closeTapped() {
@@ -529,12 +234,12 @@ final class FocusViewController: UIViewController {
             let title = playlist.isSilent ? playlist.title : "\(playlist.title) • \(playlist.tracks.count)"
             alert.addAction(UIAlertAction(title: title, style: .default) { [weak self] _ in
                 self?.selectedPlaylistID = playlist.id
-                self?.playlistButton.setTitle(playlist.title, for: .normal)
+                self?.parametersView.setPlaylistTitle(playlist.title)
             })
         }
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
-        alert.popoverPresentationController?.sourceView = playlistButton
-        alert.popoverPresentationController?.sourceRect = playlistButton.bounds
+        alert.popoverPresentationController?.sourceView = parametersView.playlistButtonSourceView
+        alert.popoverPresentationController?.sourceRect = parametersView.playlistButtonSourceRect
         present(alert, animated: true)
     }
 
@@ -554,7 +259,7 @@ final class FocusViewController: UIViewController {
         focusStartDate = startDate
         focusEndDate = endDate
         isFocusRunning = true
-        timerTaskLabel.text = selectedTask.displayTitle
+        timerCard.configure(taskTitle: selectedTask.displayTitle, countdown: remainingString(until: endDate))
         timerCard.isHidden = false
         updateTimerLabels()
         startFocusTimer()
@@ -573,13 +278,11 @@ final class FocusViewController: UIViewController {
         if isFocusRunning {
             startButton.setTitle("Завершить фокус")
             startButton.isEnabled = true
-            playlistButton.isEnabled = false
-            playlistButton.alpha = 0.65
+            parametersView.setPlaylistSelectionEnabled(false)
             return
         }
 
-        playlistButton.isEnabled = true
-        playlistButton.alpha = 1.0
+        parametersView.setPlaylistSelectionEnabled(true)
 
         if currentTasks.isEmpty {
             startButton.setTitle("Нет задач")
@@ -608,11 +311,11 @@ final class FocusViewController: UIViewController {
 
     private func updateTimerLabels() {
         guard let focusEndDate else {
-            timerCountdownLabel.text = "00:00"
+            timerCard.setCountdown("00:00")
             return
         }
 
-        timerCountdownLabel.text = remainingString(until: focusEndDate)
+        timerCard.setCountdown(remainingString(until: focusEndDate))
         if focusEndDate.timeIntervalSinceNow <= 0 {
             finishFocusSession()
         }
@@ -658,24 +361,6 @@ final class FocusViewController: UIViewController {
         viewModel.completeTask(id: taskID)
     }
 
-    private func scheduleString(for task: FocusTaskItem) -> String {
-        "\(timeString(task.startDate)) - \(timeString(task.deadlineDate)) (\(durationString(task.focusDuration)))"
-    }
-
-    private func timeString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: date)
-    }
-
-    private func durationString(_ duration: TimeInterval) -> String {
-        let mins = max(1, Int(ceil(duration / 60)))
-        if mins < 60 { return "\(mins) мин" }
-        let h = mins / 60
-        let m = mins % 60
-        return m == 0 ? "\(h) ч" : "\(h) ч \(m) мин"
-    }
-
     private func remainingString(until endDate: Date) -> String {
         let seconds = max(0, Int(ceil(endDate.timeIntervalSinceNow)))
         let hours = seconds / 3600
@@ -686,14 +371,6 @@ final class FocusViewController: UIViewController {
             return String(format: "%d:%02d:%02d", hours, minutes, secs)
         }
         return String(format: "%02d:%02d", minutes, secs)
-    }
-
-    private func priority(for importance: Int) -> TaskDayView.Priority {
-        switch importance {
-        case 1...3: return .low
-        case 8...10: return .high
-        default: return .medium
-        }
     }
 
     private func showAlert(title: String, message: String) {

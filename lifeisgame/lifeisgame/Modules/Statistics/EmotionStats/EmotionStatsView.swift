@@ -11,12 +11,6 @@ final class EmotionStatsView: UIView {
 
 
     private var entries: [EmotionDiaryEntry] = []
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM"
-        return formatter
-    }()
 
 
     private let scrollView: UIScrollView = {
@@ -85,79 +79,14 @@ final class EmotionStatsView: UIView {
     }
 
     private func makeRow(_ entry: EmotionDiaryEntry) -> UIView {
-        let card = UIView()
-        card.backgroundColor = .white
-        card.layer.cornerRadius = 14
-        card.translatesAutoresizingMaskIntoConstraints = false
-
-        let iconBg = UIView()
-        iconBg.backgroundColor = UIColor.main.withAlphaComponent(0.1)
-        iconBg.layer.cornerRadius = 22
-        iconBg.translatesAutoresizingMaskIntoConstraints = false
-
-        let cfg = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
-        let iconView = UIImageView(image: UIImage(systemName: entry.sfSymbol, withConfiguration: cfg))
-        iconView.tintColor = UIColor.main
-        iconView.contentMode = .scaleAspectFit
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconBg.addSubview(iconView)
-
-        let nameLabel = UILabel()
-        nameLabel.text = entry.emotionName
-        nameLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        nameLabel.textColor = .label
-
-        let reasonLabel = UILabel()
         let reason = entry.reason?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        reasonLabel.text = reason.isEmpty ? "Причина не указана" : reason
-        reasonLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        reasonLabel.textColor = .secondaryLabel
-        reasonLabel.numberOfLines = 2
-
-        let dateLabel = UILabel()
-        dateLabel.text = dateFormatter.string(from: entry.dayDate)
-        dateLabel.font = .systemFont(ofSize: 11, weight: .regular)
-        dateLabel.textColor = .tertiaryLabel
-
-        let textStack = UIStackView(arrangedSubviews: [nameLabel, reasonLabel, dateLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 3
-        textStack.translatesAutoresizingMaskIntoConstraints = false
-
-        let intensityLabel = UILabel()
-        intensityLabel.text = "\(entry.intensity)/10"
-        intensityLabel.font = .systemFont(ofSize: 14, weight: .bold)
-        intensityLabel.textColor = UIColor.main
-        intensityLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        card.addSubview(iconBg)
-        card.addSubview(textStack)
-        card.addSubview(intensityLabel)
-
-        NSLayoutConstraint.activate([
-            iconBg.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 14),
-            iconBg.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-            iconBg.widthAnchor.constraint(equalToConstant: 44),
-            iconBg.heightAnchor.constraint(equalToConstant: 44),
-
-            iconView.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
-            iconView.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 22),
-            iconView.heightAnchor.constraint(equalToConstant: 22),
-
-            textStack.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 12),
-            textStack.topAnchor.constraint(greaterThanOrEqualTo: card.topAnchor, constant: 12),
-            textStack.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-            textStack.trailingAnchor.constraint(lessThanOrEqualTo: intensityLabel.leadingAnchor, constant: -12),
-            textStack.bottomAnchor.constraint(lessThanOrEqualTo: card.bottomAnchor, constant: -12),
-
-            intensityLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
-            intensityLabel.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-
-            card.heightAnchor.constraint(greaterThanOrEqualToConstant: 78)
-        ])
-
-        return card
+        return IconInfoRowView(
+            iconSystemName: entry.sfSymbol,
+            title: entry.emotionName,
+            subtitle: reason.isEmpty ? "Причина не указана" : reason,
+            footnote: DateFormatter.appDateString(from: entry.dayDate),
+            trailingText: "\(entry.intensity)/10"
+        )
     }
 
     private func makeEmptyState(text: String) -> UIView {

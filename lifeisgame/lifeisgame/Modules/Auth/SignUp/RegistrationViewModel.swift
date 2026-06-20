@@ -9,30 +9,35 @@ import Foundation
 
 final class RegistrationViewModel {
 
-    private let registerUseCase: RegisterUseCase
+    private let authService: AuthService
+    private let validator: RegistrationValidator
 
     var onLoginTapped: (() -> Void)?
     var onRegisterSuccess: (() -> Void)?
     var onError: ((String) -> Void)?
 
-    private let dateFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "dd.MM.yyyy"
-        return f
-    }()
-
-    init(registerUseCase: RegisterUseCase) {
-        self.registerUseCase = registerUseCase
+    init(authService: AuthService, validator: RegistrationValidator = RegistrationValidator()) {
+        self.authService = authService
+        self.validator = validator
     }
 
     func loginTapped() {
         onLoginTapped?()
     }
 
+    func validate(name: String, email: String, birthDate: String, password: String) -> RegistrationValidationResult {
+        validator.validate(RegistrationValidationInput(
+            name: name,
+            email: email,
+            birthDate: birthDate,
+            password: password
+        ))
+    }
+
     func registerTapped(name: String, email: String, birthDateText: String, password: String) {
-        let birthDate = dateFormatter.date(from: birthDateText)
+        let birthDate = DateFormatter.appDate(from: birthDateText)
         do {
-            let user = try registerUseCase.execute(
+            let user = try authService.register(
                 name: name, email: email, birthDate: birthDate, password: password
             )
             SessionManager.shared.currentUserID = user.id

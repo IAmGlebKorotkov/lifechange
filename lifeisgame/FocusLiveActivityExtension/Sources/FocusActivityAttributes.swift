@@ -2,7 +2,7 @@
 //  FocusActivityAttributes.swift
 //  FocusLiveActivityExtension
 //
-//  Created by Gleb Korotkov on 16.05.2026.
+//  Created by Gleb Korotkov on 09.05.2026.
 //
 
 import ActivityKit

@@ -10,7 +10,19 @@ import UIKit
 final class RegistrationViewController: UIViewController {
 
 
-    private let validationUseCase = RegistrationValidationUseCase()
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
 
     private let titleLabel: UILabel = {
@@ -86,12 +98,12 @@ final class RegistrationViewController: UIViewController {
     }
 
     private func validateAndUpdate() {
-        let result = validationUseCase.validate(RegistrationValidationInput(
+        let result = viewModel.validate(
             name: nameTextField.text ?? "",
             email: emailTextField.text ?? "",
             birthDate: birthDateTextField.text ?? "",
             password: passwordTextField.text ?? ""
-        ))
+        )
         registerButton.isEnabled = result.isValid
         hintView.update(with: result.errors.map { $0.message })
     }
@@ -100,10 +112,10 @@ final class RegistrationViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor.background
 
-        let nameContainer = makeFieldContainer(title: "Имя", textField: nameTextField)
-        let emailContainer = makeFieldContainer(title: "Почта", textField: emailTextField)
-        let birthDateContainer = makeFieldContainer(title: "Дата рождения", textField: birthDateTextField)
-        let passwordContainer = makeFieldContainer(title: "Пароль", textField: passwordTextField)
+        let nameContainer = LabeledInputCard(title: "Имя", field: nameTextField)
+        let emailContainer = LabeledInputCard(title: "Почта", field: emailTextField)
+        let birthDateContainer = LabeledInputCard(title: "Дата рождения", field: birthDateTextField)
+        let passwordContainer = LabeledInputCard(title: "Пароль", field: passwordTextField)
 
         let stackView = UIStackView(arrangedSubviews: [
             nameContainer,
@@ -118,20 +130,36 @@ final class RegistrationViewController: UIViewController {
         stackView.setCustomSpacing(12, after: hintView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(titleLabel)
-        view.addSubview(stackView)
-        view.addSubview(bottomStackView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(stackView)
+        contentView.addSubview(bottomStackView)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+
+            titleLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -24),
 
             stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 32),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
 
-            bottomStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            bottomStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            bottomStackView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
+            bottomStackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
 
         registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
@@ -143,48 +171,6 @@ final class RegistrationViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-    }
-
-
-    private func makeFieldContainer(title: String, textField: CustomTextField) -> UIView {
-        let wrapper = UIView()
-        wrapper.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = title
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemGray
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        let container = UIView()
-        container.backgroundColor = .white
-        container.layer.cornerRadius = 12
-        container.layer.borderWidth = 1
-        container.layer.borderColor = UIColor.systemGray4.cgColor
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        wrapper.addSubview(label)
-        wrapper.addSubview(container)
-        container.addSubview(textField)
-
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: wrapper.topAnchor),
-            label.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor),
-
-            container.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 8),
-            container.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
-            container.heightAnchor.constraint(equalToConstant: 52),
-
-            textField.topAnchor.constraint(equalTo: container.topAnchor),
-            textField.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            textField.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8)
-        ])
-
-        return wrapper
     }
 
 

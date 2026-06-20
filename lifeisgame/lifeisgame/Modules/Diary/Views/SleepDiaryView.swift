@@ -15,7 +15,9 @@ final class SleepDiaryView: UIView {
 
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
+        sv.alwaysBounceVertical = true
         sv.showsVerticalScrollIndicator = false
+        sv.keyboardDismissMode = .onDrag
         sv.translatesAutoresizingMaskIntoConstraints = false
         return sv
     }()
@@ -26,6 +28,13 @@ final class SleepDiaryView: UIView {
         s.spacing = 16
         s.translatesAutoresizingMaskIntoConstraints = false
         return s
+    }()
+
+    private let bottomScrollSpacer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 96).isActive = true
+        return view
     }()
 
     private let titleLabel: UILabel = {
@@ -138,6 +147,7 @@ final class SleepDiaryView: UIView {
         contentStack.addArrangedSubview(separator)
         contentStack.addArrangedSubview(buildSleepCard())
         contentStack.addArrangedSubview(saveButton)
+        contentStack.addArrangedSubview(bottomScrollSpacer)
     }
 
     private func buildSleepCard() -> UIView {

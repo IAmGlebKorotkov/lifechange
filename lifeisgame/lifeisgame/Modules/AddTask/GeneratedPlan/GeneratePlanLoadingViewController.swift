@@ -129,10 +129,7 @@ final class GeneratePlanLoadingViewController: UIViewController {
     }
 
     private func fullDateString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM, HH:mm"
-        return formatter.string(from: date)
+        DateFormatter.appDateTimeString(from: date)
     }
 }
 

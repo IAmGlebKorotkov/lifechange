@@ -8,18 +8,12 @@
 import UIKit
 
 final class AddTaskViewController: UIViewController {
+    var onAddSubtaskTapped: ((String, @escaping (TaskService.SubtaskInput) -> Void) -> Void)?
+    var onEditSubtask: ((String, TaskService.SubtaskInput, @escaping (TaskService.SubtaskInput) -> Void) -> Void)?
+    var onGenerate: ((TaskService.Input) -> Void)?
 
 
-    var onAddSubtaskTapped: ((String, @escaping (CreateTaskUseCase.SubtaskInput) -> Void) -> Void)?
-    var onEditSubtask: ((String, CreateTaskUseCase.SubtaskInput, @escaping (CreateTaskUseCase.SubtaskInput) -> Void) -> Void)?
-    var onGenerate: ((CreateTaskUseCase.Input) -> Void)?
-
-
-    private let validationUseCase = TaskValidationUseCase()
-
-
-    private var isHardTask = false
-    private var isEvent = false
+    private let viewModel: AddTaskViewModel
     private var initialDate: Date?
 
 
@@ -88,6 +82,16 @@ final class AddTaskViewController: UIViewController {
 
     private let hintView = ValidationHintView()
     private let generateButton = CustomButton(title: "Сгенерировать План", type: .main)
+
+
+    init(viewModel: AddTaskViewModel = AddTaskViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
 
     override func viewDidLoad() {
@@ -192,31 +196,15 @@ final class AddTaskViewController: UIViewController {
 
     private func openEditSubtask(
         index: Int,
-        currentSubtask: CreateTaskUseCase.SubtaskInput,
-        completion: @escaping (CreateTaskUseCase.SubtaskInput) -> Void
+        currentSubtask: TaskService.SubtaskInput,
+        completion: @escaping (TaskService.SubtaskInput) -> Void
     ) {
         let parentName = hardFormView.nameTextField.text ?? ""
         onEditSubtask?(parentName, currentSubtask, completion)
     }
 
     @objc private func generateTapped() {
-        let form: TaskBaseFormView = isEvent ? eventFormView : (isHardTask ? hardFormView : simpleFormView)
-        let eventDuration = max(15 * 60, eventFormView.deadlineDatePicker.date.timeIntervalSince(eventFormView.startDatePicker.date))
-        let input = CreateTaskUseCase.Input(
-            name: form.nameTextField.text ?? "",
-            description: form.descTextView.text.isEmpty ? nil : form.descTextView.text,
-            startDate: form.startDatePicker.date,
-            deadlineDate: form.deadlineDatePicker.date,
-            importance: Int(roundf(form.importanceSlider.value)),
-            difficulty: Int(roundf(form.difficultySlider.value)),
-            estimatedDuration: isEvent
-                ? eventDuration
-                : (isHardTask ? hardFormView.totalSubtasksDuration : form.timePicker.countDownDuration),
-            isHardTask: !isEvent && isHardTask,
-            isEvent: isEvent,
-            subtasks: (!isEvent && isHardTask) ? hardFormView.subtaskInputs : []
-        )
-        onGenerate?(input)
+        onGenerate?(viewModel.makeInput(from: currentDraft()))
     }
 
 
@@ -254,20 +242,20 @@ final class AddTaskViewController: UIViewController {
 
 
     @objc private func kindToggleChanged() {
-        isEvent = taskKindToggle.isOn
+        viewModel.setEvent(taskKindToggle.isOn)
 
         UIView.transition(with: taskKindLabel, duration: 0.2, options: .transitionCrossDissolve) {
-            self.taskKindLabel.text = self.isEvent ? "Событие" : "Задача"
+            self.taskKindLabel.text = self.viewModel.isEvent ? "Событие" : "Задача"
         }
 
         updateVisibleForm()
     }
 
     @objc private func typeToggleChanged() {
-        isHardTask = taskTypeToggle.isOn
+        viewModel.setHardTask(taskTypeToggle.isOn)
 
         UIView.transition(with: taskTypeLabel, duration: 0.2, options: .transitionCrossDissolve) {
-            self.taskTypeLabel.text = self.isHardTask ? "Сложная задача" : "Простая задача"
+            self.taskTypeLabel.text = self.viewModel.isHardTask ? "Сложная задача" : "Простая задача"
         }
 
         updateVisibleForm()
@@ -275,29 +263,39 @@ final class AddTaskViewController: UIViewController {
 
     private func updateVisibleForm() {
         UIView.animate(withDuration: 0.3) {
-            self.taskTypeCard.isHidden = self.isEvent
-            self.simpleFormView.isHidden = self.isEvent || self.isHardTask
-            self.eventFormView.isHidden = !self.isEvent
-            self.hardFormView.isHidden = self.isEvent || !self.isHardTask
+            self.taskTypeCard.isHidden = self.viewModel.isEvent
+            self.simpleFormView.isHidden = self.viewModel.isEvent || self.viewModel.isHardTask
+            self.eventFormView.isHidden = !self.viewModel.isEvent
+            self.hardFormView.isHidden = self.viewModel.isEvent || !self.viewModel.isHardTask
         }
 
-        generateButton.setTitle(isEvent ? "Создать событие" : "Сгенерировать План")
+        generateButton.setTitle(viewModel.isEvent ? "Создать событие" : "Сгенерировать План")
         validateAndUpdateButton()
     }
 
 
     private func validateAndUpdateButton() {
-        let activeForm: TaskBaseFormView = isEvent ? eventFormView : (isHardTask ? hardFormView : simpleFormView)
-        let input = TaskValidationInput(
-            name: activeForm.nameTextField.text ?? "",
-            startDate: activeForm.startDatePicker.date,
-            deadlineDate: activeForm.deadlineDatePicker.date,
-            isHardTask: !isEvent && isHardTask,
-            isEvent: isEvent,
-            subtasksCount: (!isEvent && isHardTask) ? hardFormView.subtasksCount : 0
-        )
-        let result = validationUseCase.validate(input)
+        let result = viewModel.validate(currentDraft())
         generateButton.isEnabled = result.isValid
         hintView.update(with: result.errors.map { $0.message })
+    }
+
+    private func currentDraft() -> AddTaskDraft {
+        let activeForm: TaskBaseFormView = viewModel.isEvent
+            ? eventFormView
+            : (viewModel.isHardTask ? hardFormView : simpleFormView)
+
+        return AddTaskDraft(
+            name: activeForm.nameTextField.text ?? "",
+            description: activeForm.descTextView.text,
+            startDate: activeForm.startDatePicker.date,
+            deadlineDate: activeForm.deadlineDatePicker.date,
+            importance: activeForm.importance,
+            difficulty: activeForm.difficulty,
+            selectedDuration: viewModel.isHardTask
+                ? hardFormView.totalSubtasksDuration
+                : activeForm.timePicker.countDownDuration,
+            subtasks: hardFormView.subtaskInputs
+        )
     }
 }

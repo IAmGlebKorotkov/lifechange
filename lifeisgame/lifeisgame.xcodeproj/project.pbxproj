@@ -163,6 +163,7 @@
 			buildConfigurationList = 9F95B48A2F6F5B4D0023BF95 /* Build configuration list for PBXNativeTarget "lifeisgame" */;
 			buildPhases = (
 				9F95B45D2F6F5B4B0023BF95 /* Sources */,
+				C0D4F0012F72000000000001 /* SwiftLint */,
 				9F95B45E2F6F5B4B0023BF95 /* Frameworks */,
 				9F95B45F2F6F5B4B0023BF95 /* Resources */,
 				C0D3F00B2F7100000000000B /* Embed App Extensions */,
@@ -328,6 +329,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C0D4F0012F72000000000001 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if command -v swiftlint >/dev/null 2>&1; then\n    swiftlint lint --config \"${SRCROOT}/swiftlintconfiguration.yml\" --cache-path \"${DERIVED_FILE_DIR}/SwiftLintCache\" --quiet\nelse\n    echo \"warning: SwiftLint not installed. Install from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9F95B45D2F6F5B4B0023BF95 /* Sources */ = {

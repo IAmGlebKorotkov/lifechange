@@ -50,7 +50,9 @@ final class TaskRepository: TaskRepositoryProtocol {
     func fetchTasks(forUserID id: UUID, on date: Date) throws -> [TaskItem] {
         let cal = Calendar.current
         let start = cal.startOfDay(for: date)
-        let end = cal.date(byAdding: .day, value: 1, to: start)!
+        guard let end = cal.date(byAdding: .day, value: 1, to: start) else {
+            throw RepositoryError.mappingFailed
+        }
 
         let request = TaskEntity.fetchRequest()
         request.predicate = NSPredicate(

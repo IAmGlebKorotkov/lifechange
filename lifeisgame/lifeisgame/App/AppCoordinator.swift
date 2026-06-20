@@ -8,7 +8,6 @@
 import UIKit
 
 final class AppCoordinator: Coordinator {
-
     var childCoordinators: [Coordinator] = []
     private let window: UIWindow
     private let container = DIContainer()
@@ -30,7 +29,7 @@ final class AppCoordinator: Coordinator {
 
     func refreshNotificationsIfNeeded() {
         guard SessionManager.shared.canRestoreSessionWithoutAuth else { return }
-        LocalNotificationService.shared.refreshDiaryReminders(repository: container.makeDiaryRepository())
+        LocalNotificationService.shared.refreshDiaryReminders(diaryService: container.makeDiaryService())
     }
 
     func handle(url: URL) {
@@ -50,7 +49,7 @@ final class AppCoordinator: Coordinator {
     }
 
     private func completeLiveActivityTask(_ taskID: UUID) {
-        try? container.makeTaskRepository().setCompletion(taskID: taskID, isCompleted: true)
+        try? container.makeTaskService().setCompleted(taskID: taskID)
         FocusLiveActivityManager.shared.end()
         NotificationCenter.default.post(
             name: .focusLiveActivityTaskCompleted,
@@ -80,7 +79,8 @@ final class AppCoordinator: Coordinator {
     }
 
     private func showFaceIDUnlock() {
-        let viewController = FaceIDUnlockViewController(userRepository: container.makeUserRepository())
+        let viewModel = FaceIDUnlockViewModel(authService: container.makeAuthService())
+        let viewController = FaceIDUnlockViewController(viewModel: viewModel)
         viewController.onUnlocked = { [weak self] in
             self?.showMain()
         }
