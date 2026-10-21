@@ -1,0 +1,39 @@
+{
+  "" : {
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests-primary.dia",
+    "emit-module-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests-primary-emit-module.dia",
+    "pch" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests-primary.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgameTests/NotificationActionHandlerTests.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/NotificationActionHandlerTests~partial.swiftmodule"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgameTests/UserAnalysisEngineTests.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/UserAnalysisEngineTests~partial.swiftmodule"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgameTests/lifeisgameTests.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgameTests.build/Objects-normal/x86_64/lifeisgameTests~partial.swiftmodule"
+  }
+}

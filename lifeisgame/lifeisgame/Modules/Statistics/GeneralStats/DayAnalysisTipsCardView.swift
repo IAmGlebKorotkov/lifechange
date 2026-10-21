@@ -9,233 +9,284 @@ import UIKit
 
 final class DayAnalysisTipsCardView: CardContainerView {
 
+    private let ringView = ProgressRingView(size: 76, lineWidth: 6)
+    private let resourceMetricView = AnalysisMiniMetricView(title: "ресурс", color: .main)
+    private let loadMetricView = AnalysisMiniMetricView(title: "нагрузка", color: .systemGreen)
+    private let confidenceMetricView = AnalysisMiniMetricView(title: "точность", color: .systemBlue)
+    private let adviceListView = AnalysisAdviceListView(visibleLimit: 2)
+
+    private let scoreLabel: UILabel = {
+        let label = UILabel()
+        let baseFont = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = UIFontMetrics(forTextStyle: .title2).scaledFont(
+            for: baseFont,
+            maximumPointSize: 30
+        )
+        label.adjustsFontForContentSizeCategory = true
+        label.text = "--"
+        label.textColor = .label
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let scoreCaptionLabel: UILabel = {
+        let label = UILabel()
+        label.text = "баланс"
+        label.font = .preferredFont(forTextStyle: .caption2)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = .textSecondaryToken
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     private let titleLabel: UILabel = {
         let label = UILabel()
+        let baseFont = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFontMetrics(forTextStyle: .title3).scaledFont(
+            for: baseFont,
+            maximumPointSize: 26
+        )
+        label.adjustsFontForContentSizeCategory = true
         label.text = "Анализ дня"
-        label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textColor = .label
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
         return label
     }()
 
-    private let readinessBadgeLabel: UILabel = {
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "--"
-        label.font = .systemFont(ofSize: 12, weight: .bold)
-        label.textColor = UIColor.main
-        label.textAlignment = .center
-        label.backgroundColor = UIColor.main.withAlphaComponent(0.10)
-        label.layer.cornerRadius = 12
-        label.layer.masksToBounds = true
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .preferredFont(forTextStyle: .footnote)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = .textSecondaryToken
+        label.numberOfLines = 2
         return label
     }()
 
-    private let summaryLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Собираю сон, эмоции и задачи..."
-        label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .secondaryLabel
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private let signalsStack: UIStackView = {
-        let stack = UIStackView()
+    private lazy var statusStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
         stack.axis = .vertical
-        stack.spacing = 6
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.spacing = 3
+        stack.isAccessibilityElement = true
         return stack
     }()
 
-    private let advicesStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 12
-        stack.translatesAutoresizingMaskIntoConstraints = false
+    private lazy var metricsStack: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [resourceMetricView, loadMetricView, confidenceMetricView]
+        )
+        stack.axis = .horizontal
+        stack.alignment = .top
+        stack.distribution = .fillEqually
+        stack.spacing = 8
         return stack
     }()
 
-    override init(cornerRadius: CGFloat = 16) {
+    private let divider: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.separator.withAlphaComponent(0.55)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        return view
+    }()
+
+    override init(cornerRadius: CGFloat = 22) {
         super.init(cornerRadius: cornerRadius)
+        applyCardShadow(strength: 1.15)
         setupLayout()
         showLoading()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     func showLoading() {
         titleLabel.text = "Анализ дня"
-        configureBadge(text: "--", color: UIColor.main)
-        summaryLabel.text = "Собираю сон, эмоции, возраст и нагрузку по задачам..."
+        subtitleLabel.text = "Собираем данные…"
+        statusStack.accessibilityLabel = "Анализ дня. Собираем данные"
+        configureMainRing(value: nil, accessibilityValue: "рассчитывается", animated: false)
+        resourceMetricView.configure(value: nil, status: "считаем", color: .main, animated: false)
+        loadMetricView.configure(value: nil, status: "считаем", color: .systemGreen, animated: false)
+        confidenceMetricView.configure(value: nil, status: "считаем", color: .systemBlue, animated: false)
 
-        clearStack(signalsStack)
-        clearStack(advicesStack)
-        signalsStack.addArrangedSubview(makeSignalRow("Идет расчет нагрузки"))
-        advicesStack.addArrangedSubview(makePlainAdviceRow("Скоро здесь появятся персональные рекомендации."))
+        adviceListView.showPlaceholder("Персональные рекомендации скоро появятся.")
     }
 
     func apply(_ analysis: UserAnalysisResult) {
-        titleLabel.text = analysis.workloadLevel.title
-        summaryLabel.text = analysis.summary
-        configureBadge(text: "\(analysis.readinessScore)/100", color: color(for: analysis.readinessScore))
+        let title = statusTitle(for: analysis)
+        let subtitle = statusSubtitle(for: analysis)
+        titleLabel.text = title
+        subtitleLabel.text = subtitle
+        statusStack.accessibilityLabel = "\(title). \(subtitle). \(analysis.summary)"
 
-        clearStack(signalsStack)
-        analysis.signals.forEach { signalsStack.addArrangedSubview(makeSignalRow($0)) }
+        let balanceValue = analysis.confidenceLevel == .low ? nil : analysis.balanceScore
+        configureMainRing(
+            value: balanceValue,
+            accessibilityValue: balanceValue.map { "\($0) из 100" } ?? "предварительная оценка"
+        )
 
-        clearStack(advicesStack)
-        analysis.advices.forEach { advicesStack.addArrangedSubview(makeAdviceRow($0)) }
+        resourceMetricView.configure(
+            value: analysis.resourceScore,
+            status: resourceStatus(for: analysis.resourceScore),
+            color: .main
+        )
+        loadMetricView.configure(
+            value: analysis.loadScore,
+            status: loadStatus(for: analysis.loadScore),
+            color: loadColor(for: analysis.loadScore)
+        )
+        confidenceMetricView.configure(
+            value: analysis.confidenceScore,
+            status: analysis.confidenceLevel.title,
+            color: confidenceColor(for: analysis.confidenceLevel)
+        )
+
+        adviceListView.apply(analysis.advices)
     }
 
     func showError(_ message: String) {
         titleLabel.text = "Анализ недоступен"
-        configureBadge(text: "--", color: .systemOrange)
-        summaryLabel.text = message
+        subtitleLabel.text = "Не удалось собрать данные"
+        statusStack.accessibilityLabel = "Анализ недоступен. \(message)"
+        configureMainRing(value: nil, accessibilityValue: "нет данных", animated: false)
+        resourceMetricView.configure(value: nil, status: "нет данных", color: .main, animated: false)
+        loadMetricView.configure(value: nil, status: "нет данных", color: .systemGreen, animated: false)
+        confidenceMetricView.configure(value: nil, status: "нет данных", color: .systemBlue, animated: false)
 
-        clearStack(signalsStack)
-        clearStack(advicesStack)
-        advicesStack.addArrangedSubview(makePlainAdviceRow("Проверь данные профиля, сна, эмоций и задач, затем открой подсказки снова."))
+        adviceListView.showPlaceholder(message)
     }
 
     private func setupLayout() {
-        let headerStack = UIStackView(arrangedSubviews: [titleLabel, readinessBadgeLabel])
+        let scoreStack = UIStackView(arrangedSubviews: [scoreLabel, scoreCaptionLabel])
+        scoreStack.axis = .vertical
+        scoreStack.spacing = 1
+        scoreStack.alignment = .center
+        scoreStack.translatesAutoresizingMaskIntoConstraints = false
+        ringView.addSubview(scoreStack)
+        ringView.isAccessibilityElement = true
+        ringView.accessibilityLabel = "Баланс дня"
+
+        let headerStack = UIStackView(arrangedSubviews: [ringView, statusStack])
         headerStack.axis = .horizontal
-        headerStack.spacing = 10
+        headerStack.spacing = 16
         headerStack.alignment = .center
-        headerStack.translatesAutoresizingMaskIntoConstraints = false
 
-        let stack = UIStackView(arrangedSubviews: [headerStack, summaryLabel, signalsStack, advicesStack])
+        let stack = UIStackView(
+            arrangedSubviews: [headerStack, metricsStack, divider, adviceListView]
+        )
         stack.axis = .vertical
-        stack.spacing = 14
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
-
         addSubview(stack)
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            scoreStack.centerXAnchor.constraint(equalTo: ringView.centerXAnchor),
+            scoreStack.centerYAnchor.constraint(equalTo: ringView.centerYAnchor),
 
-            readinessBadgeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 74),
-            readinessBadgeLabel.heightAnchor.constraint(equalToConstant: 24)
+            stack.topAnchor.constraint(equalTo: topAnchor, constant: 18),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 18),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -18),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -18)
         ])
     }
 
-    private func configureBadge(text: String, color: UIColor) {
-        readinessBadgeLabel.text = text
-        readinessBadgeLabel.textColor = color
-        readinessBadgeLabel.backgroundColor = color.withAlphaComponent(0.10)
+    private func configureMainRing(
+        value: Int?,
+        accessibilityValue: String,
+        animated: Bool = true
+    ) {
+        scoreLabel.text = value.map(String.init) ?? "--"
+        ringView.setProgress(value.map { CGFloat($0) / 100 } ?? 0, animated: animated)
+        ringView.accessibilityValue = accessibilityValue
     }
 
-    private func clearStack(_ stack: UIStackView) {
-        stack.arrangedSubviews.forEach {
-            stack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
+    private func statusTitle(for analysis: UserAnalysisResult) -> String {
+        if analysis.confidenceLevel == .low {
+            return "Нужно больше данных"
+        }
+        if analysis.resourceScore < 45 && analysis.loadScore < 45 {
+            return "Свободный день"
+        }
+        if analysis.resourceScore < 45 {
+            return "Ресурс снижен"
+        }
+        if analysis.loadScore >= 78 {
+            return "Нужна разгрузка"
+        }
+        if analysis.loadScore >= 58 {
+            return "Нагрузка высокая"
+        }
+        if analysis.resourceScore >= 70 && analysis.loadScore < 45 {
+            return "Есть запас ресурса"
+        }
+        return "День сбалансирован"
+    }
+
+    private func statusSubtitle(for analysis: UserAnalysisResult) -> String {
+        if analysis.confidenceLevel == .low {
+            return "Предварительная оценка"
+        }
+        if analysis.resourceScore < 45 && analysis.loadScore < 45 {
+            return "Низкая нагрузка — время восстановиться"
+        }
+        if analysis.resourceScore < 45 {
+            return "План выше текущего ресурса"
+        }
+        if analysis.loadScore >= 78 {
+            return "План больше доступного времени"
+        }
+        if analysis.loadScore >= 58 {
+            return "Сосредоточься на главном"
+        }
+        if analysis.resourceScore >= 70 && analysis.loadScore < 45 {
+            return "Есть место для важной задачи"
+        }
+        return "Ресурс соответствует плану"
+    }
+
+    private func resourceStatus(for value: Int) -> String {
+        switch value {
+        case 0..<45:
+            return "снижен"
+        case 45..<70:
+            return "средний"
+        default:
+            return "высокий"
         }
     }
 
-    private func makeSignalRow(_ text: String) -> UIView {
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.spacing = 8
-        row.alignment = .center
-
-        let dot = UIView()
-        dot.backgroundColor = UIColor.main.withAlphaComponent(0.70)
-        dot.layer.cornerRadius = 3
-        dot.translatesAutoresizingMaskIntoConstraints = false
-        dot.widthAnchor.constraint(equalToConstant: 6).isActive = true
-        dot.heightAnchor.constraint(equalToConstant: 6).isActive = true
-
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .tertiaryLabel
-        label.numberOfLines = 0
-
-        row.addArrangedSubview(dot)
-        row.addArrangedSubview(label)
-        return row
+    private func loadStatus(for value: Int) -> String {
+        switch value {
+        case 0..<45:
+            return "низкая"
+        case 45..<70:
+            return "средняя"
+        default:
+            return "высокая"
+        }
     }
 
-    private func makeAdviceRow(_ advice: UserAnalysisAdvice) -> UIView {
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.spacing = 10
-        row.alignment = .top
-
-        let iconBg = UIView()
-        iconBg.backgroundColor = color(for: advice.priority).withAlphaComponent(0.10)
-        iconBg.layer.cornerRadius = 14
-        iconBg.translatesAutoresizingMaskIntoConstraints = false
-        iconBg.widthAnchor.constraint(equalToConstant: 28).isActive = true
-        iconBg.heightAnchor.constraint(equalToConstant: 28).isActive = true
-
-        let config = UIImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
-        let iconView = UIImageView(image: UIImage(systemName: advice.sfSymbol, withConfiguration: config))
-        iconView.tintColor = color(for: advice.priority)
-        iconView.contentMode = .scaleAspectFit
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconBg.addSubview(iconView)
-
-        NSLayoutConstraint.activate([
-            iconView.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
-            iconView.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 16),
-            iconView.heightAnchor.constraint(equalToConstant: 16)
-        ])
-
-        let titleLabel = UILabel()
-        titleLabel.text = advice.title
-        titleLabel.font = .systemFont(ofSize: 14, weight: .semibold)
-        titleLabel.textColor = .label
-        titleLabel.numberOfLines = 0
-
-        let messageLabel = UILabel()
-        messageLabel.text = advice.message
-        messageLabel.font = .systemFont(ofSize: 13, weight: .regular)
-        messageLabel.textColor = .secondaryLabel
-        messageLabel.numberOfLines = 0
-
-        let textStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 3
-
-        row.addArrangedSubview(iconBg)
-        row.addArrangedSubview(textStack)
-        return row
-    }
-
-    private func makePlainAdviceRow(_ text: String) -> UIView {
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .secondaryLabel
-        label.numberOfLines = 0
-        return label
-    }
-
-    private func color(for score: Int) -> UIColor {
-        switch score {
-        case 76...100:
-            return UIColor.main
-        case 52..<76:
+    private func loadColor(for value: Int) -> UIColor {
+        switch value {
+        case 0..<45:
+            return .systemGreen
+        case 45..<70:
             return .systemOrange
         default:
             return .systemRed
         }
     }
 
-    private func color(for priority: UserAdvicePriority) -> UIColor {
-        switch priority {
-        case .high:
-            return .systemRed
+    private func confidenceColor(for level: UserAnalysisConfidenceLevel) -> UIColor {
+        switch level {
+        case .low:
+            return .systemGray
         case .medium:
-            return .systemOrange
-        case .info:
-            return UIColor.main
+            return .systemBlue
+        case .high:
+            return .systemTeal
         }
     }
+
 }

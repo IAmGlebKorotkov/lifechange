@@ -9,7 +9,6 @@ import UIKit
 
 final class TaskDayView: UIControl {
 
-
     enum TaskType {
         case light
         case hard(mainTaskName: String)
@@ -27,13 +26,19 @@ final class TaskDayView: UIControl {
         }
         var color: UIColor {
             switch self {
-            case .low:    return .systemGreen
-            case .medium: return .systemOrange
-            case .high:   return .systemRed
+            case .low:    return .appSuccess
+            case .medium: return .appWarning
+            case .high:   return .appDanger
             }
         }
     }
 
+    private struct CategoryStyle {
+        let sfSymbol: String
+        let tileColor: UIColor
+        let tintColor: UIColor
+        let chipText: String?
+    }
 
     private(set) var isTaskCompleted: Bool = false
     var onCompletionChanged: ((Bool) -> Void)?
@@ -41,135 +46,69 @@ final class TaskDayView: UIControl {
     var onEditTapped: (() -> Void)?
     private var showsCompletionButton = true
     private var showsEditButton = false
+    private var taskTitleText = ""
 
-
-    private let subtaskLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 12, weight: .medium)
-        l.textColor = .systemGray
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+    private let iconTile: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 11
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
-    private let mainTaskLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 12, weight: .semibold)
-        l.textColor = UIColor.main.withAlphaComponent(0.7)
-        l.textAlignment = .center
-        l.isHidden = true
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let block1: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
-
-    private let titleLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 16, weight: .semibold)
-        l.textColor = .label
-        l.numberOfLines = 2
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-
-    private let timeIconView: UIImageView = {
-        let cfg = UIImage.SymbolConfiguration(pointSize: 13, weight: .medium)
-        let iv = UIImageView(image: UIImage(named: "Time Circle"))
-        iv.tintColor = UIColor.main
+    private let iconView: UIImageView = {
+        let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
-        iv.setContentHuggingPriority(.required, for: .horizontal)
+        iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
 
-    private let timeLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 13, weight: .medium)
-        l.textColor = UIColor.main
-        l.adjustsFontSizeToFitWidth = true
-        l.minimumScaleFactor = 0.82
-        l.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        return l
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
+        label.textColor = .label
+        label.numberOfLines = 2
+        label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        return label
     }()
 
-    private lazy var timeStack: UIStackView = {
-        let s = UIStackView(arrangedSubviews: [timeIconView, timeLabel])
-        s.axis = .horizontal
-        s.spacing = 4
-        s.alignment = .center
-        s.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        return s
+    private let priorityDot: UIView = {
+        let view = UIView()
+        view.backgroundColor = .appWarning
+        view.layer.cornerRadius = 3.5
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
-    private let timeSpentLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 13, weight: .medium)
-        l.textColor = UIColor.main
-        l.setContentHuggingPriority(.required, for: .horizontal)
-        return l
+    private let chipLabel: PaddedChipLabel = {
+        let label = PaddedChipLabel()
+        label.font = .systemFont(ofSize: 10, weight: .semibold)
+        label.layer.cornerRadius = 5
+        label.layer.masksToBounds = true
+        label.isHidden = true
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return label
     }()
 
-    private let priorityBadge: UIView = {
-        let v = UIView()
-        v.layer.cornerRadius = 6
-        v.setContentHuggingPriority(.required, for: .horizontal)
-        return v
-    }()
-
-    private let priorityLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 11, weight: .semibold)
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+    private let subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 12, weight: .regular)
+        label.textColor = UIColor(rgb: 0x3C3C43, alpha: 0.5)
+        label.numberOfLines = 1
+        return label
     }()
 
     private let completeButton: UIButton = {
-        let b = UIButton(type: .custom)
-        let cfg = UIImage.SymbolConfiguration(pointSize: 24, weight: .medium)
-        b.setImage(UIImage(systemName: "circle",              withConfiguration: cfg), for: .normal)
-        b.setImage(UIImage(systemName: "checkmark.circle.fill", withConfiguration: cfg), for: .selected)
-        b.tintColor = .systemGray3
-        b.translatesAutoresizingMaskIntoConstraints = false
-        b.setContentHuggingPriority(.required, for: .horizontal)
-        return b
+        let button = UIButton(type: .custom)
+        let cfg = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
+        button.setImage(UIImage(systemName: "circle", withConfiguration: cfg), for: .normal)
+        button.setImage(UIImage(systemName: "checkmark.circle.fill", withConfiguration: cfg), for: .selected)
+        button.tintColor = UIColor(rgb: 0x3C3C43, alpha: 0.25)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        return button
     }()
-
-    private let editButton: UIButton = {
-        let b = UIButton(type: .custom)
-        let cfg = UIImage.SymbolConfiguration(pointSize: 21, weight: .semibold)
-        b.setImage(UIImage(systemName: "square.and.pencil", withConfiguration: cfg), for: .normal)
-        b.tintColor = UIColor.main
-        b.translatesAutoresizingMaskIntoConstraints = false
-        b.setContentHuggingPriority(.required, for: .horizontal)
-        return b
-    }()
-
-    private lazy var block3: UIStackView = {
-        let spacer = UIView()
-        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
-
-        let s = UIStackView(arrangedSubviews: [timeStack, timeSpentLabel, priorityBadge, spacer, editButton, completeButton])
-        s.axis = .horizontal
-        s.spacing = 8
-        s.alignment = .center
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
-
-    private lazy var mainStack: UIStackView = {
-        let s = UIStackView(arrangedSubviews: [block1, titleLabel, block3])
-        s.axis = .vertical
-        s.spacing = 10
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
 
     init(subtaskName: String,
          taskTitle: String,
@@ -191,7 +130,6 @@ final class TaskDayView: UIControl {
         buildLayout()
         if isCompleted { silentlyMarkCompleted() }
     }
-
 
     init(mainTaskName: String,
          subtaskName: String,
@@ -219,87 +157,120 @@ final class TaskDayView: UIControl {
         fatalError("init(coder:) has not been implemented")
     }
 
-
     private func applyContent(type: TaskType,
-                               subtaskName: String,
-                               taskTitle: String,
-                               time: String,
-                               timeSpent: String,
-                               priority: Priority) {
-        subtaskLabel.text = subtaskName
+                              subtaskName: String,
+                              taskTitle: String,
+                              time: String,
+                              timeSpent: String,
+                              priority: Priority) {
+        taskTitleText = taskTitle
         titleLabel.text = taskTitle
-        timeLabel.text = time
-        timeSpentLabel.text = timeSpent
-        timeSpentLabel.isHidden = timeSpent.isEmpty
+        priorityDot.isHidden = priority != .high
 
-        priorityLabel.text = priority.title
-        priorityLabel.textColor = priority.color
-        priorityBadge.backgroundColor = priority.color.withAlphaComponent(0.12)
+        var subtitleParts: [String] = []
+        if case .hard(let name) = type, !name.isEmpty {
+            subtitleParts.append("из «\(name)»")
+        }
+        if !time.isEmpty { subtitleParts.append(time) }
+        if !timeSpent.isEmpty { subtitleParts.append(timeSpent) }
+        subtitleLabel.text = subtitleParts.joined(separator: " · ")
 
-        if case .hard(let name) = type {
-            mainTaskLabel.text = name
-            mainTaskLabel.isHidden = false
+        let style = categoryStyle(for: subtaskName)
+        iconTile.backgroundColor = style.tileColor
+        let cfg = UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)
+        iconView.image = UIImage(systemName: style.sfSymbol, withConfiguration: cfg)
+        iconView.tintColor = style.tintColor
+
+        if let chipText = style.chipText {
+            chipLabel.text = chipText
+            chipLabel.textColor = style.tintColor
+            chipLabel.backgroundColor = style.tileColor
+            chipLabel.isHidden = false
         }
     }
 
+    private func categoryStyle(for typeTitle: String) -> CategoryStyle {
+        switch typeTitle.lowercased() {
+        case "событие":
+            return CategoryStyle(
+                sfSymbol: "calendar",
+                tileColor: UIColor(rgb: 0xDCEBFF),
+                tintColor: .appInfo,
+                chipText: "событие"
+            )
+        case "подзадача":
+            return CategoryStyle(
+                sfSymbol: "list.bullet",
+                tileColor: UIColor(rgb: 0xD8F5E3),
+                tintColor: UIColor(rgb: 0x0A7D4D),
+                chipText: "подзадача"
+            )
+        case "сложная задача":
+            return CategoryStyle(
+                sfSymbol: "square.stack.3d.up.fill",
+                tileColor: UIColor(rgb: 0xEAE2FF),
+                tintColor: .appSleepPurple,
+                chipText: nil
+            )
+        default:
+            return CategoryStyle(
+                sfSymbol: "doc.text",
+                tileColor: .lightMain,
+                tintColor: .main,
+                chipText: nil
+            )
+        }
+    }
 
     private func buildLayout() {
         backgroundColor = .white
-        layer.cornerRadius = 16
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.07
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 8
+        layer.cornerRadius = 18
+        applyCardShadow()
         translatesAutoresizingMaskIntoConstraints = false
 
-        priorityBadge.addSubview(priorityLabel)
-        priorityLabel.translatesAutoresizingMaskIntoConstraints = true
-        priorityLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            priorityLabel.topAnchor.constraint(equalTo: priorityBadge.topAnchor, constant: 3),
-            priorityLabel.bottomAnchor.constraint(equalTo: priorityBadge.bottomAnchor, constant: -3),
-            priorityLabel.leadingAnchor.constraint(equalTo: priorityBadge.leadingAnchor, constant: 8),
-            priorityLabel.trailingAnchor.constraint(equalTo: priorityBadge.trailingAnchor, constant: -8)
-        ])
+        iconTile.addSubview(iconView)
 
-        block1.addSubview(subtaskLabel)
-        block1.addSubview(mainTaskLabel)
+        let titleRow = UIStackView(arrangedSubviews: [titleLabel, priorityDot, chipLabel, UIView()])
+        titleRow.axis = .horizontal
+        titleRow.spacing = 6
+        titleRow.alignment = .center
 
-        NSLayoutConstraint.activate([
-            block1.heightAnchor.constraint(greaterThanOrEqualToConstant: 18),
+        let textStack = UIStackView(arrangedSubviews: [titleRow, subtitleLabel])
+        textStack.axis = .vertical
+        textStack.spacing = 2
 
-            subtaskLabel.leadingAnchor.constraint(equalTo: block1.leadingAnchor),
-            subtaskLabel.topAnchor.constraint(equalTo: block1.topAnchor),
-            subtaskLabel.bottomAnchor.constraint(equalTo: block1.bottomAnchor),
-
-            mainTaskLabel.centerXAnchor.constraint(equalTo: block1.centerXAnchor),
-            mainTaskLabel.centerYAnchor.constraint(equalTo: block1.centerYAnchor)
-        ])
-
+        let mainStack = UIStackView(arrangedSubviews: [iconTile, textStack, completeButton])
+        mainStack.axis = .horizontal
+        mainStack.spacing = 12
+        mainStack.alignment = .center
+        mainStack.isUserInteractionEnabled = true
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(mainStack)
+
         NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 14),
-            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14)
+            iconTile.widthAnchor.constraint(equalToConstant: 38),
+            iconTile.heightAnchor.constraint(equalToConstant: 38),
+
+            iconView.centerXAnchor.constraint(equalTo: iconTile.centerXAnchor),
+            iconView.centerYAnchor.constraint(equalTo: iconTile.centerYAnchor),
+
+            priorityDot.widthAnchor.constraint(equalToConstant: 7),
+            priorityDot.heightAnchor.constraint(equalToConstant: 7),
+
+            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 13),
+            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -13)
         ])
 
         completeButton.addTarget(self, action: #selector(completeTapped), for: .touchUpInside)
-        editButton.addTarget(self, action: #selector(editTapped), for: .touchUpInside)
         addTarget(self, action: #selector(cardTapped), for: .touchUpInside)
         completeButton.enablePressScale()
-        editButton.enablePressScale()
         completeButton.isHidden = !showsCompletionButton
-        editButton.isHidden = !showsEditButton
     }
-
 
     @objc private func cardTapped() {
         onTap?()
-    }
-
-    @objc private func editTapped() {
-        onEditTapped?()
     }
 
     @objc private func completeTapped() {
@@ -310,18 +281,43 @@ final class TaskDayView: UIControl {
 
     private func animateCompletionToggle() {
         UIView.animate(withDuration: 0.2) {
-            self.completeButton.isSelected = self.isTaskCompleted
-            self.completeButton.tintColor = self.isTaskCompleted ? UIColor.main : .systemGray3
-            self.titleLabel.alpha = self.isTaskCompleted ? 0.4 : 1.0
-            self.alpha = self.isTaskCompleted ? 0.75 : 1.0
+            self.applyCompletionAppearance()
         }
     }
 
     private func silentlyMarkCompleted() {
         isTaskCompleted = true
-        completeButton.isSelected = true
-        completeButton.tintColor = UIColor.main
-        titleLabel.alpha = 0.4
-        alpha = 0.75
+        applyCompletionAppearance()
+    }
+
+    private func applyCompletionAppearance() {
+        completeButton.isSelected = isTaskCompleted
+        completeButton.tintColor = isTaskCompleted ? .appSuccess : UIColor(rgb: 0x3C3C43, alpha: 0.25)
+        alpha = isTaskCompleted ? 0.62 : 1.0
+
+        if isTaskCompleted {
+            titleLabel.attributedText = NSAttributedString(
+                string: taskTitleText,
+                attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue]
+            )
+        } else {
+            titleLabel.attributedText = nil
+            titleLabel.text = taskTitleText
+        }
+    }
+}
+
+private final class PaddedChipLabel: UILabel {
+
+    private let insets = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: insets))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(width: size.width + insets.left + insets.right,
+                      height: size.height + insets.top + insets.bottom)
     }
 }

@@ -12,12 +12,18 @@ final class AppCoordinator: Coordinator {
     private let window: UIWindow
     private let container = DIContainer()
     private var pendingURL: URL?
+    private var pendingNotificationRoute: NotificationRoute?
+    private var mainTabCoordinator: TabBarCoordinator?
 
     init(window: UIWindow) {
         self.window = window
     }
 
     func start() {
+        NotificationRouteStore.shared.setHandler { [weak self] route in
+            self?.handle(notificationRoute: route)
+        }
+
         if SessionManager.shared.canRestoreSessionWithoutAuth {
             showMain()
         } else if SessionManager.shared.canAttemptFaceIDUnlock {
@@ -48,6 +54,19 @@ final class AppCoordinator: Coordinator {
         completeLiveActivityTask(taskID)
     }
 
+    private func handle(notificationRoute: NotificationRoute) {
+        guard SessionManager.shared.canRestoreSessionWithoutAuth,
+              let mainTabCoordinator else {
+            pendingNotificationRoute = notificationRoute
+            return
+        }
+
+        switch notificationRoute {
+        case .startFocus(let taskID):
+            mainTabCoordinator.showFocus(taskID: taskID)
+        }
+    }
+
     private func completeLiveActivityTask(_ taskID: UUID) {
         try? container.makeTaskService().setCompleted(taskID: taskID)
         FocusLiveActivityManager.shared.end()
@@ -62,6 +81,12 @@ final class AppCoordinator: Coordinator {
         guard let pendingURL else { return }
         self.pendingURL = nil
         handle(url: pendingURL)
+    }
+
+    private func processPendingNotificationRouteIfNeeded() {
+        guard let pendingNotificationRoute else { return }
+        self.pendingNotificationRoute = nil
+        handle(notificationRoute: pendingNotificationRoute)
     }
 
     private func showAuth() {
@@ -92,15 +117,18 @@ final class AppCoordinator: Coordinator {
 
     private func showMain() {
         let tabCoordinator = TabBarCoordinator(window: window, container: container)
+        mainTabCoordinator = tabCoordinator
         tabCoordinator.onLogout = { [weak self, weak tabCoordinator] in
             guard let self, let tabCoordinator else { return }
             SessionManager.shared.logout()
             LocalNotificationService.shared.cancelAllScheduledNotifications()
             self.removeChild(tabCoordinator)
+            self.mainTabCoordinator = nil
             self.showAuth()
         }
         addChild(tabCoordinator)
         refreshNotificationsIfNeeded()
         processPendingURLIfNeeded()
+        processPendingNotificationRouteIfNeeded()
     }
 }

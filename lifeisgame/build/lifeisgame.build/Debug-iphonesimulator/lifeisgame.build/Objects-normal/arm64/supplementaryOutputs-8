@@ -1,0 +1,23 @@
+{
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddSubTask/AddSubtaskViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddSubTask/AddSubtaskViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/AddSubtaskViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/Shared/HardTaskFormView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/HardTaskFormView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/HardTaskFormView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/HardTaskFormView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/HardTaskFormView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/arm64/HardTaskFormView.swiftdeps"
+  }
+}

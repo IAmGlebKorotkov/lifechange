@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'lifeisgameTests' in project 'lifeisgame'
+➜ Explicit dependency on target 'lifeisgame' in project 'lifeisgame'
+Target 'lifeisgame' in project 'lifeisgame'
+➜ Explicit dependency on target 'FocusLiveActivityExtension' in project 'lifeisgame'
+Target 'FocusLiveActivityExtension' in project 'lifeisgame' (no dependencies)

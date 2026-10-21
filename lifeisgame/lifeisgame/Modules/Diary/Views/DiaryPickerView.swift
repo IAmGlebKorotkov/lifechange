@@ -17,26 +17,18 @@ final class DiaryPickerView: UIView {
         return iv
     }()
 
-    private let sectionLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 12, weight: .medium)
-        l.textColor = .systemGray
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
     private let selectionLabel: UILabel = {
         let l = UILabel()
-        l.font = .systemFont(ofSize: 16, weight: .semibold)
+        l.font = .systemFont(ofSize: 15, weight: .semibold)
         l.textColor = .label
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
     private let chevronView: UIImageView = {
-        let cfg = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
+        let cfg = UIImage.SymbolConfiguration(pointSize: 11, weight: .bold)
         let iv = UIImageView(image: UIImage(systemName: "chevron.down", withConfiguration: cfg))
-        iv.tintColor = .label
+        iv.tintColor = UIColor(rgb: 0x3C3C43, alpha: 0.4)
         iv.contentMode = .scaleAspectFit
         iv.setContentHuggingPriority(.required, for: .horizontal)
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -53,10 +45,10 @@ final class DiaryPickerView: UIView {
 
     init(sectionTitle: String) {
         super.init(frame: .zero)
-        sectionLabel.text = sectionTitle
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .white
-        layer.cornerRadius = 14
+        layer.cornerRadius = 12
+        applyCardShadow(strength: 0.8)
         setupLayout()
     }
 
@@ -71,31 +63,24 @@ final class DiaryPickerView: UIView {
 
 
     private func setupLayout() {
-        let selectionRow = UIStackView(arrangedSubviews: [selectionLabel, chevronView])
-        selectionRow.axis = .horizontal
-        selectionRow.spacing = 6
-        selectionRow.alignment = .center
-        selectionRow.translatesAutoresizingMaskIntoConstraints = false
+        let row = UIStackView(arrangedSubviews: [iconImageView, selectionLabel, chevronView])
+        row.axis = .horizontal
+        row.spacing = 6
+        row.alignment = .center
+        row.translatesAutoresizingMaskIntoConstraints = false
 
-        let textStack = UIStackView(arrangedSubviews: [sectionLabel, selectionRow])
-        textStack.axis = .vertical
-        textStack.spacing = 4
-        textStack.translatesAutoresizingMaskIntoConstraints = false
-
-        addSubview(iconImageView)
-        addSubview(textStack)
+        addSubview(row)
         addSubview(menuButton)
         menuButton.enablePressScale(to: 0.97)
 
         NSLayoutConstraint.activate([
-            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: 36),
-            iconImageView.heightAnchor.constraint(equalToConstant: 36),
+            iconImageView.widthAnchor.constraint(equalToConstant: 20),
+            iconImageView.heightAnchor.constraint(equalToConstant: 20),
 
-            textStack.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 14),
-            textStack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            textStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            row.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            row.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            row.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            row.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
 
             menuButton.topAnchor.constraint(equalTo: topAnchor),
             menuButton.leadingAnchor.constraint(equalTo: leadingAnchor),

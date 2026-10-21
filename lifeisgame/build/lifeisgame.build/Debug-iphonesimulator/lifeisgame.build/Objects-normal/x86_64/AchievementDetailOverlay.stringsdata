@@ -1,0 +1,48 @@
+{
+  "source": "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Statistics/Achievements/AchievementDetailOverlay.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Прогресс",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 255
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld / %lld",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%lld XP уже в копилке",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 300
+        }
+      },
+      {
+        "comment": "",
+        "key": "Выполните цель — карточка станет цветной",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 306
+        }
+      },
+      {
+        "comment": "",
+        "key": "Забрать +%lld XP",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 289
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -21,8 +21,8 @@ final class CalendarCoordinator: Coordinator {
     func start() {
         let viewModel = CalendarViewModel(taskService: container.makeTaskService())
         let vc = CalendarViewController(viewModel: viewModel)
-        viewModel.onAddTaskTapped = { [weak self] selectedDate in
-            self?.showAddTask(selectedDate: selectedDate)
+        viewModel.onAddItemTapped = { [weak self] selectedDate, kind in
+            self?.showAddTask(selectedDate: selectedDate, kind: kind)
         }
         viewModel.onEditTaskTapped = { [weak self, weak viewModel] task in
             self?.showEditTask(task: task, onSaved: {
@@ -35,7 +35,7 @@ final class CalendarCoordinator: Coordinator {
         navigationController.setViewControllers([vc], animated: false)
     }
 
-    private func showAddTask(selectedDate: Date) {
+    private func showAddTask(selectedDate: Date, kind: AddTaskKind) {
         let mainTab = navigationController.parent as? MainTabBarController
         mainTab?.setTabBarHidden(true, animated: true)
         navigationController.setNavigationBarHidden(false, animated: true)
@@ -43,7 +43,8 @@ final class CalendarCoordinator: Coordinator {
         let coordinator = AddTaskCoordinator(
             navigationController: navigationController,
             taskService: container.makeTaskService(),
-            initialDate: selectedDate
+            initialDate: selectedDate,
+            initialKind: kind
         )
         coordinator.onCompleted = { [weak self, weak coordinator, weak mainTab] in
             guard let self, let coordinator else { return }

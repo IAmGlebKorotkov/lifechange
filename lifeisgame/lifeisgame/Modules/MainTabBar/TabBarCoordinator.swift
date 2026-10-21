@@ -36,6 +36,18 @@ final class TabBarCoordinator: Coordinator {
         }
     }
 
+    func showFocus(taskID: UUID) {
+        let viewModel = FocusViewModel(
+            taskService: container.makeTaskService(),
+            achievementService: container.makeAchievementService()
+        )
+        let focusViewController = FocusViewController(
+            viewModel: viewModel,
+            selectedTaskID: taskID
+        )
+        tabBarController.present(focusViewController, animated: true)
+    }
+
     private func makeCalendarTab() -> UIViewController {
         let nav = UINavigationController()
         nav.setNavigationBarHidden(true, animated: false)

@@ -33,43 +33,6 @@ final class AddTaskViewController: UIViewController {
         return s
     }()
 
-
-    private let taskTypeCard = UIView()
-    private let taskKindCard = UIView()
-
-    private let taskKindLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Задача"
-        l.font = .systemFont(ofSize: 16, weight: .semibold)
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let taskKindToggle: UISwitch = {
-        let s = UISwitch()
-        s.onTintColor = UIColor.main
-        s.isOn = false
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
-    private let taskTypeLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Простая задача"
-        l.font = .systemFont(ofSize: 16, weight: .semibold)
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let taskTypeToggle: UISwitch = {
-        let s = UISwitch()
-        s.onTintColor = UIColor.main
-        s.isOn = false
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
-    }()
-
-
     private let simpleFormView = TaskBaseFormView()
     private let eventFormView = TaskBaseFormView(
         showsTimeSection: false,
@@ -79,9 +42,26 @@ final class AddTaskViewController: UIViewController {
     )
     private let hardFormView = HardTaskFormView()
 
+    private let formContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
 
     private let hintView = ValidationHintView()
     private let generateButton = CustomButton(title: "Сгенерировать План", type: .main)
+
+    private var activeFormView: TaskBaseFormView {
+        switch viewModel.kind {
+        case .event:
+            return eventFormView
+        case .simpleTask:
+            return simpleFormView
+        case .hardTask:
+            return hardFormView
+        }
+    }
 
 
     init(viewModel: AddTaskViewModel = AddTaskViewModel()) {
@@ -97,7 +77,7 @@ final class AddTaskViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
-        title = "Добавить задачу"
+        title = viewModel.kind.navigationTitle
         setupNavigation()
         setupLayout()
         applyInitialDateIfNeeded()
@@ -109,7 +89,6 @@ final class AddTaskViewController: UIViewController {
             applyInitialDateIfNeeded()
         }
     }
-
 
     private func setupNavigation() {
         let backButton = UIBarButtonItem(
@@ -144,26 +123,15 @@ final class AddTaskViewController: UIViewController {
             contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40)
         ])
 
-        setupKindToggleCard()
-        setupTypeToggleCard()
-        contentStack.addArrangedSubview(taskKindCard)
-        contentStack.addArrangedSubview(taskTypeCard)
-        contentStack.addArrangedSubview(simpleFormView)
-        contentStack.addArrangedSubview(eventFormView)
-        contentStack.addArrangedSubview(hardFormView)
+        contentStack.addArrangedSubview(formContainer)
+        setupFormContainer()
         contentStack.addArrangedSubview(hintView)
         contentStack.addArrangedSubview(generateButton)
 
-        eventFormView.isHidden = true
-        hardFormView.isHidden = true
         generateButton.isEnabled = false
+        generateButton.setTitle(viewModel.isEvent ? "Создать событие" : "Сгенерировать План")
 
-        taskKindToggle.addTarget(self, action: #selector(kindToggleChanged), for: .valueChanged)
-        taskTypeToggle.addTarget(self, action: #selector(typeToggleChanged), for: .valueChanged)
-
-        simpleFormView.onValidationChanged = { [weak self] in self?.validateAndUpdateButton() }
-        eventFormView.onValidationChanged = { [weak self] in self?.validateAndUpdateButton() }
-        hardFormView.onValidationChanged = { [weak self] in self?.validateAndUpdateButton() }
+        activeFormView.onValidationChanged = { [weak self] in self?.validateAndUpdateButton() }
 
         hardFormView.onAddSubtaskTapped = { [weak self] in
             self?.openAddSubtask()
@@ -176,14 +144,24 @@ final class AddTaskViewController: UIViewController {
         generateButton.addTarget(self, action: #selector(generateTapped), for: .touchUpInside)
     }
 
+    private func setupFormContainer() {
+        let form = activeFormView
+        formContainer.addSubview(form)
+
+        NSLayoutConstraint.activate([
+            form.topAnchor.constraint(equalTo: formContainer.topAnchor),
+            form.leadingAnchor.constraint(equalTo: formContainer.leadingAnchor),
+            form.trailingAnchor.constraint(equalTo: formContainer.trailingAnchor),
+            form.bottomAnchor.constraint(equalTo: formContainer.bottomAnchor)
+        ])
+    }
+
     private func applyInitialDateIfNeeded() {
         guard let initialDate else { return }
-        simpleFormView.startDatePicker.date = initialDate
-        simpleFormView.deadlineDatePicker.date = initialDate
-        eventFormView.startDatePicker.date = initialDate
-        eventFormView.deadlineDatePicker.date = initialDate.addingTimeInterval(60 * 60)
-        hardFormView.startDatePicker.date = initialDate
-        hardFormView.deadlineDatePicker.date = initialDate
+        activeFormView.startDatePicker.date = initialDate
+        activeFormView.deadlineDatePicker.date = viewModel.isEvent
+            ? initialDate.addingTimeInterval(60 * 60)
+            : initialDate
         validateAndUpdateButton()
     }
 
@@ -208,72 +186,6 @@ final class AddTaskViewController: UIViewController {
     }
 
 
-    private func setupKindToggleCard() {
-        AddTaskUIHelpers.styleCard(taskKindCard)
-        taskKindCard.addSubview(taskKindLabel)
-        taskKindCard.addSubview(taskKindToggle)
-
-        NSLayoutConstraint.activate([
-            taskKindLabel.leadingAnchor.constraint(equalTo: taskKindCard.leadingAnchor, constant: 16),
-            taskKindLabel.centerYAnchor.constraint(equalTo: taskKindCard.centerYAnchor),
-
-            taskKindToggle.trailingAnchor.constraint(equalTo: taskKindCard.trailingAnchor, constant: -16),
-            taskKindToggle.centerYAnchor.constraint(equalTo: taskKindCard.centerYAnchor),
-
-            taskKindCard.heightAnchor.constraint(equalToConstant: 56)
-        ])
-    }
-
-    private func setupTypeToggleCard() {
-        AddTaskUIHelpers.styleCard(taskTypeCard)
-        taskTypeCard.addSubview(taskTypeLabel)
-        taskTypeCard.addSubview(taskTypeToggle)
-
-        NSLayoutConstraint.activate([
-            taskTypeLabel.leadingAnchor.constraint(equalTo: taskTypeCard.leadingAnchor, constant: 16),
-            taskTypeLabel.centerYAnchor.constraint(equalTo: taskTypeCard.centerYAnchor),
-
-            taskTypeToggle.trailingAnchor.constraint(equalTo: taskTypeCard.trailingAnchor, constant: -16),
-            taskTypeToggle.centerYAnchor.constraint(equalTo: taskTypeCard.centerYAnchor),
-
-            taskTypeCard.heightAnchor.constraint(equalToConstant: 56)
-        ])
-    }
-
-
-    @objc private func kindToggleChanged() {
-        viewModel.setEvent(taskKindToggle.isOn)
-
-        UIView.transition(with: taskKindLabel, duration: 0.2, options: .transitionCrossDissolve) {
-            self.taskKindLabel.text = self.viewModel.isEvent ? "Событие" : "Задача"
-        }
-
-        updateVisibleForm()
-    }
-
-    @objc private func typeToggleChanged() {
-        viewModel.setHardTask(taskTypeToggle.isOn)
-
-        UIView.transition(with: taskTypeLabel, duration: 0.2, options: .transitionCrossDissolve) {
-            self.taskTypeLabel.text = self.viewModel.isHardTask ? "Сложная задача" : "Простая задача"
-        }
-
-        updateVisibleForm()
-    }
-
-    private func updateVisibleForm() {
-        UIView.animate(withDuration: 0.3) {
-            self.taskTypeCard.isHidden = self.viewModel.isEvent
-            self.simpleFormView.isHidden = self.viewModel.isEvent || self.viewModel.isHardTask
-            self.eventFormView.isHidden = !self.viewModel.isEvent
-            self.hardFormView.isHidden = self.viewModel.isEvent || !self.viewModel.isHardTask
-        }
-
-        generateButton.setTitle(viewModel.isEvent ? "Создать событие" : "Сгенерировать План")
-        validateAndUpdateButton()
-    }
-
-
     private func validateAndUpdateButton() {
         let result = viewModel.validate(currentDraft())
         generateButton.isEnabled = result.isValid
@@ -281,9 +193,7 @@ final class AddTaskViewController: UIViewController {
     }
 
     private func currentDraft() -> AddTaskDraft {
-        let activeForm: TaskBaseFormView = viewModel.isEvent
-            ? eventFormView
-            : (viewModel.isHardTask ? hardFormView : simpleFormView)
+        let activeForm = activeFormView
 
         return AddTaskDraft(
             name: activeForm.nameTextField.text ?? "",

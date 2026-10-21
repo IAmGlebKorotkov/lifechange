@@ -162,6 +162,6 @@ extension CalendarDateStripView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: cellWidth, height: 102)
+        CGSize(width: cellWidth, height: 76)
     }
 }

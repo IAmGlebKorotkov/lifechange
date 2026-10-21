@@ -1,0 +1,142 @@
+{
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddMainTask/AddTaskViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddSubTask/AddSubtaskViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddSubTask/AddSubtaskViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddSubtaskViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddTaskCoordinator.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskCoordinator.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskCoordinator.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskCoordinator.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskCoordinator.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskCoordinator.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/AddTaskFlowViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskFlowViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskFlowViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskFlowViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskFlowViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskFlowViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/GeneratedPlan/GeneratePlanLoadingViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/GeneratePlanLoadingViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/GeneratePlanLoadingViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/GeneratePlanLoadingViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/GeneratePlanLoadingViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/GeneratePlanLoadingViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/Shared/AddTaskUIHelpers.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskUIHelpers.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskUIHelpers.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskUIHelpers.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskUIHelpers.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AddTaskUIHelpers.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/Shared/HardTaskFormView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/HardTaskFormView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/HardTaskFormView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/HardTaskFormView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/HardTaskFormView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/HardTaskFormView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/AddTask/Shared/TaskBaseFormView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskBaseFormView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskBaseFormView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskBaseFormView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskBaseFormView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskBaseFormView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/AuthCoordinator.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AuthCoordinator.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AuthCoordinator.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AuthCoordinator.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AuthCoordinator.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/AuthCoordinator.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/FaceIDUnlockViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/FaceIDUnlockViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FaceIDUnlockViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/SignIn/LoginViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/SignIn/LoginViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/LoginViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/SignUp/RegistrationViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Auth/SignUp/RegistrationViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/RegistrationViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/EditTask/EditTaskViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/EditTask/EditTaskViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EditTaskViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Notification/NotificationsViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Notification/NotificationsViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/NotificationsViewModel.swiftdeps"
+  }
+}

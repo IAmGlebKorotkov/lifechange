@@ -1,0 +1,135 @@
+{
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/CalendarCoordinator.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarCoordinator.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarCoordinator.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarCoordinator.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarCoordinator.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarCoordinator.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/CalendarViewController.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewController.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewController.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewController.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewController.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewController.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/CalendarViewModel.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewModel.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewModel.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewModel.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewModel.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarViewModel.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/CalendarAddMenuView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarAddMenuView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarAddMenuView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarAddMenuView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarAddMenuView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarAddMenuView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/CalendarDateStripView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarDateStripView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarDateStripView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarDateStripView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarDateStripView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarDateStripView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/CalendarFilterView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarFilterView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarFilterView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarFilterView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarFilterView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarFilterView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/CalendarHeaderView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarHeaderView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarHeaderView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarHeaderView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarHeaderView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarHeaderView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/CalendarTaskListView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarTaskListView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarTaskListView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarTaskListView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarTaskListView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CalendarTaskListView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/DateCell.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DateCell.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DateCell.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DateCell.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DateCell.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DateCell.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Calendar/Views/TaskDayView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskDayView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskDayView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskDayView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskDayView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/TaskDayView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/CardContainerView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CardContainerView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CardContainerView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CardContainerView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CardContainerView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CardContainerView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/CustomButton.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomButton.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomButton.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomButton.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomButton.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomButton.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/CustomTabBar.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTabBar.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTabBar.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTabBar.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTabBar.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTabBar.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/CustomTextField.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTextField.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTextField.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTextField.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTextField.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/CustomTextField.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/DatePickerCard.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DatePickerCard.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DatePickerCard.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DatePickerCard.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DatePickerCard.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/DatePickerCard.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/EmotionPalette.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmotionPalette.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmotionPalette.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmotionPalette.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmotionPalette.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmotionPalette.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/EmptyStateView.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmptyStateView.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmptyStateView.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmptyStateView.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmptyStateView.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/EmptyStateView.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/ExpandableTimePickerCard.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/ExpandableTimePickerCard.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/ExpandableTimePickerCard.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/ExpandableTimePickerCard.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/ExpandableTimePickerCard.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/ExpandableTimePickerCard.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Common/Components/FormFieldCard.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FormFieldCard.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FormFieldCard.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FormFieldCard.dia",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FormFieldCard.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/lifeisgame.build/Objects-normal/x86_64/FormFieldCard.swiftdeps"
+  }
+}

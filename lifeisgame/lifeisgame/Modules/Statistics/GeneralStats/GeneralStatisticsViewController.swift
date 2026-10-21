@@ -25,6 +25,7 @@ final class GeneralStatisticsViewController: UIViewController {
         sv.showsVerticalScrollIndicator = false
         sv.alwaysBounceVertical = true
         sv.delaysContentTouches = false
+        sv.clipsToBounds = false
         sv.translatesAutoresizingMaskIntoConstraints = false
         return sv
     }()
@@ -32,7 +33,7 @@ final class GeneralStatisticsViewController: UIViewController {
     private let contentStack: UIStackView = {
         let s = UIStackView()
         s.axis = .vertical
-        s.spacing = 12
+        s.spacing = 13
         s.translatesAutoresizingMaskIntoConstraints = false
         return s
     }()
@@ -40,27 +41,34 @@ final class GeneralStatisticsViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Анализ дня"
-        label.font = .systemFont(ofSize: 28, weight: .bold)
+        label.font = .systemFont(ofSize: 30, weight: .bold)
         label.textColor = .label
-        label.textAlignment = .center
         label.numberOfLines = 1
+        return label
+    }()
+
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.textColor = .textSecondaryToken
         return label
     }()
 
     private let focusButton: UIButton = {
         let b = UIButton(type: .custom)
-        let cfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+        let cfg = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
         b.setImage(UIImage(systemName: "play.fill", withConfiguration: cfg), for: .normal)
-        b.setTitle("Старт", for: .normal)
+        b.setTitle("Фокус", for: .normal)
         b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         b.tintColor = .white
         b.setTitleColor(.white, for: .normal)
-        b.backgroundColor = UIColor.main.withAlphaComponent(0.82)
-        b.layer.cornerRadius = 28
+        b.backgroundColor = .main
+        b.layer.cornerRadius = 25
         b.semanticContentAttribute = .forceLeftToRight
         b.imageEdgeInsets = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 4)
         b.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
         b.translatesAutoresizingMaskIntoConstraints = false
+        b.applyPrimaryButtonShadow()
         return b
     }()
 
@@ -69,7 +77,7 @@ final class GeneralStatisticsViewController: UIViewController {
         let cfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .medium)
         b.setImage(UIImage(systemName: "trophy.fill", withConfiguration: cfg), for: .normal)
         b.tintColor = UIColor.main
-        b.backgroundColor = UIColor.main.withAlphaComponent(0.12)
+        b.backgroundColor = UIColor.lightMain
         b.layer.cornerRadius = 22
         b.translatesAutoresizingMaskIntoConstraints = false
         return b
@@ -77,26 +85,10 @@ final class GeneralStatisticsViewController: UIViewController {
 
     private let tipsCardView = DayAnalysisTipsCardView()
 
-    private let tasksCard = WeeklyStatCardView(style: .taskCount(
-        title: "Выполнено задач за неделю",
-        completed: 0,
-        total: 0
-    ))
-
-    private let sleepCard = WeeklyStatCardView(style: .percentage(
-        title: "Качество сна",
-        value: 0
-    ))
-
-    private let efficiencyCard = WeeklyStatCardView(style: .percentage(
-        title: "Эффективность",
-        value: 0
-    ))
-
-    private let moodCard = WeeklyStatCardView(style: .percentage(
-        title: "Настроение за неделю",
-        value: 0
-    ))
+    private let tasksCard = AnalysisMetricCardView(caption: "Выполнено за неделю")
+    private let sleepCard = AnalysisMetricCardView(caption: "Сон")
+    private let efficiencyCard = AnalysisMetricCardView(caption: "Эффективность")
+    private let moodCard = AnalysisMetricCardView(caption: "Настроение")
 
 
     override func viewDidLoad() {
@@ -129,17 +121,32 @@ final class GeneralStatisticsViewController: UIViewController {
         focusButton.addTarget(self, action: #selector(openFocus), for: .touchUpInside)
         focusButton.enablePressScale()
 
-        contentStack.addArrangedSubview(titleLabel)
-        contentStack.setCustomSpacing(16, after: titleLabel)
+        dateLabel.text = formattedToday()
+
+        let headerStack = UIStackView(arrangedSubviews: [titleLabel, dateLabel])
+        headerStack.axis = .vertical
+        headerStack.spacing = 1
+        headerStack.alignment = .leading
+
+        contentStack.addArrangedSubview(headerStack)
+        contentStack.setCustomSpacing(16, after: headerStack)
         contentStack.addArrangedSubview(tipsCardView)
-        contentStack.setCustomSpacing(20, after: tipsCardView)
 
-        contentStack.addArrangedSubview(tasksCard)
-        contentStack.addArrangedSubview(sleepCard)
-        contentStack.addArrangedSubview(efficiencyCard)
-        contentStack.addArrangedSubview(moodCard)
+        let topRow = UIStackView(arrangedSubviews: [tasksCard, sleepCard])
+        topRow.axis = .horizontal
+        topRow.spacing = 11
+        topRow.distribution = .fillEqually
 
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        let bottomRow = UIStackView(arrangedSubviews: [efficiencyCard, moodCard])
+        bottomRow.axis = .horizontal
+        bottomRow.spacing = 11
+        bottomRow.distribution = .fillEqually
+
+        contentStack.addArrangedSubview(topRow)
+        contentStack.setCustomSpacing(11, after: topRow)
+        contentStack.addArrangedSubview(bottomRow)
+
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 170, right: 0)
 
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -147,7 +154,7 @@ final class GeneralStatisticsViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 20),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 12),
             contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -16),
@@ -160,9 +167,17 @@ final class GeneralStatisticsViewController: UIViewController {
 
             focusButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             focusButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -96),
-            focusButton.widthAnchor.constraint(equalToConstant: 116),
-            focusButton.heightAnchor.constraint(equalToConstant: 56),
+            focusButton.widthAnchor.constraint(equalToConstant: 118),
+            focusButton.heightAnchor.constraint(equalToConstant: 50),
         ])
+    }
+
+    private func formattedToday() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "EEEE, d MMMM"
+        let text = formatter.string(from: Date())
+        return text.prefix(1).uppercased() + text.dropFirst()
     }
 
     private func bindViewModel() {
@@ -216,31 +231,34 @@ final class GeneralStatisticsViewController: UIViewController {
     }
 
     private func applyWeeklyStats(_ stats: GeneralWeeklyStats) {
-        tasksCard.configure(
-            style: .taskCount(
-                title: "Выполнено задач за неделю",
-                completed: stats.completedTasks,
-                total: stats.totalTasks
-            )
-        )
-        sleepCard.configure(
-            style: .percentage(
-                title: "Качество сна",
-                value: stats.sleepQuality
-            )
-        )
-        efficiencyCard.configure(
-            style: .percentage(
-                title: "Эффективность",
-                value: stats.efficiency
-            )
-        )
-        moodCard.configure(
-            style: .percentage(
-                title: "Настроение за неделю",
-                value: stats.mood
-            )
-        )
+        tasksCard.setFraction(completed: stats.completedTasks, total: stats.totalTasks)
+        sleepCard.setPercent(stats.sleepQuality, tint: .appSuccess, statusText: qualityWord(stats.sleepQuality))
+        efficiencyCard.setPercent(stats.efficiency, tint: .main)
+        moodCard.setPercent(stats.mood, tint: moodColor(stats.mood), statusText: moodWord(stats.mood))
+    }
+
+    private func qualityWord(_ value: Double) -> String {
+        switch value {
+        case 0.7...: return "Хорошо"
+        case 0.4..<0.7: return "Средне"
+        default: return "Мало"
+        }
+    }
+
+    private func moodWord(_ value: Double) -> String {
+        switch value {
+        case 0.7...: return "Отлично"
+        case 0.4..<0.7: return "Ровно"
+        default: return "Так себе"
+        }
+    }
+
+    private func moodColor(_ value: Double) -> UIColor {
+        switch value {
+        case 0.7...: return .appSuccess
+        case 0.4..<0.7: return .appWarning
+        default: return .appDanger
+        }
     }
 
     @objc private func openAchievements() {

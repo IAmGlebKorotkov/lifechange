@@ -1,0 +1,49 @@
+{
+  "" : {
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityExtension-primary-emit-module.dia",
+    "pch" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityExtension-primary.swiftdeps"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Sources/FocusActivityAttributes.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusActivityAttributes~partial.swiftmodule"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Sources/FocusLiveActivityBundle.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityBundle~partial.swiftmodule"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Sources/FocusLiveActivityWidget.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/FocusLiveActivityWidget~partial.swiftmodule"
+  },
+  "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/glebkorotkov/github/lifechange/lifeisgame/build/lifeisgame.build/Debug-iphonesimulator/FocusLiveActivityExtension.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

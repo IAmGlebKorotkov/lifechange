@@ -11,23 +11,11 @@ final class EmotionDiaryView: UIView {
 
 
     var onSaveRequested: (([EmotionDiaryInput]) -> Void)?
+    var onVerticalScroll: ((CGFloat) -> Void)?
 
-
-    private struct Emotion {
-        let name: String
-        let sfSymbol: String
+    var verticalScrollOffset: CGFloat {
+        max(0, scrollView.contentOffset.y + scrollView.adjustedContentInset.top)
     }
-
-    private let emotions: [Emotion] = [
-        Emotion(name: "Радость", sfSymbol: "sun.max"),
-        Emotion(name: "Грусть",  sfSymbol: "cloud.rain"),
-        Emotion(name: "Злость",  sfSymbol: "flame"),
-        Emotion(name: "Тревога", sfSymbol: "wind"),
-        Emotion(name: "Покой",   sfSymbol: "leaf"),
-        Emotion(name: "Любовь",  sfSymbol: "heart")
-    ]
-
-    private var selectedEmotionIndex: Int = 0
 
 
     private let scrollView: UIScrollView = {
@@ -35,6 +23,7 @@ final class EmotionDiaryView: UIView {
         sv.alwaysBounceVertical = true
         sv.showsVerticalScrollIndicator = false
         sv.keyboardDismissMode = .onDrag
+        sv.clipsToBounds = true
         sv.translatesAutoresizingMaskIntoConstraints = false
         return sv
     }()
@@ -54,28 +43,27 @@ final class EmotionDiaryView: UIView {
         return view
     }()
 
-    private let emotionsTitleLabel: UILabel = {
+    private let questionLabel: UILabel = {
         let l = UILabel()
-        l.text = "Эмоции"
-        l.font = .systemFont(ofSize: 18, weight: .bold)
-        l.textColor = UIColor.main
-        l.textAlignment = .center
+        l.text = "Как вы себя чувствуете?"
+        l.font = .systemFont(ofSize: 15, weight: .semibold)
+        l.textColor = UIColor(rgb: 0x3C3C43, alpha: 0.6)
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
-    private let emotionPickerView = DiaryPickerView(sectionTitle: "Эмоция")
-
+    private let emotionGridView = EmotionGridView()
     private let reasonTextView = DiaryReasonTextView()
     private let intensityView  = DiaryIntensityView()
 
     private let saveButton: UIButton = {
         let b = UIButton(type: .system)
         b.setTitle("Сохранить", for: .normal)
-        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        b.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         b.setTitleColor(.white, for: .normal)
         b.backgroundColor = UIColor.main
-        b.layer.cornerRadius = 14
+        b.layer.cornerRadius = 16
+        b.applyPrimaryButtonShadow()
         b.translatesAutoresizingMaskIntoConstraints = false
         b.heightAnchor.constraint(equalToConstant: 54).isActive = true
         return b
@@ -86,7 +74,7 @@ final class EmotionDiaryView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setupLayout()
-        refreshEmotionPicker()
+        scrollView.delegate = self
         saveButton.enablePressScale()
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
     }
@@ -98,55 +86,33 @@ final class EmotionDiaryView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentStack)
 
-        emotionPickerView.heightAnchor.constraint(equalToConstant: 63).isActive = true
-
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 20),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
             contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -20),
             contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40)
         ])
 
-        contentStack.addArrangedSubview(emotionsTitleLabel)
-        contentStack.addArrangedSubview(emotionPickerView)
+        contentStack.addArrangedSubview(questionLabel)
+        contentStack.setCustomSpacing(13, after: questionLabel)
+        contentStack.addArrangedSubview(emotionGridView)
         contentStack.addArrangedSubview(reasonTextView)
         contentStack.addArrangedSubview(intensityView)
+        contentStack.setCustomSpacing(22, after: intensityView)
         contentStack.addArrangedSubview(saveButton)
         contentStack.addArrangedSubview(bottomScrollSpacer)
     }
 
-
-    private func refreshEmotionPicker() {
-        let emotion = emotions[selectedEmotionIndex]
-        let icon = UIImage(systemName: emotion.sfSymbol,
-                           withConfiguration: UIImage.SymbolConfiguration(pointSize: 22, weight: .medium))
-        emotionPickerView.update(
-            icon: icon?.withTintColor(UIColor.main, renderingMode: .alwaysOriginal),
-            selectionText: "\(emotion.name)",
-            menu: makeEmotionMenu()
-        )
+    func applyHeaderCompensation(_ offset: CGFloat) {
+        contentStack.transform = CGAffineTransform(translationX: 0, y: offset)
     }
 
-    private func makeEmotionMenu() -> UIMenu {
-        let actions = emotions.enumerated().map { i, emotion in
-            UIAction(
-                title: "\(emotion.name)",
-                image: UIImage(systemName: emotion.sfSymbol),
-                state: i == selectedEmotionIndex ? .on : .off
-            ) { [weak self] _ in
-                guard let self, i != self.selectedEmotionIndex else { return }
-                self.selectedEmotionIndex = i
-                self.refreshEmotionPicker()
-            }
-        }
-        return UIMenu(title: "", children: actions)
-    }
 
     @objc private func saveTapped() {
         onSaveRequested?([currentInput()])
@@ -159,7 +125,7 @@ final class EmotionDiaryView: UIView {
     }
 
     private func currentInput() -> EmotionDiaryInput {
-        let emotion = emotions[selectedEmotionIndex]
+        let emotion = emotionGridView.selectedEmotion
         return EmotionDiaryInput(
             emotionName: emotion.name,
             sfSymbol: emotion.sfSymbol,
@@ -178,5 +144,12 @@ final class EmotionDiaryView: UIView {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             self?.saveButton.setTitle("Сохранить", for: .normal)
         }
+    }
+}
+
+extension EmotionDiaryView: UIScrollViewDelegate {
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        onVerticalScroll?(verticalScrollOffset)
     }
 }

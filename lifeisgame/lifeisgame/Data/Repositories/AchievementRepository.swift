@@ -12,11 +12,14 @@ final class AchievementRepository: AchievementRepositoryProtocol {
 
     private let persistence: PersistenceController
     private let calendar: Calendar
+    private let achievementCatalog: AchievementCatalogProviding
 
     init(persistence: PersistenceController = .shared,
-         calendar: Calendar = .current) {
+         calendar: Calendar = .current,
+         achievementCatalog: AchievementCatalogProviding = DefaultAchievementCatalog()) {
         self.persistence = persistence
         self.calendar = calendar
+        self.achievementCatalog = achievementCatalog
     }
 
     func fetchAchievements(forUserID userID: UUID) throws -> [AchievementItem] {
@@ -79,7 +82,7 @@ final class AchievementRepository: AchievementRepositoryProtocol {
     private func seedAchievementsIfNeeded(for owner: UserEntity) throws {
         let existingByCode = achievementsByCode(owner.achievementsArray)
 
-        for definition in Self.definitions {
+        for definition in achievementCatalog.definitions {
             let entity = existingByCode[definition.code] ?? AchievementEntity(context: persistence.context)
             if entity.id == nil {
                 entity.id = UUID()
@@ -89,14 +92,32 @@ final class AchievementRepository: AchievementRepositoryProtocol {
                 entity.owner = owner
             }
 
-            entity.code = definition.code
-            entity.kind = definition.kind.rawValue
-            entity.icon = definition.icon
-            entity.title = definition.title
-            entity.goal = definition.goal
-            entity.targetValue = Int32(definition.targetValue)
-            entity.cellHeight = definition.cellHeight
-            entity.sortOrder = Int16(definition.sortOrder)
+            // Записываем только реальные изменения: иначе каждый fetch
+            // помечает контекст «грязным» и провоцирует лишний save.
+            setIfChanged(entity, \.code, definition.code)
+            setIfChanged(entity, \.kind, definition.kind.rawValue)
+            setIfChanged(entity, \.icon, definition.icon)
+            setIfChanged(entity, \.title, definition.title)
+            setIfChanged(entity, \.goal, definition.goal)
+            if entity.targetValue != Int32(definition.targetValue) {
+                entity.targetValue = Int32(definition.targetValue)
+            }
+            if entity.cellHeight != definition.cellHeight {
+                entity.cellHeight = definition.cellHeight
+            }
+            if entity.sortOrder != Int16(definition.sortOrder) {
+                entity.sortOrder = Int16(definition.sortOrder)
+            }
+        }
+    }
+
+    private func setIfChanged(
+        _ entity: AchievementEntity,
+        _ keyPath: ReferenceWritableKeyPath<AchievementEntity, String?>,
+        _ value: String
+    ) {
+        if entity[keyPath: keyPath] != value {
+            entity[keyPath: keyPath] = value
         }
     }
 
@@ -104,19 +125,28 @@ final class AchievementRepository: AchievementRepositoryProtocol {
         let metrics = try achievementMetrics(forUserID: userID)
         let entitiesByCode = achievementsByCode(owner.achievementsArray)
 
-        for definition in Self.definitions {
+        for definition in achievementCatalog.definitions {
             guard let entity = entitiesByCode[definition.code] else { continue }
             let currentValue = max(0, definition.progress(metrics))
-            entity.currentValue = Int32(currentValue)
+            if entity.currentValue != Int32(currentValue) {
+                entity.currentValue = Int32(currentValue)
+            }
 
             let existingState = AchievementState(rawValue: entity.state ?? "") ?? .locked
+            let newState: AchievementState
             if entity.openedAt != nil || existingState == .opened {
-                entity.state = AchievementState.opened.rawValue
+                newState = .opened
             } else if entity.unlockedAt != nil || currentValue >= definition.targetValue {
-                entity.unlockedAt = entity.unlockedAt ?? Date()
-                entity.state = AchievementState.unlocked.rawValue
+                if entity.unlockedAt == nil {
+                    entity.unlockedAt = Date()
+                }
+                newState = .unlocked
             } else {
-                entity.state = AchievementState.locked.rawValue
+                newState = .locked
+            }
+
+            if existingState != newState {
+                entity.state = newState.rawValue
             }
         }
     }
@@ -201,162 +231,4 @@ final class AchievementRepository: AchievementRepositoryProtocol {
         request.sortDescriptors = [NSSortDescriptor(key: "sortOrder", ascending: true)]
         return try persistence.context.fetch(request)
     }
-}
-
-private struct AchievementMetrics {
-    let completedTasks: Int
-    let sleepEntryDays: Int
-    let eightHourSleepDays: Int
-    let emotionEntryDays: Int
-    let highIntensityEmotionDays: Int
-    let focusHours: Int
-}
-
-private struct AchievementDefinition {
-    let code: String
-    let kind: AchievementKind
-    let icon: String
-    let title: String
-    let goal: String
-    let targetValue: Int
-    let sortOrder: Int
-    let cellHeight: Double
-    let progress: (AchievementMetrics) -> Int
-}
-
-private extension AchievementRepository {
-    static let definitions: [AchievementDefinition] = [
-        AchievementDefinition(
-            code: "tasks_1",
-            kind: .tasks,
-            icon: "flame.fill",
-            title: "Первый шаг",
-            goal: "Выполни первое задание",
-            targetValue: 1,
-            sortOrder: 0,
-            cellHeight: 160,
-            progress: { $0.completedTasks }
-        ),
-        AchievementDefinition(
-            code: "sleep_1",
-            kind: .sleep,
-            icon: "moon.fill",
-            title: "Сон записан",
-            goal: "Добавь первую запись сна",
-            targetValue: 1,
-            sortOrder: 1,
-            cellHeight: 185,
-            progress: { $0.sleepEntryDays }
-        ),
-        AchievementDefinition(
-            code: "emotion_1",
-            kind: .emotion,
-            icon: "heart.fill",
-            title: "На связи с собой",
-            goal: "Добавь первую эмоцию в дневник",
-            targetValue: 1,
-            sortOrder: 2,
-            cellHeight: 150,
-            progress: { $0.emotionEntryDays }
-        ),
-        AchievementDefinition(
-            code: "focus_1",
-            kind: .focus,
-            icon: "brain.head.profile",
-            title: "Первый фокус",
-            goal: "Проведи 1 час в фокусе",
-            targetValue: 1,
-            sortOrder: 3,
-            cellHeight: 155,
-            progress: { $0.focusHours }
-        ),
-        AchievementDefinition(
-            code: "tasks_10",
-            kind: .tasks,
-            icon: "checkmark.seal.fill",
-            title: "Вошел в ритм",
-            goal: "Выполни 10 заданий",
-            targetValue: 10,
-            sortOrder: 4,
-            cellHeight: 170,
-            progress: { $0.completedTasks }
-        ),
-        AchievementDefinition(
-            code: "sleep_8h_5",
-            kind: .sleep,
-            icon: "bed.double.fill",
-            title: "Сладкий сон",
-            goal: "Спи не меньше 8 часов 5 дней",
-            targetValue: 5,
-            sortOrder: 5,
-            cellHeight: 185,
-            progress: { $0.eightHourSleepDays }
-        ),
-        AchievementDefinition(
-            code: "emotion_7",
-            kind: .emotion,
-            icon: "sparkles",
-            title: "Неделя эмоций",
-            goal: "Отмечай эмоции 7 разных дней",
-            targetValue: 7,
-            sortOrder: 6,
-            cellHeight: 165,
-            progress: { $0.emotionEntryDays }
-        ),
-        AchievementDefinition(
-            code: "focus_10",
-            kind: .focus,
-            icon: "bolt.fill",
-            title: "Глубокая работа",
-            goal: "Накопи 10 часов фокуса",
-            targetValue: 10,
-            sortOrder: 7,
-            cellHeight: 145,
-            progress: { $0.focusHours }
-        ),
-        AchievementDefinition(
-            code: "tasks_100",
-            kind: .tasks,
-            icon: "trophy.fill",
-            title: "Чемпион",
-            goal: "Выполни 100 заданий",
-            targetValue: 100,
-            sortOrder: 8,
-            cellHeight: 170,
-            progress: { $0.completedTasks }
-        ),
-        AchievementDefinition(
-            code: "sleep_8h_14",
-            kind: .sleep,
-            icon: "moon.stars.fill",
-            title: "Режим восстановлен",
-            goal: "Спи не меньше 8 часов 14 дней",
-            targetValue: 14,
-            sortOrder: 9,
-            cellHeight: 200,
-            progress: { $0.eightHourSleepDays }
-        ),
-        AchievementDefinition(
-            code: "emotion_high_10",
-            kind: .emotion,
-            icon: "face.smiling.fill",
-            title: "Теплая полоса",
-            goal: "Отметь эмоции интенсивностью 8+ в 10 дней",
-            targetValue: 10,
-            sortOrder: 10,
-            cellHeight: 180,
-            progress: { $0.highIntensityEmotionDays }
-        ),
-        AchievementDefinition(
-            code: "focus_50",
-            kind: .focus,
-            icon: "crown.fill",
-            title: "Мастер концентрации",
-            goal: "Накопи 50 часов фокуса",
-            targetValue: 50,
-            sortOrder: 11,
-            cellHeight: 200,
-            progress: { $0.focusHours }
-        )
-    ]
 }

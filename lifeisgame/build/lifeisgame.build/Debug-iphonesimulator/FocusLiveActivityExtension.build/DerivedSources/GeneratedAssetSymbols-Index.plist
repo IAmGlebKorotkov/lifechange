@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>colors</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Resources/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameBackgroundColor</string>
+			<key>relativePath</key>
+			<string>./BackgroundColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>background</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Resources/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameFocusPrimaryTextColor</string>
+			<key>relativePath</key>
+			<string>./FocusPrimaryTextColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>focusPrimaryText</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Resources/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameFocusSecondaryTextColor</string>
+			<key>relativePath</key>
+			<string>./FocusSecondaryTextColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>focusSecondaryText</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Resources/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameMainColor</string>
+			<key>relativePath</key>
+			<string>./MainColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>main</string>
+		</dict>
+	</array>
+	<key>images</key>
+	<array/>
+	<key>symbols</key>
+	<array/>
+</dict>
+</plist>

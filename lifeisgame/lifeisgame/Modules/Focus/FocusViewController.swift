@@ -20,8 +20,9 @@ final class FocusViewController: UIViewController {
     private var focusEndDate: Date?
     private var isFocusRunning = false
 
-    init(viewModel: FocusViewModel) {
+    init(viewModel: FocusViewModel, selectedTaskID: UUID? = nil) {
         self.viewModel = viewModel
+        self.selectedTaskID = selectedTaskID
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
     }

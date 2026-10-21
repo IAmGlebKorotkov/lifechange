@@ -1,0 +1,32 @@
+{
+  "source": "/Users/glebkorotkov/github/lifechange/lifeisgame/FocusLiveActivityExtension/Sources/FocusLiveActivityWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Осталось",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Завершить задачу",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "Фокус",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 91
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -2,7 +2,7 @@
 //  StatisticsViewModel.swift
 //  lifeisgame
 //
-//  Created by Codex on 20.06.2026.
+//  Created by Gleb Korotkov on 20.06.2026.
 //
 
 import Foundation
@@ -139,6 +139,7 @@ final class StatisticsViewModel {
                     mainTaskName: task.name,
                     startDate: $0.startDate,
                     deadlineDate: $0.deadlineDate,
+                    estimatedDuration: $0.estimatedDuration,
                     importance: $0.importance,
                     isCompleted: $0.isCompleted
                 )
@@ -152,6 +153,7 @@ final class StatisticsViewModel {
                 mainTaskName: nil,
                 startDate: task.startDate,
                 deadlineDate: task.deadlineDate,
+                estimatedDuration: task.estimatedDuration,
                 importance: task.importance,
                 isCompleted: task.isCompleted
             )

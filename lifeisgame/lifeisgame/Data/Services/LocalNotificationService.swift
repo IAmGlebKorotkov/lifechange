@@ -143,6 +143,12 @@ final class LocalNotificationService {
         ])
     }
 
+    func cancelTaskReminders(for taskID: UUID) {
+        let identifiers = [30, 5].map { taskReminderIdentifier(taskID: taskID, minutesBefore: $0) }
+        center.removePendingNotificationRequests(withIdentifiers: identifiers)
+        center.removeDeliveredNotifications(withIdentifiers: identifiers)
+    }
+
     func cancelAllScheduledNotifications() {
         center.removeAllPendingNotificationRequests()
         center.removeAllDeliveredNotifications()
@@ -162,13 +168,19 @@ final class LocalNotificationService {
             return
         }
 
-        let identifier = "task.\(task.id.uuidString).\(minutesBefore)"
+        let identifier = taskReminderIdentifier(taskID: task.id, minutesBefore: minutesBefore)
         center.removePendingNotificationRequests(withIdentifiers: [identifier])
 
         let content = UNMutableNotificationContent()
         content.title = minutesBefore == 30 ? "Задача через 30 минут" : "Задача через 5 минут"
         content.body = "\(task.name) начнется в \(timeString(task.startDate))"
         content.sound = .default
+        content.categoryIdentifier = NotificationCategoryIdentifier.taskReminder
+        content.threadIdentifier = "tasks"
+        content.userInfo = [
+            NotificationUserInfoKey.type: "task",
+            NotificationUserInfoKey.taskID: task.id.uuidString
+        ]
 
         let trigger = UNCalendarNotificationTrigger(
             dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: triggerDate),
@@ -241,6 +253,10 @@ final class LocalNotificationService {
 
     private func diaryIdentifier(kind: String, hour: Int, date: Date) -> String {
         "diary.\(kind).\(hour).\(dayIdentifier(for: date))"
+    }
+
+    private func taskReminderIdentifier(taskID: UUID, minutesBefore: Int) -> String {
+        "task.\(taskID.uuidString).\(minutesBefore)"
     }
 
     private func dayIdentifier(for date: Date) -> String {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1800" viewBox="0 0 3000 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Регистрация и вход</title>
+  <desc id="desc">Диаграмма вариантов использования Luma. Покрытие: FR-01.01–FR-01.04; FR-02.01–FR-02.02.</desc>
+  <metadata>Проект: Luma; вид UML: диаграмма вариантов использования; покрытие: FR-01.01–FR-01.04; FR-02.01–FR-02.02.</metadata>
+  <defs>
+    <marker id="open-arrow" viewBox="0 0 18 18" refX="17" refY="9" markerWidth="18" markerHeight="18" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { font: 700 66px Arial, Helvetica, sans-serif; fill: #000; }
+      .system-boundary { fill: #fff; stroke: #000; stroke-width: 6; }
+      .system-label-bg { fill: #fff; }
+      .system-label { font: 700 58px Arial, Helvetica, sans-serif; fill: #000; }
+      .actor circle, .actor line { fill: #fff; stroke: #000; stroke-width: 6; }
+      .actor-label { font: 52px Arial, Helvetica, sans-serif; fill: #000; }
+      .use-case ellipse { fill: #fff; stroke: #000; stroke-width: 6; }
+      .use-case-label { font: 50px Arial, Helvetica, sans-serif; fill: #000; }
+      .association { stroke: #000; stroke-width: 6; fill: none; }
+      .dependency line { stroke: #000; stroke-width: 6; stroke-dasharray: 22 16; fill: none; }
+      .dependency-label { font: 46px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 18; stroke-linejoin: round; }
+      .condition { font: 34px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 14; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="3000" height="1800" fill="#fff"/>
+  <text x="1500" y="95" class="title" text-anchor="middle">Регистрация и вход</text>
+  <rect x="580" y="190" width="1840" height="1500" class="system-boundary"/>
+  <rect x="650" y="158" width="230" height="75" class="system-label-bg"/>
+  <text x="765" y="214" class="system-label" text-anchor="middle">Luma</text>
+  <g id="relations"><line class="association" x1="359.9" y1="857.1" x2="1217.0" y2="546.6"/>
+<line class="association" x1="365.0" y1="869.3" x2="941.8" y2="859.1"/>
+<line class="association" x1="360.8" y1="881.8" x2="1195.7" y2="1156.0"/>
+<line class="association" x1="2635.2" y1="1172.6" x2="2032.5" y2="1215.4"/></g>
+  <g id="elements"><g id="uc-register" class="use-case">
+    <ellipse cx="1500" cy="450" rx="560" ry="112"/>
+    <text x="1500" y="468" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Зарегистрироваться</tspan></text>
+  </g>
+<g id="uc-password" class="use-case">
+    <ellipse cx="1500" cy="850" rx="560" ry="112"/>
+    <text x="1500" y="837" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Войти по электронной почте</tspan><tspan x="1500" dy="62">и паролю</tspan></text>
+  </g>
+<g id="uc-faceLogin" class="use-case">
+    <ellipse cx="1500" cy="1250" rx="560" ry="112"/>
+    <text x="1500" y="1268" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Войти через Face ID</tspan></text>
+  </g><g id="actor-user" class="actor">
+    <circle cx="270" cy="720" r="55"/>
+    <line x1="270" y1="775" x2="270" y2="925"/>
+    <line x1="180" y1="825" x2="360" y2="825"/>
+    <line x1="270" y1="925" x2="185" y2="1045"/>
+    <line x1="270" y1="925" x2="355" y2="1045"/>
+    <text x="270" y="1120" class="actor-label" text-anchor="middle"><tspan x="270" dy="0">Пользователь</tspan></text>
+  </g>
+<g id="actor-face" class="actor">
+    <circle cx="2730" cy="1020" r="55"/>
+    <line x1="2730" y1="1075" x2="2730" y2="1225"/>
+    <line x1="2640" y1="1125" x2="2820" y2="1125"/>
+    <line x1="2730" y1="1225" x2="2645" y2="1345"/>
+    <line x1="2730" y1="1225" x2="2815" y2="1345"/>
+    <text x="2730" y="1391" class="actor-label" text-anchor="middle"><tspan x="2730" dy="0">Служба Face ID</tspan><tspan x="2730" dy="58">iOS</tspan></text>
+  </g></g>
+</svg>

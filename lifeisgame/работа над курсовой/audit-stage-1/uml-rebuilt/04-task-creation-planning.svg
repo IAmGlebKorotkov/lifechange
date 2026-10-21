@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1800" viewBox="0 0 3000 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Создание задач, событий и автоматическое планирование</title>
+  <desc id="desc">Диаграмма вариантов использования Luma. Покрытие: FR-05.01–FR-05.10; FR-06.01–FR-06.07; FR-07.01–FR-07.09; FR-08.01–FR-08.04.</desc>
+  <metadata>Проект: Luma; вид UML: диаграмма вариантов использования; покрытие: FR-05.01–FR-05.10; FR-06.01–FR-06.07; FR-07.01–FR-07.09; FR-08.01–FR-08.04.</metadata>
+  <defs>
+    <marker id="open-arrow" viewBox="0 0 18 18" refX="17" refY="9" markerWidth="18" markerHeight="18" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { font: 700 66px Arial, Helvetica, sans-serif; fill: #000; }
+      .system-boundary { fill: #fff; stroke: #000; stroke-width: 6; }
+      .system-label-bg { fill: #fff; }
+      .system-label { font: 700 58px Arial, Helvetica, sans-serif; fill: #000; }
+      .actor circle, .actor line { fill: #fff; stroke: #000; stroke-width: 6; }
+      .actor-label { font: 52px Arial, Helvetica, sans-serif; fill: #000; }
+      .use-case ellipse { fill: #fff; stroke: #000; stroke-width: 6; }
+      .use-case-label { font: 50px Arial, Helvetica, sans-serif; fill: #000; }
+      .association { stroke: #000; stroke-width: 6; fill: none; }
+      .dependency line { stroke: #000; stroke-width: 6; stroke-dasharray: 22 16; fill: none; }
+      .dependency-label { font: 46px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 18; stroke-linejoin: round; }
+      .condition { font: 34px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 14; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="3000" height="1800" fill="#fff"/>
+  <text x="1500" y="95" class="title" text-anchor="middle">Создание задач, событий и автоматическое планирование</text>
+  <rect x="580" y="190" width="1840" height="1500" class="system-boundary"/>
+  <rect x="650" y="158" width="230" height="75" class="system-label-bg"/>
+  <text x="765" y="214" class="system-label" text-anchor="middle">Luma</text>
+  <g id="relations"><line class="association" x1="332.7" y1="880.3" x2="970.4" y2="491.8"/>
+<line class="association" x1="343.9" y1="893.9" x2="780.8" y2="817.4"/>
+<line class="association" x1="338.5" y1="914.5" x2="910.7" y2="1156.9"/>
+<line class="association" x1="2655.0" y1="760.0" x2="2320.0" y2="760.0"/><g class="dependency">
+    <line x1="1580.0" y1="760.0" x2="1720.0" y2="760.0" marker-end="url(#open-arrow)"/>
+    <text x="1650" y="720" class="dependency-label" text-anchor="middle">«include»</text>
+    
+  </g>
+<g class="dependency">
+    <line x1="1330.5" y1="1148.3" x2="1854.3" y2="853.4" marker-end="url(#open-arrow)"/>
+    <text x="1650" y="1000" class="dependency-label" text-anchor="middle">«include»</text>
+    
+  </g>
+<g class="dependency">
+    <line x1="1508.6" y1="1311.8" x2="1747.6" y2="1353.0" marker-end="url(#open-arrow)"/>
+    <text x="1650" y="1300" class="dependency-label" text-anchor="middle">«include»</text>
+    
+  </g></g>
+  <g id="elements"><g id="uc-event" class="use-case">
+    <ellipse cx="1150" cy="390" rx="430" ry="112"/>
+    <text x="1150" y="377" class="use-case-label" text-anchor="middle"><tspan x="1150" dy="0">Создать событие</tspan><tspan x="1150" dy="62">с фиксированным временем</tspan></text>
+  </g>
+<g id="uc-simple" class="use-case">
+    <ellipse cx="1150" cy="760" rx="430" ry="112"/>
+    <text x="1150" y="778" class="use-case-label" text-anchor="middle"><tspan x="1150" dy="0">Создать обычную задачу</tspan></text>
+  </g>
+<g id="uc-complex" class="use-case">
+    <ellipse cx="1150" cy="1250" rx="430" ry="112"/>
+    <text x="1150" y="1268" class="use-case-label" text-anchor="middle"><tspan x="1150" dy="0">Создать сложную задачу</tspan></text>
+  </g>
+<g id="uc-plan" class="use-case">
+    <ellipse cx="2020" cy="760" rx="300" ry="112"/>
+    <text x="2020" y="747" class="use-case-label" text-anchor="middle"><tspan x="2020" dy="0">Автоматически</tspan><tspan x="2020" dy="62">сформировать план</tspan></text>
+  </g>
+<g id="uc-subtask" class="use-case">
+    <ellipse cx="2020" cy="1400" rx="300" ry="112"/>
+    <text x="2020" y="1418" class="use-case-label" text-anchor="middle"><tspan x="2020" dy="0">Добавить подзадачу</tspan></text>
+  </g><g id="actor-user" class="actor">
+    <circle cx="250" cy="750" r="55"/>
+    <line x1="250" y1="805" x2="250" y2="955"/>
+    <line x1="160" y1="855" x2="340" y2="855"/>
+    <line x1="250" y1="955" x2="165" y2="1075"/>
+    <line x1="250" y1="955" x2="335" y2="1075"/>
+    <text x="250" y="1121" class="actor-label" text-anchor="middle"><tspan x="250" dy="0">Авторизованный</tspan><tspan x="250" dy="58">пользователь</tspan></text>
+  </g>
+<g id="actor-calendar" class="actor">
+    <circle cx="2750" cy="610" r="55"/>
+    <line x1="2750" y1="665" x2="2750" y2="815"/>
+    <line x1="2660" y1="715" x2="2840" y2="715"/>
+    <line x1="2750" y1="815" x2="2665" y2="935"/>
+    <line x1="2750" y1="815" x2="2835" y2="935"/>
+    <text x="2750" y="981" class="actor-label" text-anchor="middle"><tspan x="2750" dy="0">Служба календаря</tspan><tspan x="2750" dy="58">iOS</tspan></text>
+  </g></g>
+</svg>

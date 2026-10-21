@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1800" viewBox="0 0 3000 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Профиль пользователя</title>
+  <desc id="desc">Диаграмма вариантов использования Luma. Покрытие: FR-02.04–FR-02.08; FR-09.01.</desc>
+  <metadata>Проект: Luma; вид UML: диаграмма вариантов использования; покрытие: FR-02.04–FR-02.08; FR-09.01.</metadata>
+  <defs>
+    <marker id="open-arrow" viewBox="0 0 18 18" refX="17" refY="9" markerWidth="18" markerHeight="18" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { font: 700 66px Arial, Helvetica, sans-serif; fill: #000; }
+      .system-boundary { fill: #fff; stroke: #000; stroke-width: 6; }
+      .system-label-bg { fill: #fff; }
+      .system-label { font: 700 58px Arial, Helvetica, sans-serif; fill: #000; }
+      .actor circle, .actor line { fill: #fff; stroke: #000; stroke-width: 6; }
+      .actor-label { font: 52px Arial, Helvetica, sans-serif; fill: #000; }
+      .use-case ellipse { fill: #fff; stroke: #000; stroke-width: 6; }
+      .use-case-label { font: 50px Arial, Helvetica, sans-serif; fill: #000; }
+      .association { stroke: #000; stroke-width: 6; fill: none; }
+      .dependency line { stroke: #000; stroke-width: 6; stroke-dasharray: 22 16; fill: none; }
+      .dependency-label { font: 46px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 18; stroke-linejoin: round; }
+      .condition { font: 34px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 14; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="3000" height="1800" fill="#fff"/>
+  <text x="1500" y="95" class="title" text-anchor="middle">Профиль пользователя</text>
+  <rect x="580" y="190" width="1840" height="1500" class="system-boundary"/>
+  <rect x="650" y="158" width="230" height="75" class="system-label-bg"/>
+  <text x="765" y="214" class="system-label" text-anchor="middle">Luma</text>
+  <g id="relations"><line class="association" x1="357.0" y1="883.9" x2="1267.8" y2="461.9"/>
+<line class="association" x1="362.9" y1="891.7" x2="1115.1" y2="721.4"/>
+<line class="association" x1="365.0" y1="900.7" x2="941.8" y2="910.9"/>
+<line class="association" x1="362.3" y1="909.5" x2="1144.9" y2="1113.4"/>
+<line class="association" x1="355.9" y1="917.1" x2="1281.3" y2="1376.9"/>
+<line class="association" x1="2637.1" y1="388.3" x2="1884.9" y2="558.6"/>
+<line class="association" x1="2635.0" y1="900.7" x2="2058.2" y2="910.9"/>
+<line class="association" x1="2636.5" y1="1413.0" x2="1917.4" y2="1274.7"/></g>
+  <g id="elements"><g id="uc-view" class="use-case">
+    <ellipse cx="1500" cy="360" rx="560" ry="112"/>
+    <text x="1500" y="378" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Просмотреть профиль</tspan></text>
+  </g>
+<g id="uc-faceSettings" class="use-case">
+    <ellipse cx="1500" cy="640" rx="560" ry="112"/>
+    <text x="1500" y="627" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Настроить вход</tspan><tspan x="1500" dy="62">через Face ID</tspan></text>
+  </g>
+<g id="uc-photo" class="use-case">
+    <ellipse cx="1500" cy="920" rx="560" ry="112"/>
+    <text x="1500" y="907" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Выбрать изображение</tspan><tspan x="1500" dy="62">профиля</tspan></text>
+  </g>
+<g id="uc-notificationSettings" class="use-case">
+    <ellipse cx="1500" cy="1200" rx="560" ry="112"/>
+    <text x="1500" y="1218" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Настроить уведомления</tspan></text>
+  </g>
+<g id="uc-logout" class="use-case">
+    <ellipse cx="1500" cy="1480" rx="560" ry="112"/>
+    <text x="1500" y="1498" class="use-case-label" text-anchor="middle"><tspan x="1500" dy="0">Выйти из учётной записи</tspan></text>
+  </g><g id="actor-user" class="actor">
+    <circle cx="270" cy="750" r="55"/>
+    <line x1="270" y1="805" x2="270" y2="955"/>
+    <line x1="180" y1="855" x2="360" y2="855"/>
+    <line x1="270" y1="955" x2="185" y2="1075"/>
+    <line x1="270" y1="955" x2="355" y2="1075"/>
+    <text x="270" y="1121" class="actor-label" text-anchor="middle"><tspan x="270" dy="0">Авторизованный</tspan><tspan x="270" dy="58">пользователь</tspan></text>
+  </g>
+<g id="actor-face" class="actor">
+    <circle cx="2730" cy="230" r="55"/>
+    <line x1="2730" y1="285" x2="2730" y2="435"/>
+    <line x1="2640" y1="335" x2="2820" y2="335"/>
+    <line x1="2730" y1="435" x2="2645" y2="555"/>
+    <line x1="2730" y1="435" x2="2815" y2="555"/>
+    <text x="2730" y="601" class="actor-label" text-anchor="middle"><tspan x="2730" dy="0">Служба Face ID</tspan><tspan x="2730" dy="58">iOS</tspan></text>
+  </g>
+<g id="actor-photos" class="actor">
+    <circle cx="2730" cy="750" r="55"/>
+    <line x1="2730" y1="805" x2="2730" y2="955"/>
+    <line x1="2640" y1="855" x2="2820" y2="855"/>
+    <line x1="2730" y1="955" x2="2645" y2="1075"/>
+    <line x1="2730" y1="955" x2="2815" y2="1075"/>
+    <text x="2730" y="1121" class="actor-label" text-anchor="middle"><tspan x="2730" dy="0">Служба выбора</tspan><tspan x="2730" dy="58">изображений iOS</tspan></text>
+  </g>
+<g id="actor-notify" class="actor">
+    <circle cx="2730" cy="1270" r="55"/>
+    <line x1="2730" y1="1325" x2="2730" y2="1475"/>
+    <line x1="2640" y1="1375" x2="2820" y2="1375"/>
+    <line x1="2730" y1="1475" x2="2645" y2="1595"/>
+    <line x1="2730" y1="1475" x2="2815" y2="1595"/>
+    <text x="2730" y="1641" class="actor-label" text-anchor="middle"><tspan x="2730" dy="0">Служба уведомлений</tspan><tspan x="2730" dy="58">iOS</tspan></text>
+  </g></g>
+</svg>

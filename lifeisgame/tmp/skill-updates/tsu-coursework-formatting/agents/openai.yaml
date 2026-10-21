@@ -1,0 +1,4 @@
+interface:
+  display_name: "TSU Coursework Formatting"
+  short_description: "Оформление курсовых по методичке НБ ТГУ"
+  default_prompt: "Use $tsu-coursework-formatting to format and review my Russian coursework according to the TSU Scientific Library guidelines."

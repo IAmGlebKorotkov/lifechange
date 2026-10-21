@@ -2,7 +2,7 @@
 //  AddTaskFlowViewModel.swift
 //  lifeisgame
 //
-//  Created by Codex on 20.06.2026.
+//  Created by Gleb Korotkov on 20.06.2026.
 //
 
 import Foundation

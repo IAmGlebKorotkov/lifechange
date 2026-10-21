@@ -34,22 +34,17 @@ final class AnalysisService {
         date: Date = Date(),
         completion: @escaping (Result<UserAnalysisResult, Error>) -> Void
     ) {
-        let input: UserAnalysisInput
+        let user: User
+        let emotionEntries: [EmotionDiaryEntry]
+        let sleepEntries: [SleepDiaryEntry]
 
         do {
-            guard let user = try authService.fetchUser(byID: userID) else {
+            guard let fetchedUser = try authService.fetchUser(byID: userID) else {
                 throw RepositoryError.notFound
             }
-
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) ?? date
-            input = UserAnalysisInput(
-                user: user,
-                date: date,
-                todayTasks: try taskService.fetchTasks(userID: userID, on: date),
-                tomorrowTasks: try taskService.fetchTasks(userID: userID, on: tomorrow),
-                emotionEntries: try diaryService.fetchEmotionEntries(forUserID: userID),
-                sleepEntries: try diaryService.fetchSleepEntries(forUserID: userID)
-            )
+            user = fetchedUser
+            emotionEntries = try diaryService.fetchEmotionEntries(forUserID: userID)
+            sleepEntries = try diaryService.fetchSleepEntries(forUserID: userID)
         } catch {
             DispatchQueue.main.async {
                 completion(.failure(error))
@@ -57,8 +52,20 @@ final class AnalysisService {
             return
         }
 
-        DispatchQueue.main.async {
-            completion(.success(self.analysisEngine.analyze(input: input)))
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) ?? date
+        taskService.fetchTasks(userID: userID, date: date) { [weak self] todayTasks in
+            guard let self else { return }
+            self.taskService.fetchTasks(userID: userID, date: tomorrow) { tomorrowTasks in
+                let input = UserAnalysisInput(
+                    user: user,
+                    date: date,
+                    todayTasks: todayTasks,
+                    tomorrowTasks: tomorrowTasks,
+                    emotionEntries: emotionEntries,
+                    sleepEntries: sleepEntries
+                )
+                completion(.success(self.analysisEngine.analyze(input: input)))
+            }
         }
     }
 
@@ -74,7 +81,7 @@ final class AnalysisService {
 
         let tasks = workItems(from: taskItems, startDate: startDate, endDate: endDate)
         let completedTasks = tasks.filter(\.isCompleted).count
-        let recommendedSleepRange = recommendedSleepRangeMinutes(
+        let recommendedSleepRange = SleepRecommendation.rangeMinutes(
             forAge: age(from: user?.birthDate, on: date)
         )
 
@@ -156,23 +163,7 @@ final class AnalysisService {
     }
 
     private func emotionDirection(for name: String) -> Double {
-        let lowercasedName = name.lowercased()
-
-        if lowercasedName.contains("трев")
-            || lowercasedName.contains("груст")
-            || lowercasedName.contains("зл")
-            || lowercasedName.contains("страх") {
-            return -1
-        }
-
-        if lowercasedName.contains("рад")
-            || lowercasedName.contains("поко")
-            || lowercasedName.contains("люб")
-            || lowercasedName.contains("споко") {
-            return 1
-        }
-
-        return 0
+        EmotionKind(rawValue: name)?.valence ?? 0
     }
 
     private func age(from birthDate: Date?, on date: Date) -> Int? {
@@ -181,17 +172,4 @@ final class AnalysisService {
         return max(0, years)
     }
 
-    private func recommendedSleepRangeMinutes(forAge age: Int?) -> ClosedRange<Int> {
-        guard let age else { return (7 * 60)...(9 * 60) }
-
-        if age < 18 {
-            return (8 * 60)...(10 * 60)
-        }
-
-        if age >= 65 {
-            return (7 * 60)...(8 * 60 + 30)
-        }
-
-        return (7 * 60)...(9 * 60)
-    }
 }

@@ -13,17 +13,24 @@ final class AddTaskCoordinator: Coordinator {
     private let navigationController: UINavigationController
     private let viewModel: AddTaskFlowViewModel
     private let initialDate: Date
+    private let initialKind: AddTaskKind
 
     var onCompleted: (() -> Void)?
 
-    init(navigationController: UINavigationController, taskService: TaskService, initialDate: Date = Date()) {
+    init(
+        navigationController: UINavigationController,
+        taskService: TaskService,
+        initialDate: Date = Date(),
+        initialKind: AddTaskKind = .simpleTask
+    ) {
         self.navigationController = navigationController
         self.viewModel = AddTaskFlowViewModel(taskService: taskService)
         self.initialDate = initialDate
+        self.initialKind = initialKind
     }
 
     func start() {
-        let vc = AddTaskViewController()
+        let vc = AddTaskViewController(viewModel: AddTaskViewModel(kind: initialKind))
         vc.configureInitialDate(initialDate)
         vc.onAddSubtaskTapped = { [weak self] parentName, onAdded in
             self?.showAddSubtask(parentTaskName: parentName, onAdded: onAdded)

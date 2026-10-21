@@ -29,7 +29,11 @@ final class CustomTabBar: UIView {
     var onTabSelected: ((Int) -> Void)?
 
 
-    private let shapeLayer = CAShapeLayer()
+    private let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialLight))
+    private let tintView = UIView()
+    private let capsuleMaskLayer = CAShapeLayer()
+    private let borderLayer = CAShapeLayer()
+    private let selectionIndicator = UIView()
     private let centerButton = UIButton(type: .custom)
     private var regularButtons: [UIButton] = []
 
@@ -63,18 +67,39 @@ final class CustomTabBar: UIView {
         backgroundColor = .clear
         clipsToBounds = false
 
-        setupShapeLayer()
+        setupBackground()
+        setupSelectionIndicator()
         setupRegularButtons()
         setupCenterButton()
     }
 
-    private func setupShapeLayer() {
-        shapeLayer.fillColor = UIColor.white.cgColor
-        shapeLayer.shadowColor = UIColor.black.cgColor
-        shapeLayer.shadowOpacity = 0.12
-        shapeLayer.shadowOffset = CGSize(width: 0, height: 4)
-        shapeLayer.shadowRadius = 12
-        layer.insertSublayer(shapeLayer, at: 0)
+    private func setupBackground() {
+        // Мягкая тень капсулы (по shadowPath, содержимое прозрачное).
+        layer.shadowColor = UIColor(rgb: 0x2D2054).cgColor
+        layer.shadowOpacity = 0.16
+        layer.shadowOffset = CGSize(width: 0, height: 10)
+        layer.shadowRadius = 20
+
+        // Полупрозрачный blur-материал внутри капсулы.
+        blurView.isUserInteractionEnabled = false
+        blurView.layer.mask = capsuleMaskLayer
+        insertSubview(blurView, at: 0)
+
+        tintView.backgroundColor = UIColor.white.withAlphaComponent(0.72)
+        tintView.isUserInteractionEnabled = false
+        blurView.contentView.addSubview(tintView)
+
+        borderLayer.fillColor = UIColor.clear.cgColor
+        borderLayer.strokeColor = UIColor(rgb: 0x3C3C43, alpha: 0.08).cgColor
+        borderLayer.lineWidth = 1
+        layer.addSublayer(borderLayer)
+    }
+
+    private func setupSelectionIndicator() {
+        selectionIndicator.backgroundColor = UIColor.main.withAlphaComponent(0.10)
+        selectionIndicator.layer.cornerRadius = 18
+        selectionIndicator.alpha = 0
+        addSubview(selectionIndicator)
     }
 
     private func setupRegularButtons() {
@@ -90,25 +115,29 @@ final class CustomTabBar: UIView {
         let button = UIButton(type: .custom)
         button.tag = item.index
 
-        let imgConfig = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
-        button.setImage(UIImage(named: item.icon), for: .normal)
-        button.tintColor = .systemGray2
+        button.setImage(UIImage(named: item.icon)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = .textSecondaryToken
+        button.adjustsImageWhenHighlighted = false
+        button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(regularButtonTapped(_:)), for: .touchUpInside)
+        button.enablePressScale(to: 0.94)
         return button
     }
 
     private func setupCenterButton() {
-        let imgConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold)
-        centerButton.setImage(UIImage(named: "User"), for: .normal)
+        centerButton.setImage(UIImage(named: "User")?.withRenderingMode(.alwaysTemplate), for: .normal)
         centerButton.tintColor = .white
-        centerButton.backgroundColor = .main
+        // Градиент как background image: гарантированно рисуется под иконкой.
+        centerButton.setBackgroundImage(Self.makeGradientCircle(diameter: centerButtonSize), for: .normal)
+
         centerButton.layer.cornerRadius = centerButtonSize / 2
         centerButton.layer.shadowColor = UIColor.main.cgColor
-        centerButton.layer.shadowOpacity = 0.40
-        centerButton.layer.shadowOffset = CGSize(width: 0, height: 4)
-        centerButton.layer.shadowRadius = 10
+        centerButton.layer.shadowOpacity = 0.42
+        centerButton.layer.shadowOffset = CGSize(width: 0, height: 8)
+        centerButton.layer.shadowRadius = 16
         centerButton.tag = 2
         centerButton.addTarget(self, action: #selector(centerButtonTapped), for: .touchUpInside)
+        centerButton.enablePressScale(to: 0.94)
         addSubview(centerButton)
     }
 
@@ -117,15 +146,25 @@ final class CustomTabBar: UIView {
         let accent = UIColor.main
 
         for button in regularButtons {
-            button.tintColor = button.tag == selectedIndex ? accent : .systemGray2
+            let isSelected = button.tag == selectedIndex
+            button.tintColor = isSelected ? accent : .textSecondaryToken
+            button.alpha = isSelected ? 1 : 0.72
         }
 
-        UIView.animate(withDuration: 0.15) {
+        moveSelectionIndicator(animated: true)
+
+        UIView.animate(
+            withDuration: 0.22,
+            delay: 0,
+            usingSpringWithDamping: 0.78,
+            initialSpringVelocity: 0.35,
+            options: .allowUserInteraction
+        ) {
             if self.selectedIndex == 2 {
                 self.centerButton.layer.shadowOpacity = 0.55
                 self.centerButton.transform = CGAffineTransform(scaleX: 1.06, y: 1.06)
             } else {
-                self.centerButton.layer.shadowOpacity = 0.40
+                self.centerButton.layer.shadowOpacity = 0.42
                 self.centerButton.transform = .identity
             }
         }
@@ -134,10 +173,18 @@ final class CustomTabBar: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        shapeLayer.frame = bounds
-        shapeLayer.path = createCapsulePath().cgPath
+
+        let path = createCapsulePath().cgPath
+        layer.shadowPath = path
+        capsuleMaskLayer.path = path
+        borderLayer.path = path
+
+        blurView.frame = bounds
+        tintView.frame = bounds
+
         layoutRegularButtons()
         layoutCenterButton()
+        moveSelectionIndicator(animated: false)
     }
 
     private func layoutCenterButton() {
@@ -149,6 +196,35 @@ final class CustomTabBar: UIView {
             width: centerButtonSize,
             height: centerButtonSize
         )
+    }
+
+    private static func makeGradientCircle(diameter: CGFloat) -> UIImage {
+        let size = CGSize(width: diameter, height: diameter)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            let ctx = context.cgContext
+            ctx.addEllipse(in: CGRect(origin: .zero, size: size))
+            ctx.clip()
+
+            let colors = [
+                UIColor(rgb: 0x8A68F5).cgColor,
+                UIColor(rgb: 0x5F33E1).cgColor,
+                UIColor(rgb: 0x4A1FD0).cgColor
+            ]
+            guard let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: colors as CFArray,
+                locations: [0, 0.55, 1]
+            ) else { return }
+
+            ctx.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: diameter * 0.15, y: 0),
+                end: CGPoint(x: diameter * 0.85, y: diameter),
+                options: []
+            )
+        }
     }
 
     private func layoutRegularButtons() {
@@ -181,6 +257,42 @@ final class CustomTabBar: UIView {
                 height: ch
             )
         }
+    }
+
+    private func moveSelectionIndicator(animated: Bool) {
+        guard let selectedButton = regularButtons.first(where: { $0.tag == selectedIndex }) else {
+            let updates = {
+                self.selectionIndicator.alpha = 0
+                self.selectionIndicator.transform = CGAffineTransform(scaleX: 0.72, y: 0.72)
+            }
+            if animated {
+                UIView.animate(withDuration: 0.16, animations: updates)
+            } else {
+                updates()
+            }
+            return
+        }
+
+        let targetFrame = selectedButton.frame.insetBy(dx: max(8, selectedButton.bounds.width * 0.26), dy: 14)
+        let updates = {
+            self.selectionIndicator.alpha = 1
+            self.selectionIndicator.transform = .identity
+            self.selectionIndicator.frame = targetFrame
+        }
+
+        guard animated else {
+            updates()
+            return
+        }
+
+        UIView.animate(
+            withDuration: 0.24,
+            delay: 0,
+            usingSpringWithDamping: 0.82,
+            initialSpringVelocity: 0.35,
+            options: .allowUserInteraction,
+            animations: updates
+        )
     }
 
 

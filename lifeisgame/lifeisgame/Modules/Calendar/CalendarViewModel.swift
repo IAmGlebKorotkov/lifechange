@@ -13,10 +13,11 @@ final class CalendarViewModel {
 
     private let taskService: TaskService
 
-    var onAddTaskTapped: ((Date) -> Void)?
+    var onAddItemTapped: ((Date, AddTaskKind) -> Void)?
     var onEditTaskTapped: ((TaskItem) -> Void)?
     var onNotificationsTapped: (() -> Void)?
     var onTasksUpdated: (([TaskItem]) -> Void)?
+    var onProgressUpdated: ((Int, Int) -> Void)?
 
     private var selectedDate: Date = Date()
     private var selectedFilter: CalendarFilter = .all
@@ -49,8 +50,12 @@ final class CalendarViewModel {
         loadTasks()
     }
 
-    func addTaskTapped() {
-        onAddTaskTapped?(selectedDate)
+    func addItemTapped(kind: AddTaskKind) {
+        onAddItemTapped?(selectedDate, kind)
+    }
+
+    func addEventTapped(at date: Date) {
+        onAddItemTapped?(date, .event)
     }
 
     func editTaskTapped(_ task: TaskItem) {
@@ -114,7 +119,15 @@ final class CalendarViewModel {
         taskService.fetchTasks(userID: userID, date: selectedDate) { [weak self] tasks in
             guard let self else { return }
             self.onTasksUpdated?(self.filter(tasks))
+            self.notifyProgress(tasks)
         }
+    }
+
+    private func notifyProgress(_ tasks: [TaskItem]) {
+        let flattened = tasks.flatMap { task in
+            task.isHardTask && !task.subtasks.isEmpty ? task.subtasks : [task]
+        }
+        onProgressUpdated?(flattened.filter(\.isCompleted).count, flattened.count)
     }
 
     private func filter(_ tasks: [TaskItem]) -> [TaskItem] {

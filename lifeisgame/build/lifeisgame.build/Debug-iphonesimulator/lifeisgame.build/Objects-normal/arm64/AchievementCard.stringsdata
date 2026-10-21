@@ -1,0 +1,24 @@
+{
+  "source": "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Statistics/Achievements/AchievementCard.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "+%lld XP · собрано",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 207
+        }
+      },
+      {
+        "comment": "",
+        "key": "Нажми, чтобы открыть",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 197
+        }
+      }
+    ]
+  },
+  "version": 1
+}

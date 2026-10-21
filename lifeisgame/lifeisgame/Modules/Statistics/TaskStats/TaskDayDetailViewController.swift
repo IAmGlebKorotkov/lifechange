@@ -15,6 +15,7 @@ final class TaskDayDetailViewController: UIViewController {
         let mainTaskName: String?
         let startDate: Date
         let deadlineDate: Date
+        let estimatedDuration: TimeInterval
         let importance: Int
         let isCompleted: Bool
     }
@@ -131,7 +132,7 @@ final class TaskDayDetailViewController: UIViewController {
                 mainTaskName: mainTaskName,
                 subtaskName: task.typeTitle,
                 taskTitle: task.title,
-                time: scheduleString(task.startDate, task.deadlineDate),
+                time: scheduleString(for: task),
                 timeSpent: "",
                 priority: priority(for: task.importance),
                 isCompleted: task.isCompleted,
@@ -141,7 +142,7 @@ final class TaskDayDetailViewController: UIViewController {
             view = TaskDayView(
                 subtaskName: task.typeTitle,
                 taskTitle: task.title,
-                time: scheduleString(task.startDate, task.deadlineDate),
+                time: scheduleString(for: task),
                 timeSpent: "",
                 priority: priority(for: task.importance),
                 isCompleted: task.isCompleted,
@@ -152,8 +153,11 @@ final class TaskDayDetailViewController: UIViewController {
         return view
     }
 
-    private func scheduleString(_ start: Date, _ end: Date) -> String {
-        "\(timeString(start)) - \(timeString(end)) (\(durationString(start, end)))"
+    private func scheduleString(for task: TaskItem) -> String {
+        let duration = task.estimatedDuration > 0
+            ? task.estimatedDuration
+            : max(0, task.deadlineDate.timeIntervalSince(task.startDate))
+        return "\(timeString(task.startDate)) - \(timeString(task.deadlineDate)) (\(durationString(duration)))"
     }
 
     private func timeString(_ date: Date) -> String {
@@ -162,8 +166,8 @@ final class TaskDayDetailViewController: UIViewController {
         return formatter.string(from: date)
     }
 
-    private func durationString(_ start: Date, _ end: Date) -> String {
-        let minutes = Int(end.timeIntervalSince(start) / 60)
+    private func durationString(_ duration: TimeInterval) -> String {
+        let minutes = max(0, Int(duration / 60))
         if minutes < 60 { return "\(minutes) мин" }
         let hours = minutes / 60
         let restMinutes = minutes % 60

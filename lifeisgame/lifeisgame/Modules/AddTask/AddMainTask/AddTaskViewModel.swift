@@ -2,10 +2,49 @@
 //  AddTaskViewModel.swift
 //  lifeisgame
 //
-//  Created by Codex on 20.06.2026.
+//  Created by Gleb Korotkov on 20.06.2026.
 //
 
 import Foundation
+
+enum AddTaskKind: CaseIterable, Equatable {
+    case event
+    case simpleTask
+    case hardTask
+
+    var title: String {
+        switch self {
+        case .event:
+            return "Событие"
+        case .simpleTask:
+            return "Простая задача"
+        case .hardTask:
+            return "Сложная задача"
+        }
+    }
+
+    var navigationTitle: String {
+        switch self {
+        case .event:
+            return "Новое событие"
+        case .simpleTask:
+            return "Новая простая задача"
+        case .hardTask:
+            return "Новая сложная задача"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .event:
+            return "calendar.badge.plus"
+        case .simpleTask:
+            return "checkmark.circle"
+        case .hardTask:
+            return "square.stack.3d.up"
+        }
+    }
+}
 
 struct AddTaskDraft {
     let name: String
@@ -21,20 +60,17 @@ struct AddTaskDraft {
 final class AddTaskViewModel {
 
     private let validator: TaskValidator
+    let kind: AddTaskKind
 
-    private(set) var isHardTask = false
-    private(set) var isEvent = false
+    var isHardTask: Bool { kind == .hardTask }
+    var isEvent: Bool { kind == .event }
 
-    init(validator: TaskValidator = TaskValidator()) {
+    init(
+        kind: AddTaskKind = .simpleTask,
+        validator: TaskValidator = TaskValidator()
+    ) {
+        self.kind = kind
         self.validator = validator
-    }
-
-    func setEvent(_ isEvent: Bool) {
-        self.isEvent = isEvent
-    }
-
-    func setHardTask(_ isHardTask: Bool) {
-        self.isHardTask = isHardTask
     }
 
     func validate(_ draft: AddTaskDraft) -> TaskValidationResult {

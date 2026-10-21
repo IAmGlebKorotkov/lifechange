@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-09-22T00:00:00.000Z" agent="Codex" version="24.7.17" type="device" compressed="false">
+  <diagram id="domain-model" name="Модель предметной области">
+    <mxGraphModel dx="1900" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="850" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="&lt;b&gt;Модель предметной области LifeIsGame&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=26;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="350" y="20" width="1200" height="50" />
+        </mxCell>
+
+        <mxCell id="user" value="Пользователь" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="810" y="100" width="280" height="75" />
+        </mxCell>
+
+        <mxCell id="task" value="Задача" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="70" y="340" width="260" height="75" />
+        </mxCell>
+        <mxCell id="focus-session" value="Фокус-сессия" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="420" y="340" width="260" height="75" />
+        </mxCell>
+        <mxCell id="achievement" value="Достижение" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="770" y="340" width="260" height="75" />
+        </mxCell>
+        <mxCell id="emotion-entry" value="Запись эмоции" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1120" y="340" width="260" height="75" />
+        </mxCell>
+        <mxCell id="sleep-entry" value="Запись сна" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1470" y="340" width="260" height="75" />
+        </mxCell>
+
+        <mxCell id="playlist" value="Плейлист фокуса" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="650" y="650" width="280" height="75" />
+        </mxCell>
+        <mxCell id="track" value="Музыкальный трек" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#000000;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1100" y="650" width="290" height="75" />
+        </mxCell>
+
+        <mxCell id="achievement-task-dependency" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#000000;strokeWidth=2;exitX=0.25;exitY=1;entryX=0.5;entryY=1;" parent="1" edge="1" source="achievement" target="task">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="835" y="485" />
+              <mxPoint x="200" y="485" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="achievement-focus-dependency" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.3;entryX=1;entryY=0.3;" parent="1" edge="1" source="achievement" target="focus-session">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="achievement-emotion-dependency" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" parent="1" edge="1" source="achievement" target="emotion-entry">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="achievement-sleep-dependency" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#000000;strokeWidth=2;exitX=0.75;exitY=1;entryX=0.5;entryY=1;" parent="1" edge="1" source="achievement" target="sleep-entry">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="965" y="520" />
+              <mxPoint x="1600" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="user-task" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.12;exitY=1;entryX=0.5;entryY=0;" parent="1" edge="1" source="user" target="task">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="user-task-source" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-task" vertex="1" connectable="0">
+          <mxGeometry x="-0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="user-task-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-task" vertex="1" connectable="0">
+          <mxGeometry x="0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="user-focus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.32;exitY=1;entryX=0.5;entryY=0;" parent="1" edge="1" source="user" target="focus-session">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="user-focus-source" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-focus" vertex="1" connectable="0">
+          <mxGeometry x="-0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="user-focus-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-focus" vertex="1" connectable="0">
+          <mxGeometry x="0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="user-achievement" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" edge="1" source="user" target="achievement">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="user-achievement-source" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-achievement" vertex="1" connectable="0">
+          <mxGeometry x="-0.82" y="-1" relative="1" as="geometry"><mxPoint x="-12" y="0" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="user-achievement-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-achievement" vertex="1" connectable="0">
+          <mxGeometry x="0.82" y="-1" relative="1" as="geometry"><mxPoint x="-14" y="0" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="user-emotion" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.68;exitY=1;entryX=0.5;entryY=0;" parent="1" edge="1" source="user" target="emotion-entry">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="user-emotion-source" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-emotion" vertex="1" connectable="0">
+          <mxGeometry x="-0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="user-emotion-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-emotion" vertex="1" connectable="0">
+          <mxGeometry x="0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="user-sleep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.88;exitY=1;entryX=0.5;entryY=0;" parent="1" edge="1" source="user" target="sleep-entry">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="user-sleep-source" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-sleep" vertex="1" connectable="0">
+          <mxGeometry x="-0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="user-sleep-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="user-sleep" vertex="1" connectable="0">
+          <mxGeometry x="0.86" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="task-subtasks" value="" style="edgeStyle=orthogonalEdgeStyle;loopDirection=west;rounded=0;orthogonalLoop=1;jettySize=35;html=1;startArrow=diamond;startFill=1;endArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.35;entryX=0;entryY=0.75;" parent="1" edge="1" source="task" target="task">
+          <mxGeometry as="geometry" relative="1"><mxPoint x="25" y="0" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="task-subtasks-parent" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="task-subtasks" vertex="1" connectable="0">
+          <mxGeometry x="-0.72" y="-1" relative="1" as="geometry"><mxPoint x="-8" y="-8" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="task-subtasks-children" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="task-subtasks" vertex="1" connectable="0">
+          <mxGeometry x="0.72" y="-1" relative="1" as="geometry"><mxPoint x="-8" y="-8" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="focus-task" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.7;entryX=1;entryY=0.7;" parent="1" edge="1" source="focus-session" target="task">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="focus-task-source" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="focus-task" vertex="1" connectable="0">
+          <mxGeometry x="-0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="focus-task-target" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="focus-task" vertex="1" connectable="0">
+          <mxGeometry x="0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="focus-playlist" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#000000;strokeWidth=2;exitX=0.7;exitY=1;entryX=0.3;entryY=0;" parent="1" edge="1" source="focus-session" target="playlist">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="focus-playlist-source" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="focus-playlist" vertex="1" connectable="0">
+          <mxGeometry x="-0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="focus-playlist-target" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="focus-playlist" vertex="1" connectable="0">
+          <mxGeometry x="0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="playlist-track" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#000000;strokeWidth=2;" parent="1" edge="1" source="playlist" target="track">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="playlist-track-source" value="1..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="playlist-track" vertex="1" connectable="0">
+          <mxGeometry x="-0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="playlist-track-target" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="playlist-track" vertex="1" connectable="0">
+          <mxGeometry x="0.78" y="-1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

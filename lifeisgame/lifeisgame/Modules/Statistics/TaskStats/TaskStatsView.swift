@@ -18,6 +18,11 @@ struct TaskStatsDaySummary {
 final class TaskStatsView: UIView {
 
     private var days: [TaskStatsDaySummary] = []
+    var onVerticalScroll: ((CGFloat) -> Void)?
+
+    var verticalScrollOffset: CGFloat {
+        max(0, scrollView.contentOffset.y + scrollView.adjustedContentInset.top)
+    }
 
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -50,6 +55,7 @@ final class TaskStatsView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setupLayout()
+        scrollView.delegate = self
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -57,6 +63,10 @@ final class TaskStatsView: UIView {
     func configure(days: [TaskStatsDaySummary]) {
         self.days = days
         buildRows()
+    }
+
+    func applyHeaderCompensation(_ offset: CGFloat) {
+        stack.transform = CGAffineTransform(translationX: 0, y: offset)
     }
 
     private func setupLayout() {
@@ -130,5 +140,12 @@ final class TaskStatsView: UIView {
             presenter.preferredCornerRadius = 24
         }
         presentingViewController?.present(detail, animated: true)
+    }
+}
+
+extension TaskStatsView: UIScrollViewDelegate {
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        onVerticalScroll?(verticalScrollOffset)
     }
 }

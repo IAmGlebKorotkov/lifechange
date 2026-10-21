@@ -5,8 +5,22 @@
 //  Created by Gleb Korotkov on 22.03.2026.
 //
 
-import Foundation
+import UIKit
 import LocalAuthentication
+
+protocol FaceIDAvailabilityProviding {
+    var supportsFaceID: Bool { get }
+}
+
+struct SystemFaceIDAvailabilityProvider: FaceIDAvailabilityProviding {
+
+    var supportsFaceID: Bool {
+        let context = LAContext()
+        var error: NSError?
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        return context.biometryType == .faceID
+    }
+}
 
 struct ProfileViewData {
     let name: String
@@ -20,16 +34,34 @@ final class ProfileViewModel {
 
     private let authService: AuthService
     private let diaryService: DiaryService
+    private let achievementService: AchievementService
+    private let avatarStore: AvatarStore
+    private let faceIDAvailabilityProvider: FaceIDAvailabilityProviding
+
+    var supportsFaceID: Bool {
+        faceIDAvailabilityProvider.supportsFaceID
+    }
 
     var onLogoutRequested: (() -> Void)?
     var onProfileUpdated: ((ProfileViewData) -> Void)?
+    var onAvatarUpdated: ((UIImage?) -> Void)?
+    var onLevelUpdated: ((AchievementLevelProgress) -> Void)?
     var onFaceIDStateChanged: ((Bool) -> Void)?
     var onNotificationsStateChanged: ((Bool) -> Void)?
     var onError: ((String) -> Void)?
 
-    init(authService: AuthService, diaryService: DiaryService) {
+    init(
+        authService: AuthService,
+        diaryService: DiaryService,
+        achievementService: AchievementService,
+        avatarStore: AvatarStore = .shared,
+        faceIDAvailabilityProvider: FaceIDAvailabilityProviding = SystemFaceIDAvailabilityProvider()
+    ) {
         self.authService = authService
         self.diaryService = diaryService
+        self.achievementService = achievementService
+        self.avatarStore = avatarStore
+        self.faceIDAvailabilityProvider = faceIDAvailabilityProvider
     }
 
     func loadProfile() {
@@ -52,9 +84,28 @@ final class ProfileViewModel {
                     && SessionManager.shared.faceIDUserID == user.id,
                 isNotificationsEnabled: LocalNotificationService.shared.isEnabled
             ))
+
+            onAvatarUpdated?(avatarStore.loadAvatar(for: userID))
+            loadLevel(userID: userID)
         } catch {
             onError?(error.localizedDescription)
         }
+    }
+
+    func updateAvatar(_ image: UIImage) {
+        guard let userID = SessionManager.shared.currentUserID else {
+            onError?("Не удалось найти активную сессию")
+            return
+        }
+
+        avatarStore.saveAvatar(image, for: userID) { [weak self] savedImage in
+            self?.onAvatarUpdated?(savedImage)
+        }
+    }
+
+    private func loadLevel(userID: UUID) {
+        guard let items = try? achievementService.fetchAchievements(forUserID: userID) else { return }
+        onLevelUpdated?(AchievementLevelProgress(items: items))
     }
 
     func setFaceIDEnabled(_ isEnabled: Bool) {

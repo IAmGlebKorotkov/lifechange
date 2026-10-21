@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-09-13T00:00:00.000Z" agent="Codex" version="24.7.17" type="device" compressed="false">
+  <diagram id="page-0" name="00 Принципы модели">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Как читать модель вариантов использования&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px;color:#475569'&gt;Правила главы 9 книги Мартина Фаулера&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="card-3" value="&lt;b&gt;Актор&lt;/b&gt;&lt;br&gt;&lt;br&gt;Внешняя по отношению к LifeIsGame &lt;b&gt;роль&lt;/b&gt;, которая взаимодействует с системой. Основные роли: неавторизованный и авторизованный пользователь. Службы iOS — второстепенные акторы, потому что LifeIsGame обменивается с ними данными." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#E0F2FE;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="110" y="130" width="430" height="230" />
+        </mxCell>
+        <mxCell id="card-4" value="&lt;b&gt;Вариант использования&lt;/b&gt;&lt;br&gt;&lt;br&gt;Не экран и не отдельная проверка, а набор сценариев с одной целью актора. Проверка почты, сортировка, расчёт сна, сохранение сессии и обновление прогресса описываются как шаги и гарантии сценариев." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#DBEAFE;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="635" y="130" width="430" height="230" />
+        </mxCell>
+        <mxCell id="card-5" value="&lt;b&gt;Связи&lt;/b&gt;&lt;br&gt;&lt;br&gt;Сплошная линия — участие актора. «include» — обязательный повторно используемый сложный шаг. В модели только два include: создание обычной и сложной задачи включает автоматическое планирование. UML-отношение extend не применяется: условные ветви записаны в тексте сценариев." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#F3E8FF;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1160" y="130" width="430" height="230" />
+        </mxCell>
+        <mxCell id="card-6" value="&lt;b&gt;Граница системы&lt;/b&gt;&lt;br&gt;&lt;br&gt;Все овалы находятся внутри прямоугольника LifeIsGame. Все акторы — снаружи. LifeIsGame не является собственным актором и не соединяется линиями с акторами." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="110" y="430" width="430" height="190" />
+        </mxCell>
+        <mxCell id="card-7" value="&lt;b&gt;Уровни&lt;/b&gt;&lt;br&gt;&lt;br&gt;Большинство прецедентов — «уровень моря»: самостоятельная цель пользователя. UC15 «Автоматически сформировать план» — «уровень рыб»: он существует как включаемое поведение." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="635" y="430" width="430" height="190" />
+        </mxCell>
+        <mxCell id="card-8" value="&lt;b&gt;Где находятся детали&lt;/b&gt;&lt;br&gt;&lt;br&gt;Диаграммы дают обзор взаимодействий. Полное функциональное содержание — в приложенном текстовом описании: предусловия, триггеры, главный успешный сценарий, расширения и гарантии." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=14;arcSize=12;fontSize=14;fontColor=#1F2937;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1160" y="430" width="430" height="190" />
+        </mxCell>
+        <mxCell id="note-9" value="Сквозное требование интерфейса: переход между разделами «Календарь», «Дневник», «Анализ дня», «Статистика» и «Профиль» выполняется через TabBar. Это правило интерфейса, а не самостоятельная цель актора, поэтому отдельного овала для TabBar нет." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="320" y="710" width="1060" height="120" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-1" name="01 Регистрация и авторизация">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Регистрация и авторизация&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Учётная запись&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Неавторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="405" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Служба Face ID&lt;br&gt;iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="500" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC01&lt;/b&gt;&lt;br&gt;Зарегистрироваться" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="190" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC02&lt;/b&gt;&lt;br&gt;Войти по электронной&lt;br&gt;почте и паролю" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="360" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC03&lt;/b&gt;&lt;br&gt;Войти через Face ID" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="530" width="340" height="82" />
+        </mxCell>
+        <mxCell id="assoc-9" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-13" value="Неавторизованный пользователь — ведущий актор всех трёх целей. Служба Face ID iOS — второстепенный актор только UC03. Сохранение сессии и резервный вход описаны в сценариях." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="500" y="720" width="680" height="105" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-2" name="02 Профиль">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Профиль пользователя&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Профиль&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Служба Face ID&lt;br&gt;iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="190" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-6" value="Системный сервис&lt;br&gt;выбора изображений iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="540" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC04&lt;/b&gt;&lt;br&gt;Просмотреть профиль" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="500" y="210" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC07&lt;/b&gt;&lt;br&gt;Выйти из учётной записи" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="500" y="510" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-9" value="&lt;b&gt;UC06&lt;/b&gt;&lt;br&gt;Настроить вход&lt;br&gt;через Face ID" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1010" y="210" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-10" value="&lt;b&gt;UC05&lt;/b&gt;&lt;br&gt;Изменить аватар" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1010" y="510" width="320" height="82" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-10">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-14" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-15" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-16" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-6" target="uc-10">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-17" value="Пользователь — ведущий актор UC05–UC06. Внешние службы iOS не имеют цели изменить профиль: они только предоставляют биометрическую проверку и выбранное изображение." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="510" y="720" width="670" height="105" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-3" name="03 Календарь и управление задачами">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Просмотр календаря и управление задачами&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Календарь&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Системный&lt;br&gt;календарь iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="300" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC08&lt;/b&gt;&lt;br&gt;Просмотреть план&lt;br&gt;выбранного дня" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="500" y="190" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC09&lt;/b&gt;&lt;br&gt;Отфильтровать элементы&lt;br&gt;календаря" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="500" y="410" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC10&lt;/b&gt;&lt;br&gt;Подключить системный&lt;br&gt;календарь" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1010" y="190" width="320" height="82" />
+        </mxCell>
+        <mxCell id="uc-9" value="&lt;b&gt;UC14&lt;/b&gt;&lt;br&gt;Управлять собственной&lt;br&gt;задачей" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1010" y="410" width="320" height="82" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-14" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-15" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-16" value="Системный календарь iOS участвует только в чтении внешних событий и выдаче разрешения. Редактирование импортированных событий в LifeIsGame не предусмотрено." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="520" y="700" width="660" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-4" name="04 Создание и планирование">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Создание задач, событий и автоматическое планирование&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Планирование&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Системный&lt;br&gt;календарь iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC11&lt;/b&gt;&lt;br&gt;Создать событие&lt;br&gt;с фиксированным временем" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="430" y="170" width="330" height="82" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC12&lt;/b&gt;&lt;br&gt;Создать обычную задачу" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="430" y="370" width="330" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC13&lt;/b&gt;&lt;br&gt;Создать сложную задачу" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="430" y="570" width="330" height="82" />
+        </mxCell>
+        <mxCell id="uc-9" value="&lt;b&gt;UC15&lt;/b&gt;&lt;br&gt;Автоматически&lt;br&gt;сформировать план&lt;br&gt;&lt;font style='font-size:10px;color:#6B21A8'&gt;уровень рыб&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1020" y="370" width="330" height="90" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="include-14" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=8 6;endArrow=open;endFill=0;strokeColor=#7E22CE;strokeWidth=2;fontSize=13;fontColor=#6B21A8;labelBackgroundColor=#FFFFFF;" parent="1" edge="1" source="uc-7" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="include-15" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=8 6;endArrow=open;endFill=0;strokeColor=#7E22CE;strokeWidth=2;fontSize=13;fontColor=#6B21A8;labelBackgroundColor=#FFFFFF;" parent="1" edge="1" source="uc-8" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-16" value="UC12 — «include» → UC15 и UC13 — «include» → UC15: автоматическое планирование обязательно. Перенос после 23:00 остаётся условной ветвью текста UC15." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="540" y="735" width="620" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-5" name="05 Уведомления">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Настройка и получение уведомлений&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Уведомления&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Служба&lt;br&gt;уведомлений iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC16&lt;/b&gt;&lt;br&gt;Настроить уведомления" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="190" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC17&lt;/b&gt;&lt;br&gt;Получить напоминание" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="390" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC18&lt;/b&gt;&lt;br&gt;Просмотреть историю&lt;br&gt;уведомлений" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="590" width="340" height="82" />
+        </mxCell>
+        <mxCell id="assoc-9" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-14" value="Служба уведомлений iOS не связана с UC18: история доставленных уведомлений просматривается внутри LifeIsGame. Время срабатывания является триггером UC17, а не актором." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="520" y="735" width="660" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-6" name="06 Дневник">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Дневник эмоций и сна&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Дневник&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-5" value="&lt;b&gt;UC19&lt;/b&gt;&lt;br&gt;Заполнить дневник&lt;br&gt;эмоций" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="260" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC20&lt;/b&gt;&lt;br&gt;Заполнить дневник сна" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="500" width="340" height="82" />
+        </mxCell>
+        <mxCell id="assoc-7" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-8" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-9" value="Расчёт продолжительности сна и отмена оставшихся напоминаний — шаги сценариев, а не отдельные акторы или варианты использования." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="540" y="720" width="620" height="95" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-7" name="07 Фокус и Live Activity">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Фокус-сессия и Live Activity&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Фокус-сессия&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Служба Live&lt;br&gt;Activities iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC21&lt;/b&gt;&lt;br&gt;Провести фокус-сессию" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="170" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC22&lt;/b&gt;&lt;br&gt;Просмотреть ход сессии&lt;br&gt;в Live Activity" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="370" width="340" height="82" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC23&lt;/b&gt;&lt;br&gt;Завершить задачу&lt;br&gt;из Live Activity" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="570" width="340" height="82" />
+        </mxCell>
+        <mxCell id="assoc-9" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-14" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-15" value="Служба Live Activities iOS — второстепенный актор: она отображает данные и передаёт действие, но пользователь остаётся ведущим актором всех трёх целей." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="530" y="735" width="640" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-8" name="08 Анализ дня">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Анализ состояния пользователя&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Анализ дня&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="actor-5" value="Системный&lt;br&gt;календарь iOS" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#FEF3C7;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1515" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC24&lt;/b&gt;&lt;br&gt;Просмотреть анализ дня&lt;br&gt;и рекомендации" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="350" width="340" height="90" />
+        </mxCell>
+        <mxCell id="assoc-7" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-8" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-5" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-9" value="Пользователь получает результат анализа; системный календарь предоставляет внешние события для расчёта занятого и свободного времени." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="550" y="650" width="600" height="95" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-9" name="09 Статистика">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Общая и подробная статистика&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Статистика&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-5" value="&lt;b&gt;UC25&lt;/b&gt;&lt;br&gt;Просмотреть сводку&lt;br&gt;за семь дней" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="120" width="340" height="76" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC26&lt;/b&gt;&lt;br&gt;Просмотреть статистику&lt;br&gt;эмоций" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="255" width="340" height="76" />
+        </mxCell>
+        <mxCell id="uc-7" value="&lt;b&gt;UC27&lt;/b&gt;&lt;br&gt;Просмотреть статистику сна" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="390" width="340" height="76" />
+        </mxCell>
+        <mxCell id="uc-8" value="&lt;b&gt;UC28&lt;/b&gt;&lt;br&gt;Просмотреть статистику&lt;br&gt;задач" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="525" width="340" height="76" />
+        </mxCell>
+        <mxCell id="uc-9" value="&lt;b&gt;UC29&lt;/b&gt;&lt;br&gt;Просмотреть задачи&lt;br&gt;выбранного дня" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="660" width="340" height="76" />
+        </mxCell>
+        <mxCell id="assoc-10" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-11" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-12" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-13" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-14" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-15" value="UC29 оставлен самостоятельной целью детализации: пользователь получает состав выполненных и невыполненных задач выбранного дня. UML-связь extend для этого не обязательна." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="1080" y="680" width="300" height="125" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-10" name="10 Достижения и уровни">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-2" value="&lt;b&gt;Достижения, опыт и уровни&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="180" y="15" width="1340" height="60" />
+        </mxCell>
+        <mxCell id="boundary-3" value="&lt;b&gt;Система LifeIsGame&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:13px'&gt;Достижения и уровни&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=14;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;fontColor=#111827;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="260" y="60" width="1180" height="860" />
+        </mxCell>
+        <mxCell id="actor-4" value="Авторизованный&lt;br&gt;пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#111827;fillColor=#E0F2FE;strokeColor=#111827;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="55" y="410" width="120" height="120" />
+        </mxCell>
+        <mxCell id="uc-5" value="&lt;b&gt;UC30&lt;/b&gt;&lt;br&gt;Просмотреть достижения,&lt;br&gt;уровень и прогресс" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="270" width="340" height="86" />
+        </mxCell>
+        <mxCell id="uc-6" value="&lt;b&gt;UC31&lt;/b&gt;&lt;br&gt;Открыть разблокированное&lt;br&gt;достижение" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#111827;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="670" y="510" width="340" height="86" />
+        </mxCell>
+        <mxCell id="assoc-7" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="assoc-8" value="" style="edgeStyle=none;rounded=0;html=1;endArrow=none;startArrow=none;strokeColor=#475569;strokeWidth=1.5;" parent="1" edge="1" source="actor-4" target="uc-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="note-9" value="Состояния достижения, обновление прогресса, начисление 50 XP и переход уровня каждые 250 XP описаны внутри UC30–UC31, а не отдельными овалами." style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fontColor=#374151;fillColor=#FFF7D6;strokeColor=#D6B656;" parent="1" vertex="1">
+          <mxGeometry as="geometry" x="540" y="720" width="620" height="95" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

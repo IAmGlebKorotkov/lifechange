@@ -13,19 +13,20 @@ final class DiaryViewController: UIViewController {
     private enum DiaryType: CaseIterable {
         case emotions, sleep
         var iconName: String { self == .emotions ? "Lol" : "Time_sleep" }
-        var title: String    { self == .emotions ? "Дневник эмоций" : "Дневник сна" }
+        var title: String    { self == .emotions ? "Эмоции" : "Сон" }
     }
 
 
     private var selectedDiary: DiaryType = .emotions
     private let viewModel: DiaryViewModel
+    private let maximumHeaderCollapse: CGFloat = 48
 
 
     private let titleLabel: UILabel = {
         let l = UILabel()
-        l.text = "Дневник эмоций и сна"
-        l.font = .systemFont(ofSize: 20, weight: .bold)
-        l.textAlignment = .center
+        l.text = "Дневник"
+        l.font = .systemFont(ofSize: 30, weight: .bold)
+        l.textColor = .label
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
@@ -47,6 +48,7 @@ final class DiaryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.background
         setupUI()
+        setupScrollTracking()
         setupKeyboardDismissGesture()
         bindActions()
         bindViewModel()
@@ -64,24 +66,40 @@ final class DiaryViewController: UIViewController {
         view.addSubview(sleepDiaryView)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
 
-            diaryPickerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            diaryPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            diaryPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            diaryPickerView.heightAnchor.constraint(equalToConstant: 63),
+            diaryPickerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 9),
+            diaryPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
+            diaryPickerView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20),
 
             emotionDiaryView.topAnchor.constraint(equalTo: diaryPickerView.bottomAnchor, constant: 12),
             emotionDiaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             emotionDiaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emotionDiaryView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emotionDiaryView.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor,
+                constant: maximumHeaderCollapse
+            ),
 
             sleepDiaryView.topAnchor.constraint(equalTo: diaryPickerView.bottomAnchor, constant: 12),
             sleepDiaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             sleepDiaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            sleepDiaryView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            sleepDiaryView.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor,
+                constant: maximumHeaderCollapse
+            )
         ])
+    }
+
+    private func setupScrollTracking() {
+        emotionDiaryView.onVerticalScroll = { [weak self] offset in
+            guard self?.selectedDiary == .emotions else { return }
+            self?.updateHeader(for: offset, animated: false)
+        }
+        sleepDiaryView.onVerticalScroll = { [weak self] offset in
+            guard self?.selectedDiary == .sleep else { return }
+            self?.updateHeader(for: offset, animated: false)
+        }
     }
 
     private func setupKeyboardDismissGesture() {
@@ -121,12 +139,45 @@ final class DiaryViewController: UIViewController {
         let disappearing = showEmotions ? sleepDiaryView : emotionDiaryView
 
         appearing.isHidden = false
+        updateHeader(
+            for: showEmotions
+                ? emotionDiaryView.verticalScrollOffset
+                : sleepDiaryView.verticalScrollOffset,
+            animated: true
+        )
         UIView.animate(withDuration: 0.2) {
             appearing.alpha    = 1
             disappearing.alpha = 0
         } completion: { _ in
             disappearing.isHidden = true
         }
+    }
+
+    private func updateHeader(for scrollOffset: CGFloat, animated: Bool) {
+        let collapse = min(max(0, scrollOffset), maximumHeaderCollapse)
+        let progress = collapse / maximumHeaderCollapse
+        let changes = {
+            let translation = CGAffineTransform(translationX: 0, y: -collapse)
+            self.titleLabel.transform = translation
+            self.titleLabel.alpha = 1 - progress
+            self.diaryPickerView.transform = translation
+            self.emotionDiaryView.transform = translation
+            self.sleepDiaryView.transform = translation
+            self.emotionDiaryView.applyHeaderCompensation(collapse)
+            self.sleepDiaryView.applyHeaderCompensation(collapse)
+        }
+
+        guard animated, !UIAccessibility.isReduceMotionEnabled else {
+            changes()
+            return
+        }
+
+        UIView.animate(
+            withDuration: 0.25,
+            delay: 0,
+            options: [.beginFromCurrentState, .allowUserInteraction, .curveEaseInOut],
+            animations: changes
+        )
     }
 
 

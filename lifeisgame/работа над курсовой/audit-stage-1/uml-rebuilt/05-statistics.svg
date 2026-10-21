@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1800" viewBox="0 0 3000 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Общая и подробная статистика</title>
+  <desc id="desc">Диаграмма вариантов использования Luma. Покрытие: FR-13.01–FR-13.11.</desc>
+  <metadata>Проект: Luma; вид UML: диаграмма вариантов использования; покрытие: FR-13.01–FR-13.11.</metadata>
+  <defs>
+    <marker id="open-arrow" viewBox="0 0 18 18" refX="17" refY="9" markerWidth="18" markerHeight="18" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { font: 700 66px Arial, Helvetica, sans-serif; fill: #000; }
+      .system-boundary { fill: #fff; stroke: #000; stroke-width: 6; }
+      .system-label-bg { fill: #fff; }
+      .system-label { font: 700 58px Arial, Helvetica, sans-serif; fill: #000; }
+      .actor circle, .actor line { fill: #fff; stroke: #000; stroke-width: 6; }
+      .actor-label { font: 52px Arial, Helvetica, sans-serif; fill: #000; }
+      .use-case ellipse { fill: #fff; stroke: #000; stroke-width: 6; }
+      .use-case-label { font: 50px Arial, Helvetica, sans-serif; fill: #000; }
+      .association { stroke: #000; stroke-width: 6; fill: none; }
+      .dependency line { stroke: #000; stroke-width: 6; stroke-dasharray: 22 16; fill: none; }
+      .dependency-label { font: 46px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 18; stroke-linejoin: round; }
+      .condition { font: 34px Arial, Helvetica, sans-serif; fill: #000; paint-order: stroke; stroke: #fff; stroke-width: 14; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="3000" height="1800" fill="#fff"/>
+  <text x="1500" y="95" class="title" text-anchor="middle">Общая и подробная статистика</text>
+  <rect x="580" y="190" width="1840" height="1500" class="system-boundary"/>
+  <rect x="650" y="158" width="230" height="75" class="system-label-bg"/>
+  <text x="765" y="214" class="system-label" text-anchor="middle">Luma</text>
+  <g id="relations"><line class="association" x1="356.4" y1="883.4" x2="1225.7" y2="462.6"/>
+<line class="association" x1="362.9" y1="891.7" x2="1065.6" y2="731.4"/>
+<line class="association" x1="364.9" y1="901.4" x2="897.9" y2="921.3"/>
+<line class="association" x1="361.5" y1="910.8" x2="1124.2" y2="1138.9"/><g class="dependency">
+    <line x1="1731.9" y1="1405.4" x2="1621.4" y2="1336.6" marker-end="url(#open-arrow)"/>
+    <text x="2040" y="1325" class="dependency-label" text-anchor="middle">«extend»</text>
+    <text x="2040" y="1373" class="condition" text-anchor="middle">[выбран день и пользователь открывает детализацию]</text>
+  </g></g>
+  <g id="elements"><g id="uc-summary" class="use-case">
+    <ellipse cx="1450" cy="360" rx="560" ry="112"/>
+    <text x="1450" y="347" class="use-case-label" text-anchor="middle"><tspan x="1450" dy="0">Просмотреть сводку</tspan><tspan x="1450" dy="62">за семь дней</tspan></text>
+  </g>
+<g id="uc-emotions" class="use-case">
+    <ellipse cx="1450" cy="650" rx="560" ry="112"/>
+    <text x="1450" y="637" class="use-case-label" text-anchor="middle"><tspan x="1450" dy="0">Просмотреть статистику</tspan><tspan x="1450" dy="62">эмоций</tspan></text>
+  </g>
+<g id="uc-sleep" class="use-case">
+    <ellipse cx="1450" cy="940" rx="560" ry="112"/>
+    <text x="1450" y="958" class="use-case-label" text-anchor="middle"><tspan x="1450" dy="0">Просмотреть статистику сна</tspan></text>
+  </g>
+<g id="uc-tasks" class="use-case">
+    <ellipse cx="1450" cy="1230" rx="560" ry="112"/>
+    <text x="1450" y="1248" class="use-case-label" text-anchor="middle"><tspan x="1450" dy="0">Просмотреть статистику задач</tspan></text>
+  </g>
+<g id="uc-dayTasks" class="use-case">
+    <ellipse cx="1900" cy="1510" rx="470" ry="112"/>
+    <text x="1900" y="1497" class="use-case-label" text-anchor="middle"><tspan x="1900" dy="0">Просмотреть задачи</tspan><tspan x="1900" dy="62">выбранного дня</tspan></text>
+  </g><g id="actor-user" class="actor">
+    <circle cx="270" cy="750" r="55"/>
+    <line x1="270" y1="805" x2="270" y2="955"/>
+    <line x1="180" y1="855" x2="360" y2="855"/>
+    <line x1="270" y1="955" x2="185" y2="1075"/>
+    <line x1="270" y1="955" x2="355" y2="1075"/>
+    <text x="270" y="1121" class="actor-label" text-anchor="middle"><tspan x="270" dy="0">Авторизованный</tspan><tspan x="270" dy="58">пользователь</tspan></text>
+  </g></g>
+</svg>

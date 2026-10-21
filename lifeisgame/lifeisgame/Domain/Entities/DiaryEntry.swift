@@ -11,6 +11,24 @@ extension Notification.Name {
     static let diaryStoreDidChange = Notification.Name("diaryStoreDidChange")
 }
 
+enum EmotionKind: String, CaseIterable {
+    case joy = "Радость"
+    case sadness = "Грусть"
+    case anger = "Злость"
+    case anxiety = "Тревога"
+    case calm = "Покой"
+    case love = "Любовь"
+
+    var valence: Double {
+        switch self {
+        case .joy, .calm, .love:
+            return 1
+        case .sadness, .anger, .anxiety:
+            return -1
+        }
+    }
+}
+
 struct EmotionDiaryInput: Equatable {
     let emotionName: String
     let sfSymbol: String

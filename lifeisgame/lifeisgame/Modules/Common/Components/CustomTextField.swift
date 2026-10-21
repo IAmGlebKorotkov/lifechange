@@ -166,7 +166,6 @@ final class CustomTextField: UITextField {
             let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: config)
             rightActionButton.setImage(image, for: .normal)
         case .password:
-            let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .medium)
             let iconName = isPasswordVisible ? "Hide" : "Show"
             let image = UIImage(named: iconName)
             rightActionButton.setImage(image, for: .normal)

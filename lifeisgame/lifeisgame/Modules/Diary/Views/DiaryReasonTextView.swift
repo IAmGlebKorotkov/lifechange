@@ -16,35 +16,30 @@ final class DiaryReasonTextView: UIView {
 
     private let headerLabel: UILabel = {
         let l = UILabel()
-        l.text = "Причина"
-        l.font = .systemFont(ofSize: 14, weight: .semibold)
-        l.textColor = UIColor.main
+        l.text = "Причина (необязательно)"
+        l.font = .systemFont(ofSize: 12, weight: .regular)
+        l.textColor = UIColor(rgb: 0x3C3C43, alpha: 0.5)
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
-    private let divider: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.separator
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
-
     let textView: UITextView = {
         let tv = UITextView()
-        tv.font = .systemFont(ofSize: 15)
+        tv.font = .systemFont(ofSize: 16)
         tv.textColor = .label
         tv.backgroundColor = .clear
         tv.isScrollEnabled = false
+        tv.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 8, right: 0)
+        tv.textContainer.lineFragmentPadding = 0
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
 
     private let placeholderLabel: UILabel = {
         let l = UILabel()
-        l.text = "Опишите причину вашего состояния..."
-        l.font = .systemFont(ofSize: 15)
-        l.textColor = .tertiaryLabel
+        l.text = "Спокойный вечер после прогулки…"
+        l.font = .systemFont(ofSize: 16)
+        l.textColor = UIColor(rgb: 0x3C3C43, alpha: 0.4)
         l.numberOfLines = 0
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
@@ -55,10 +50,10 @@ final class DiaryReasonTextView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .white
-        layer.cornerRadius = 14
+        layer.cornerRadius = 18
+        applyCardShadow(strength: 0.7)
 
         addSubview(headerLabel)
-        addSubview(divider)
         addSubview(textView)
         textView.addSubview(placeholderLabel)
 
@@ -67,20 +62,15 @@ final class DiaryReasonTextView: UIView {
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
-            divider.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
-            divider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            divider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            divider.heightAnchor.constraint(equalToConstant: 0.5),
-
-            textView.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 4),
-            textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            textView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            textView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 2),
+            textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            textView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             textView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 90),
+            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 64),
 
-            placeholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 8),
-            placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 4),
-            placeholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -4)
+            placeholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 4),
+            placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor),
+            placeholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor)
         ])
 
         textView.delegate = self

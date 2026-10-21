@@ -1,0 +1,96 @@
+{
+  "source": "/Users/glebkorotkov/github/lifechange/lifeisgame/lifeisgame/Modules/Statistics/Achievements/AchievementsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Не получилось",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ок",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Достижения",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 90
+        }
+      },
+      {
+        "comment": "",
+        "key": "Собрано %lld из %lld",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Уровень %lld · %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld / %lld XP",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "НОВАЯ АЧИВКА",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "Открыто «%@»",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%lld XP · нажмите на плитку, чтобы забрать",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 175
+        }
+      },
+      {
+        "comment": "",
+        "key": "Достижения появятся позже",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Когда появится прогресс, карточки автоматически обновятся.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 238
+        }
+      }
+    ]
+  },
+  "version": 1
+}
